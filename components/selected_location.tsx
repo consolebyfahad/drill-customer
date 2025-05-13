@@ -1,0 +1,210 @@
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Platform,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import Location from "@/assets/svgs/locationIcon.svg";
+import { Colors } from "@/constants/Colors";
+import * as LocationService from "expo-location";
+
+type Category = {
+  id: string;
+  image: string;
+  name: string;
+};
+
+type Prop = {
+  onSelectLocation?: (location: string) => void;
+  selectedLocation?: any;
+  disabled?: boolean;
+  category: Category;
+};
+
+export default function SelectedLocation({
+  category,
+  onSelectLocation,
+  selectedLocation,
+  disabled = false,
+}: Prop) {
+  const params = useLocalSearchParams();
+  const [address, setAddress] = useState<string | null>(
+    selectedLocation || params?.location || null
+  );
+  const [isLoadingLocation, setIsLoadingLocation] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkLocationPermission = async () => {
+      try {
+        if (address) return;
+
+        setIsLoadingLocation(true);
+
+        let { status } =
+          await LocationService.requestForegroundPermissionsAsync();
+
+        if (status !== "granted") {
+          console.log("Location permission denied");
+          setIsLoadingLocation(false);
+          return;
+        }
+
+        const location = await LocationService.getCurrentPositionAsync({
+          accuracy: LocationService.Accuracy.Balanced,
+        });
+
+        const geocodedAddress = await reverseGeocodeLocation(
+          location.coords.latitude,
+          location.coords.longitude
+        );
+
+        if (geocodedAddress) {
+          setAddress(geocodedAddress);
+          if (onSelectLocation && !disabled) {
+            onSelectLocation(geocodedAddress);
+          }
+        }
+      } catch (error) {
+        console.error("Error getting location:", error);
+        Alert.alert(
+          "Location Error",
+          "Unable to retrieve your current location. Please select a location manually."
+        );
+      } finally {
+        setIsLoadingLocation(false);
+      }
+    };
+
+    checkLocationPermission();
+  }, []);
+
+  // Function to convert coordinates to address
+  const reverseGeocodeLocation = async (
+    latitude: number,
+    longitude: number
+  ): Promise<string | null> => {
+    try {
+      const reverseGeocode = await LocationService.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      if (reverseGeocode && reverseGeocode.length > 0) {
+        const location = reverseGeocode[0];
+        // Format the address based on available data
+        const addressParts = [
+          location.name,
+          location.street,
+          location.district,
+          location.city,
+          location.region,
+          location.postalCode,
+          location.country,
+        ].filter(Boolean);
+
+        return addressParts.join(", ");
+      }
+      return null;
+    } catch (error) {
+      console.error("Error in reverse geocoding:", error);
+      return null;
+    }
+  };
+
+  // Handle route params for location
+  useEffect(() => {
+    if (params?.location) {
+      const locationString = params.location as string;
+      setAddress(locationString);
+      if (onSelectLocation && !disabled) {
+        onSelectLocation(locationString);
+      }
+    }
+  }, [params.location, onSelectLocation, disabled]);
+
+  const handleLocation = () => {
+    if (!disabled) {
+      router.push({
+        pathname: "/booking/location",
+        params: {
+          location: address,
+          categoryId: category.id,
+          categoryName: category.name,
+          categoryImage: category.image,
+        },
+      });
+    }
+  };
+
+  return (
+    <>
+      <View style={styles.header}>
+        <Text style={styles.title}>Requested Service Location</Text>
+        {!disabled && (
+          <TouchableOpacity onPress={handleLocation}>
+            <Text style={styles.changeText}>Change</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      <TouchableOpacity
+        style={styles.locationContainer}
+        onPress={!disabled ? handleLocation : undefined}
+        disabled={disabled || isLoadingLocation}
+      >
+        <View style={styles.iconWrapper}>
+          <Location />
+        </View>
+        <Text style={styles.address}>
+          {isLoadingLocation
+            ? "Getting your current location..."
+            : address || "Select a location"}
+        </Text>
+      </TouchableOpacity>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: Colors.secondary,
+  },
+  changeText: {
+    fontSize: 14,
+    color: Colors.primary,
+  },
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.primary300,
+    padding: 16,
+    borderRadius: 10,
+  },
+  iconWrapper: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 12,
+  },
+  address: {
+    marginLeft: 16,
+    color: Colors.secondary300,
+    flex: 1,
+  },
+  disabledText: {
+    color: Colors.secondary300,
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: "center",
+  },
+});

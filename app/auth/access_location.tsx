@@ -1,0 +1,242 @@
+import Arrow from "@/assets/svgs/arrowLeft.svg";
+import Button from "@/components/button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Device from "expo-device";
+import * as Location from "expo-location";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "~/constants/Colors";
+import { apiCall } from "~/utils/api";
+import {
+  getFCMToken,
+  requestFCMPermission,
+  setupNotificationListeners,
+} from "~/utils/notification";
+
+export default function AccessLocation() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleBrowse = () => {
+    router.push("/(tabs)");
+  };
+
+  const getDeviceInfo = async () => {
+    try {
+      // Get device model
+      let deviceModel = "unknown";
+      if (Device.modelName) {
+        deviceModel = Device.modelName;
+      }
+
+      return {
+        platform: Platform.OS || "",
+        model: deviceModel,
+      };
+    } catch (error) {
+      console.error("Error getting device info:", error);
+      return {
+        platform: Platform.OS || "",
+        model: "unknown",
+        brand: "unknown",
+        osVersion: "unknown",
+      };
+    }
+  };
+
+  useEffect(() => {
+    // Fix: Added proper async function implementation
+    const setupNotifications = async () => {
+      try {
+        const userId = await AsyncStorage.getItem("user_id");
+        if (!userId) {
+          console.warn("User ID not found in AsyncStorage");
+          return;
+        }
+
+        // FCM
+        const permissionGranted = await requestFCMPermission();
+        if (permissionGranted) {
+          const token = await getFCMToken();
+          const deviceInfo = await getDeviceInfo();
+          const formData = new FormData();
+          formData.append("type", "update_noti");
+          formData.append("user_id", userId);
+          formData.append("devicePlatform", deviceInfo.platform);
+          formData.append("deviceRid", token);
+          formData.append("deviceModel", deviceInfo.model);
+          try {
+            const response = await apiCall(formData);
+            console.log("FCM registration response:", response);
+          } catch (error) {
+            console.error("FCM registration failed:", error);
+          }
+        } else {
+          console.log("FCM permission not granted");
+        }
+      } catch (error) {
+        console.error("Error setting up notifications:", error);
+      }
+    };
+
+    const handleNotificationPress = (data: any) => {
+      console.log("🔔 Notification Pressed:", data);
+      // Navigate based on data, e.g.:
+      // if (data.screen) router.push(`/${data.screen}`);
+    };
+
+    setupNotifications();
+
+    const unsubscribe = setupNotificationListeners(handleNotificationPress);
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const handleLocation = async () => {
+    setLoading(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        Alert.alert("Permission Denied", "Location access is required.");
+        setLoading(false);
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+      await AsyncStorage.setItem(
+        "user_location",
+        JSON.stringify({ latitude, longitude })
+      );
+
+      // Alert.alert("Success", "Location saved successfully!");
+      router.push("/(tabs)");
+    } catch (error) {
+      console.error("Error fetching location:", error);
+      Alert.alert("Error", "Failed to fetch location.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header with Back Button */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push("/auth/verified")}>
+          <Arrow />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Allow Location Access</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      {/* Image & Text Content */}
+      <View style={styles.content}>
+        <Image
+          source={require("@/assets/images/location.png")}
+          style={styles.image}
+          resizeMode="contain"
+        />
+
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>Access Location</Text>
+          <Text style={styles.subtitle}>
+            Allow us to access your location to provide better services near
+            you.
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        {/* Allow Location Button */}
+        <Button
+          title={loading ? "Loading..." : "Allow Access"}
+          onPress={handleLocation}
+          disabled={loading}
+        />
+
+        {/* "Do it Later" Option */}
+        <View style={styles.laterContainer}>
+          <Text>Do it</Text>
+          <TouchableOpacity onPress={handleBrowse}>
+            <Text style={styles.laterText}> Later</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: Colors.white,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 32,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: Colors.secondary,
+  },
+  content: {
+    alignItems: "center",
+    marginBottom: 80,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 16,
+  },
+  textContainer: {
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: Colors.secondary,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    color: Colors.secondary,
+    marginBottom: 32,
+  },
+  buttonContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  laterContainer: {
+    flexDirection: "row",
+    padding: 16,
+  },
+  laterText: {
+    color: Colors.primary,
+    fontWeight: "bold",
+    marginLeft: 4,
+  },
+});

@@ -1,0 +1,78 @@
+{
+  "expo": {
+    "name": "drill-customer",
+    "slug": "drill-customer",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/adaptive-icon.png",
+    "scheme": "drillcustomer",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "sa.com.drill.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to show your position on the map.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      },
+      "entitlements": {
+        "aps-environment": "production"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "sa.com.drill.app",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAQiilQ_i4LRPFyMhfLB5ZT3UGMTIxqL0Y"
+        }
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/adaptive-icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "86d059c4-8392-4ecd-be2b-6235602b4155"
+      }
+    },
+    "owner": "fahadurrehman"
+  }
+}
