@@ -1,5 +1,7 @@
 import Button from "@/components/button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
@@ -10,6 +12,26 @@ export default function Onboarding() {
   const handleGetStarted = () => {
     router.push("/auth/login");
   };
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const userId = await AsyncStorage.getItem("user_id");
+        setTimeout(() => {
+          if (userId) {
+            router.replace("/(tabs)");
+          } else {
+            router.replace("/");
+          }
+        }, 3000);
+      } catch (error) {
+        console.error("Error checking user data:", error);
+        router.replace("/auth/login");
+      }
+    };
+
+    checkUser();
+  }, [router]);
 
   return (
     <SafeAreaView style={styles.container}>

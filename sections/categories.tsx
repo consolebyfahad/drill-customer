@@ -1,15 +1,15 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "expo-router";
-import { Colors } from "~/constants/Colors";
 import CategoryCard from "@/components/category_card";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Colors } from "~/constants/Colors";
 import { apiCall } from "~/utils/api";
 
 type Category = {
@@ -31,19 +31,16 @@ const Categories: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // Create FormData payload
         const formData = new FormData();
         formData.append("type", "get_data");
         formData.append("table_name", "categories");
 
-        // API request
         const response = await apiCall(formData);
         if (response.data) {
-          // Map response to match our Category type
           const mappedCategories = response.data.map((item: any) => ({
             id: item.id,
-            image: item.thumb, // Use 'thumb' as the correct image URL
-            name: item.name, // Use 'name' instead of 'title'
+            image: item.thumb,
+            name: item.name,
           }));
 
           setCategories(mappedCategories);

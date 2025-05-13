@@ -1,10 +1,8 @@
 import { BASE_URL } from "~/config";
 
-// Generic API call function
 export const apiCall = async (payload, method = "POST") => {
   try {
     console.log("📡 API Request:", { url: BASE_URL, method, payload });
-
     const response = await fetch(BASE_URL, {
       method,
       body: payload,

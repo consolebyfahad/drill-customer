@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  ImageBackground,
-  TextInput,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
 import Header from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "~/components/button";
 import { Colors } from "~/constants/Colors";
 

@@ -1,11 +1,10 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 import Button from "@/components/button";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function NotFoundScreen(): JSX.Element {
+export default function NotFoundScreen() {
   const router = useRouter();
 
   return (

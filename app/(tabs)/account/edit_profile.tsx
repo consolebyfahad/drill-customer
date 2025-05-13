@@ -1,32 +1,32 @@
+import DOB from "@/assets/svgs/profile/Calendar.svg";
+import Phone from "@/assets/svgs/profile/Call.svg";
+import City from "@/assets/svgs/profile/Global.svg";
+import Address from "@/assets/svgs/profile/location.svg";
+import Email from "@/assets/svgs/profile/Sms.svg";
+import Zip from "@/assets/svgs/profile/zip.svg";
+import Profile from "@/assets/svgs/profileIcon.svg";
+import Header from "@/components/header";
+import Inputfield from "@/components/inputfield";
+import Seprator from "@/components/seprator";
+import { Colors } from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  StyleSheet,
   ActivityIndicator,
   Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import React, { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import Header from "@/components/header";
-import Seprator from "@/components/seprator";
-import Inputfield from "@/components/inputfield";
-import Profile from "@/assets/svgs/profileIcon.svg";
-import Phone from "@/assets/svgs/profile/Call.svg";
-import Email from "@/assets/svgs/profile/Sms.svg";
-import DOB from "@/assets/svgs/profile/Calendar.svg";
-import Address from "@/assets/svgs/profile/location.svg";
-import City from "@/assets/svgs/profile/Global.svg";
-import Zip from "@/assets/svgs/profile/zip.svg";
-import { apiCall } from "~/utils/api";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "~/components/button";
-import { router } from "expo-router";
+import { apiCall } from "~/utils/api";
 
 type User = {
   name: string;

@@ -1,35 +1,34 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Switch,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Alert,
-} from "react-native";
-import React, { useCallback, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useRouter } from "expo-router";
-import Header from "@/components/header";
-import Button from "@/components/button";
-import Seprator from "@/components/seprator";
-import { Colors } from "@/constants/Colors";
-import AccountStatus from "@/assets/svgs/profile/security.svg";
-import Wallet from "@/assets/svgs/profile/Wallet.svg";
-import Notification from "@/assets/svgs/Notification.svg";
-import Password from "@/assets/svgs/Lock.svg";
-import Card from "@/assets/svgs/profile/Card.svg";
 import Rating from "@/assets/svgs/emptyStar.svg";
 import About from "@/assets/svgs/info.svg";
+import Notification from "@/assets/svgs/Notification.svg";
+import Card from "@/assets/svgs/profile/Card.svg";
+import AccountStatus from "@/assets/svgs/profile/security.svg";
 import Support from "@/assets/svgs/profile/support.svg";
+import Wallet from "@/assets/svgs/profile/Wallet.svg";
+import Button from "@/components/button";
+import Header from "@/components/header";
+import Seprator from "@/components/seprator";
+import { Colors } from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 // import Language from "@/assets/svgs/language.svg";
-import Verify from "@/assets/svgs/verify.svg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiCall } from "~/utils/api";
 import defaultProfile from "@/assets/images/default-profile.png";
 import Logout from "@/assets/svgs/Logout.svg";
+import Verify from "@/assets/svgs/verify.svg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { apiCall } from "~/utils/api";
 
 type User = {
   id: string;
@@ -123,9 +122,6 @@ export default function Account() {
       case "Wallet":
         router.push("/account/wallet");
         break;
-      case "Change Password":
-        router.push("/account/change_password");
-        break;
       case "Card":
         router.push("/account/card_list");
         break;
@@ -190,7 +186,6 @@ export default function Account() {
     Account: <AccountStatus />,
     Wallet: <Wallet />,
     Notification: <Notification />,
-    "Change Password": <Password />,
     Card: <Card />,
     "Rate Us": <Rating />,
     "About App": <About />,
@@ -208,11 +203,7 @@ export default function Account() {
     },
     { icon: "Wallet", title: "Wallet", extraRight: "chevron-forward" },
     { icon: "Notification", title: "Notification", right: "toggle" },
-    {
-      icon: "Change Password",
-      title: "Change Password",
-      extraRight: "chevron-forward",
-    },
+
     { icon: "Card", title: "Card", right: "5", extraRight: "chevron-forward" },
     { icon: "Rate Us", title: "Rate Us", extraRight: "chevron-forward" },
     { icon: "About App", title: "About App", extraRight: "chevron-forward" },

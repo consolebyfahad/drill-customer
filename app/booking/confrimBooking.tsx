@@ -1,28 +1,27 @@
-import React, { useState } from "react";
+import Button from "@/components/button";
+import DashedSeparator from "@/components/dashed_seprator";
+import SelectedDescription from "@/components/selected_description";
+import SelectedImage from "@/components/selected_image";
+import SelectedLocation from "@/components/selected_location";
+import SelectedService from "@/components/selected_service";
+import Seprator from "@/components/seprator";
+import Stepper from "@/components/stepper";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  SafeAreaView,
+  Alert,
   ScrollView,
   StyleSheet,
-  Alert,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import Stepper from "@/components/stepper";
-import Button from "@/components/button";
-import Seprator from "@/components/seprator";
-import DashedSeparator from "@/components/dashed_seprator";
-import SelectedService from "@/components/selected_service";
-import SelectedLocation from "@/components/selected_location";
-import SelectedImage from "@/components/selected_image";
-import SelectedDescription from "@/components/selected_description";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { apiCall } from "~/utils/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type BookingParams = {
   id: string;

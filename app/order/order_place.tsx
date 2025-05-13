@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  Alert,
-} from "react-native";
-import Header from "@/components/header";
-import OrderDetails from "./order_details";
-import ChatScreen from "./chat_screen";
 import Button from "@/components/button";
-import { Colors } from "~/constants/Colors";
-import Popup from "~/components/popup";
-import { useFocusEffect } from "expo-router";
+import Header from "@/components/header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Popup from "~/components/popup";
+import { Colors } from "~/constants/Colors";
 import { apiCall } from "~/utils/api";
+import ChatScreen from "./chat_screen";
+import OrderDetails from "./order_details";
 
 // Define the interface for order data
 export interface OrderType {

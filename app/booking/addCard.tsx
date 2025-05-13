@@ -1,18 +1,16 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Switch,
-  Image,
-  StyleSheet,
-} from "react-native";
-import React, { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
 import Button from "@/components/button";
+import { useNavigation } from "expo-router";
+import { useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 
 export default function AddCard() {

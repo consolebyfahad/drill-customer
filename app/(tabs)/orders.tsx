@@ -1,22 +1,13 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
-  Animated,
-} from "react-native";
-import React, { useState, useCallback, useRef } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import Header from "@/components/header";
 import ServiceDetailsCard from "@/components/service_details_card";
 import { Colors } from "@/constants/Colors";
-import { router, useFocusEffect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { apiCall } from "~/utils/api";
-import Modal from "react-native-modal";
 
 // Order type definition
 export type Order = {
@@ -43,26 +34,15 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>("All");
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  const dropdownAnim = useRef(new Animated.Value(0)).current;
 
-  const toggleDropdown = () => {
-    if (showStatusDropdown) {
-      Animated.timing(dropdownAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }).start(() => setShowStatusDropdown(false));
-    } else {
-      setShowStatusDropdown(true);
-      Animated.timing(dropdownAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
+  // Dropdown state
+  const [open, setOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [items, setItems] = useState([
+    { label: "All", value: "All" },
+    { label: "Pending", value: "pending" },
+    { label: "Completed", value: "completed" },
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -70,7 +50,7 @@ export default function Orders() {
         try {
           const user_id = await AsyncStorage.getItem("user_id");
           setUserId(user_id);
-          fetchOrders(userId);
+          fetchOrders();
         } catch (error) {
           console.error("Initialization error:", error);
           Alert.alert("Error", "Failed to initialize orders");
@@ -127,11 +107,6 @@ export default function Orders() {
     });
   };
 
-  const handleFilterChange = (status: string) => {
-    setFilterStatus(status);
-    // Implement filtering logic if needed
-  };
-
   // Filter orders based on selected status
   const filteredOrders =
     filterStatus === "All"
@@ -144,59 +119,34 @@ export default function Orders() {
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         <Header title="Orders" icon={true} />
+
+        {/* Dropdown Picker */}
+        <View style={styles.dropdownContainer}>
+          <DropDownPicker
+            open={open}
+            value={filterStatus}
+            items={items}
+            setOpen={setOpen}
+            setValue={setFilterStatus}
+            setItems={setItems}
+            style={styles.dropdown}
+            textStyle={styles.dropdownText}
+            dropDownContainerStyle={styles.dropdownList}
+            listItemContainerStyle={styles.dropdownItem}
+            placeholder="Filter by status"
+            zIndex={3000}
+            zIndexInverse={1000}
+          />
+        </View>
+
         <ScrollView
-          contentContainerStyle={styles.scrollContainer}
+          contentContainerStyle={[
+            styles.scrollContainer,
+            open && { paddingTop: 120 }, // Add padding when dropdown is open
+          ]}
           showsVerticalScrollIndicator={false}
         >
           <View>
-            <View style={{ position: "relative" }}>
-              {/* Dropdown Button */}
-              <TouchableOpacity
-                style={styles.dropdown}
-                onPress={toggleDropdown}
-              >
-                <Text>{filterStatus}</Text>
-                <Ionicons
-                  name={showStatusDropdown ? "chevron-up" : "chevron-down"}
-                  size={18}
-                  color="black"
-                />
-              </TouchableOpacity>
-
-              {/* Animated Dropdown List */}
-              {showStatusDropdown && (
-                <Animated.View
-                  style={[
-                    styles.dropdownList,
-                    {
-                      opacity: dropdownAnim,
-                      transform: [
-                        {
-                          scaleY: dropdownAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0, 1],
-                          }),
-                        },
-                      ],
-                    },
-                  ]}
-                >
-                  {["All", "pending", "completed"].map((status) => (
-                    <TouchableOpacity
-                      key={status}
-                      style={styles.dropdownItem}
-                      onPress={() => {
-                        handleFilterChange(status);
-                        toggleDropdown();
-                      }}
-                    >
-                      <Text style={styles.dropdownItemText}>{status}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </Animated.View>
-              )}
-            </View>
-
             {isLoading ? (
               <View style={styles.loadingContainer}>
                 <Text>Loading orders...</Text>
@@ -246,14 +196,34 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 120,
   },
-  dropdown: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 16,
+  dropdownContainer: {
     marginVertical: 16,
+    zIndex: 5000,
+  },
+  dropdown: {
+    backgroundColor: Colors.primary300,
+    borderWidth: 0,
+    borderRadius: 16,
+    minHeight: 50,
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: Colors.secondary,
+  },
+  dropdownList: {
+    backgroundColor: "#fff",
+    borderColor: Colors.gray200,
+    borderRadius: 12,
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  dropdownItem: {
+    height: 50,
+    justifyContent: "center",
   },
   loadingContainer: {
     padding: 20,
@@ -263,31 +233,5 @@ const styles = StyleSheet.create({
     padding: 40,
     alignItems: "center",
     justifyContent: "center",
-  },
-  dropdownList: {
-    position: "absolute",
-    top: 65, // adjust if needed depending on button height
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    paddingVertical: 8,
-    zIndex: 10,
-    overflow: "hidden",
-  },
-
-  dropdownItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-  },
-
-  dropdownItemText: {
-    fontSize: 16,
-    color: "black",
   },
 });

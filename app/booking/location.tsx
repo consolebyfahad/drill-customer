@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import Button from "@/components/button";
+import { Colors } from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import * as Location from "expo-location";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import * as Location from "expo-location";
 import MapView from "react-native-maps";
-import { Ionicons } from "@expo/vector-icons";
-import Button from "@/components/button";
-import { useNavigation, useLocalSearchParams, router } from "expo-router";
-import { Colors } from "@/constants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LocationScreen() {
   const navigation = useNavigation();
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   headerText: { fontSize: 24, fontWeight: "bold", color: "#374151" },
   iconButton: { padding: 8 },
   mapContainer: { borderRadius: 16, overflow: "hidden", marginBottom: 16 },
-  map: { width: "100%", height: 400 },
+  map: { width: "100%", height: 450 },
   markerFixed: {
     position: "absolute",
     top: "50%",

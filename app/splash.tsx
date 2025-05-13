@@ -1,30 +1,17 @@
-import { useEffect } from "react";
 import { useRouter } from "expo-router";
-import { View, Image, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
+import { Image, StyleSheet, View } from "react-native";
 
 export default function Splash() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const userId = await AsyncStorage.getItem("user_id");
-        setTimeout(() => {
-          if (userId) {
-            router.replace("/(tabs)");
-          } else {
-            router.replace("/");
-          }
-        }, 2000);
-      } catch (error) {
-        console.error("Error checking user data:", error);
-        router.replace("/auth/login");
-      }
-    };
+    const timeout = setTimeout(() => {
+      router.replace("/");
+    }, 3000);
 
-    checkUser();
-  }, []);
+    return () => clearTimeout(timeout);
+  }, [router]);
 
   return (
     <View style={styles.container}>

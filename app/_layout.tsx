@@ -1,7 +1,7 @@
-import { useEffect } from "react";
 import { Stack, useRouter } from "expo-router";
+import { useEffect } from "react";
 
-export default function RootLayout(): JSX.Element | null {
+export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
@@ -9,7 +9,7 @@ export default function RootLayout(): JSX.Element | null {
       router.push("/splash");
     };
     loadSplash();
-  }, []);
+  }, [router]);
 
   return <Stack screenOptions={{ headerShown: false }}></Stack>;
 }

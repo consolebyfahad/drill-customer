@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, StyleSheet, ScrollView } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import Button from "@/components/button";
-import Stepper from "@/components/stepper";
+import Header from "@/components/header";
+import SelectedDescription from "@/components/selected_description";
+import SelectedImage from "@/components/selected_image";
+import SelectedLocation from "@/components/selected_location";
 import SelectedService from "@/components/selected_service";
 import Seprator from "@/components/seprator";
-import SelectedLocation from "@/components/selected_location";
-import SelectedImage from "@/components/selected_image";
-import SelectedDescription from "@/components/selected_description";
-import Header from "@/components/header";
+import Stepper from "@/components/stepper";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 
 export default function BookingScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  // Initialize state with parameters from route or previous screen
   const [serviceDetails, setServiceDetails] = useState({
     id: params.id as string,
     name: params.name as string,

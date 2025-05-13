@@ -1,11 +1,10 @@
-import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 import Button from "@/components/button";
+import { useRouter } from "expo-router";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 
-export default function VerifiedScreen(): JSX.Element {
+export default function VerifiedScreen() {
   const router = useRouter();
 
   const handleBrowse = () => {

@@ -1,18 +1,18 @@
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  SafeAreaView,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
+  Alert,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import Header from "~/components/header";
-import { apiCall } from "~/utils/api";
-import { Colors } from "~/constants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 import DashedSeparator from "~/components/dashed_seprator";
+import Header from "~/components/header";
+import { Colors } from "~/constants/Colors";
+import { apiCall } from "~/utils/api";
 
 interface Package {
   id: string;

@@ -1,18 +1,18 @@
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
-  ActivityIndicator,
-  SafeAreaView,
+  View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router } from "expo-router";
 
+import { SafeAreaView } from "react-native-safe-area-context";
 import CategoryCard from "~/components/category_card";
-import { apiCall } from "~/utils/api";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
+import { apiCall } from "~/utils/api";
 
 type Category = {
   id: string;

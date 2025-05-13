@@ -1,7 +1,6 @@
 import { Stack } from "expo-router";
-import React from "react";
 
-export default function BookingLayout(): JSX.Element {
+export default function BookingLayout() {
   return (
     <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />

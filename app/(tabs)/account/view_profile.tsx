@@ -1,25 +1,24 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Alert,
-} from "react-native";
-import React, { useCallback, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import ServiceDetailsCard from "@/components/service_details_card";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
-import Header from "@/components/header";
-import Button from "@/components/button";
-import Seprator from "@/components/seprator";
-import { Colors } from "@/constants/Colors";
 import Star from "@/assets/svgs/Star.svg";
 import LocationIcon from "@/assets/svgs/locationIcon.svg";
+import Button from "@/components/button";
+import Header from "@/components/header";
+import Seprator from "@/components/seprator";
+import ServiceDetailsCard from "@/components/service_details_card";
+import { Colors } from "@/constants/Colors";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { apiCall } from "~/utils/api";
 
 type Order = {

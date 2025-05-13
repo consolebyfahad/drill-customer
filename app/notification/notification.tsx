@@ -1,9 +1,9 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
-import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import NotificationCard from "@/components/notification_card";
-import Header from "@/components/header";
 import AccountIcon from "@/assets/svgs/profileIcon.svg";
+import Header from "@/components/header";
+import NotificationCard from "@/components/notification_card";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Notification = {
   icon: React.ReactNode;

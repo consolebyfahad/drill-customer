@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  StyleSheet,
-  Alert,
-} from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
-import Visa from "@/assets/images/visa.png";
 import Applepay from "@/assets/images/applepay.png";
 import Appwallet from "@/assets/images/appwallet.png";
 import Cashonpay from "@/assets/images/cop.png";
+import Visa from "@/assets/images/visa.png";
 import Button from "@/components/button";
-import Stepper from "@/components/stepper";
-import Seprator from "@/components/seprator";
 import Header from "@/components/header";
-import { Colors } from "~/constants/Colors";
+import Seprator from "@/components/seprator";
+import Stepper from "@/components/stepper";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import DashedSeparator from "~/components/dashed_seprator";
+import { Colors } from "~/constants/Colors";
 import { apiCall } from "~/utils/api";
 
 interface Package {

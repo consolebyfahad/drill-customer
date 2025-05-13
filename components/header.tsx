@@ -1,9 +1,8 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
-import { useRouter, useNavigation } from "expo-router";
-import NotificationBell from "@/assets/svgs/Notification.svg";
-import BackArrow from "@/assets/svgs/Arrow.svg";
 import ChatSupport from "@/assets/svgs/chatSupport.svg";
+import NotificationBell from "@/assets/svgs/Notification.svg";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation, useRouter } from "expo-router";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 
 type HeaderProps = {
@@ -22,7 +21,7 @@ export default function Header({
   icon,
   support,
   backBtn,
-}: HeaderProps): JSX.Element {
+}: HeaderProps) {
   const navigation = useNavigation();
   const router = useRouter();
 
@@ -39,7 +38,7 @@ export default function Header({
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <BackArrow width={24} height={24} fill="#000" />
+            <AntDesign name="left" size={24} color={Colors.secondary} />
           </TouchableOpacity>
         )}
         {!homeScreen ? (

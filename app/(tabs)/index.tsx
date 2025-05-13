@@ -1,14 +1,13 @@
-import React, { useCallback, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Header from "@/components/header";
 import Banner from "@/components/banner";
+import Header from "@/components/header";
 import Search from "@/components/search";
 import Categories from "@/sections/categories";
-import PopularServices from "@/components/popular_services";
 import { Colors } from "~/constants/Colors";
 
 const Home = () => {
@@ -56,7 +55,7 @@ const Home = () => {
         <Banner />
         <Search />
         <Categories />
-        <PopularServices />
+        {/* <PopularServices /> */}
       </ScrollView>
     </SafeAreaView>
   );

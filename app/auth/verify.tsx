@@ -19,6 +19,7 @@ type InputRef = TextInput | null;
 export default function Verify() {
   const router = useRouter();
   const [code, setCode] = useState<string[]>(["", "", "", ""]);
+  const [error, setError] = useState<string>("");
   const inputs = useRef<InputRef[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -30,6 +31,7 @@ export default function Verify() {
         setUserId(userId);
       } catch (error) {
         console.error("Error fetching user_id:", error);
+        setError("Something went wrong. Please try again.");
       }
     };
     fetchUserId();
@@ -39,6 +41,9 @@ export default function Verify() {
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
+
+    // Clear error when user types
+    if (error) setError("");
 
     if (text && index < 3) {
       inputs.current[index + 1]?.focus();
@@ -64,7 +69,12 @@ export default function Verify() {
 
   const handleVerify = async () => {
     if (!userId) {
-      // Toast.error("User not found. Please try logging in again.");
+      setError("User not found. Please try logging in again.");
+      return;
+    }
+
+    if (code.join("").length !== 4) {
+      setError("Please enter a valid 4-digit code.");
       return;
     }
 
@@ -79,11 +89,11 @@ export default function Verify() {
         await AsyncStorage.setItem("user_num_id", response?.user?.id);
         setTimeout(() => router.push("/auth/verified"), 800);
       } else {
-        // Toast.error(response.message || "Verification Failed");
+        setError(response.message || "Verification failed.");
       }
     } catch (error) {
       console.error("Verification Error:", error);
-      // Toast.error("Something went wrong, please try again.");
+      setError("Something went wrong. Please try again.");
     }
   };
 
@@ -105,13 +115,17 @@ export default function Verify() {
       </Text>
 
       {/* OTP Input */}
-      <View style={styles.otpContainer}>
+      <View
+        style={[styles.otpContainer, error ? styles.otpContainerError : null]}
+      >
         <View style={styles.otpInputs}>
           {code.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(el) => (inputs.current[index] = el)}
-              style={styles.otpInput}
+              ref={(el) => {
+                inputs.current[index] = el;
+              }}
+              style={[styles.otpInput, error ? styles.otpInputError : null]}
               keyboardType="numeric"
               maxLength={1}
               onChangeText={(text) => handleChangeText(text, index)}
@@ -120,9 +134,10 @@ export default function Verify() {
             />
           ))}
         </View>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <TouchableOpacity>
           <Text style={styles.resendText}>
-            Didn’t receive the code?{" "}
+            Didn&apos;t receive the code?{" "}
             <Text style={styles.resendLink}>Resend</Text>
           </Text>
         </TouchableOpacity>
@@ -171,6 +186,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 24,
   },
+  otpContainerError: {
+    borderWidth: 1,
+    borderColor: "red",
+  },
   otpInputs: {
     flexDirection: "row",
     gap: 12,
@@ -184,6 +203,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray200,
     textAlign: "center",
     fontSize: 20,
+  },
+  otpInputError: {
+    borderColor: "red",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    textAlign: "center",
   },
   resendText: {
     fontSize: 16,
