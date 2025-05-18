@@ -15,11 +15,16 @@ import { Colors } from "~/constants/Colors";
 export default function BookingScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-
+  console.log("params", params);
   const [serviceDetails, setServiceDetails] = useState({
     id: params.id as string,
     name: params.name as string,
     image: params.image as string,
+  });
+
+  const [latlng, setLatlng] = useState({
+    latitude: params.latitude,
+    longitude: params.longitude,
   });
 
   const [selectedLocation, setSelectedLocation] = useState<string | null>(
@@ -36,14 +41,30 @@ export default function BookingScreen() {
 
   useEffect(() => {
     // Check if category details are passed from location screen
-    if (params.categoryId && params.categoryName && params.categoryImage) {
+    if (
+      params.categoryId &&
+      params.categoryName &&
+      params.categoryImage &&
+      params.longitude &&
+      params.latitude
+    ) {
       setServiceDetails({
         id: params.categoryId as string,
         name: params.categoryName as string,
         image: params.categoryImage as string,
       });
+      setLatlng({
+        latitude: params.latitude,
+        longitude: params.longitude,
+      });
     }
-  }, [params.categoryId, params.categoryName, params.categoryImage]);
+  }, [
+    params.categoryId,
+    params.categoryName,
+    params.categoryImage,
+    params.latitude,
+    params.longitude,
+  ]);
 
   // Effect to log and verify state preservation
   useEffect(() => {
@@ -52,8 +73,9 @@ export default function BookingScreen() {
       selectedLocation,
       selectedImage,
       description,
+      latlng,
     });
-  }, [serviceDetails, selectedLocation, selectedImage, description]);
+  }, [serviceDetails, selectedLocation, selectedImage, description, latlng]);
 
   const handleNext = () => {
     router.push({
@@ -65,6 +87,8 @@ export default function BookingScreen() {
         location: selectedLocation,
         selectedImage,
         description,
+        latitude: params.latitude,
+        longitude: params.longitude,
       },
     });
   };
@@ -93,7 +117,12 @@ export default function BookingScreen() {
               name: serviceDetails.name,
               image: serviceDetails.image,
             }}
-            onSelectLocation={setSelectedLocation}
+            onSelectLocation={(address, coordinates) => {
+              setSelectedLocation(address);
+              if (coordinates) {
+                setLatlng(coordinates);
+              }
+            }}
             selectedLocation={selectedLocation}
           />
           <Seprator />

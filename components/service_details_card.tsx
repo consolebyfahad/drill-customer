@@ -1,23 +1,22 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors } from "../constants/Colors";
 import DashedSeprator from "./dashed_seprator";
-import Star from "@/assets/svgs/Star.svg";
-import { Colors } from "@/constants/Colors";
 
-type Order = {
-  id?: string;
+export type Order = {
+  id: string;
   title?: string;
-  status?: string;
+  orderId?: string;
+  status: string;
   amount?: string;
   discount?: string;
   date?: string;
+  customer?: string;
   provider?: string;
   paymentStatus?: string;
   rating?: string;
   tip?: string;
   image?: any;
-  order_no?: string;
-  timestamp?: string;
+  imageUrl?: string;
 };
 
 type ServiceDetailsCardProps = {
@@ -28,61 +27,61 @@ type ServiceDetailsCardProps = {
 
 export default function ServiceDetailsCard({
   order,
-  orderScreen,
   onPress,
 }: ServiceDetailsCardProps) {
-  // Determine status color based on order status
-  const getStatusStyle = () => {
-    switch (order.status?.toLowerCase()) {
+  // Function to get different status styles based on status
+  const getStatusStyle = (status: string | undefined) => {
+    switch (status?.toLowerCase()) {
+      case "accepted":
+        return { backgroundColor: Colors.primary100, color: Colors.primary };
+      case "pending":
+        return { backgroundColor: "#FFF3CD", color: "#856404" };
+      case "arrived":
+        return { backgroundColor: "#FFF3CD", color: "#856404" };
       case "completed":
         return { backgroundColor: Colors.success100, color: Colors.success };
-      case "in-progress":
-      case "pending":
-        return { backgroundColor: Colors.warning100, color: Colors.warning };
       case "cancelled":
-        return { backgroundColor: Colors.danger100, color: Colors.danger };
+        return { backgroundColor: "#F8D7DA", color: "#721C24" };
       default:
         return { backgroundColor: Colors.primary100, color: Colors.secondary };
     }
   };
 
-  const statusStyle = getStatusStyle();
+  // Get the status style for the current order
+  const statusStyle = getStatusStyle(order.status);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} disabled={!onPress}>
+    <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.7}>
       {/* Order Top Section */}
       <View style={styles.orderTopSection}>
         <Image
-          source={order.image}
+          source={{ uri: `${order.image_url}${order?.category?.image}` }}
           style={styles.image}
           resizeMode="cover"
-          // defaultSource={require("@/assets/images/placeholder.png")} // Add a placeholder image in your assets
         />
         <View style={styles.orderInfo}>
           <View style={styles.orderHeader}>
-            <Text style={styles.title}>{order.title || "Service"}</Text>
-            <Text
+            <Text style={styles.title}>
+              {order?.category?.name || "Service Order"}
+            </Text>
+            <View
               style={[
-                styles.status,
-                {
-                  backgroundColor: statusStyle.backgroundColor,
-                  color: statusStyle.color,
-                },
+                styles.statusContainer,
+                { backgroundColor: statusStyle.backgroundColor },
               ]}
             >
-              {order.status || "N/A"}
-            </Text>
+              <Text style={[styles.statusText, { color: statusStyle.color }]}>
+                {order.status}
+              </Text>
+            </View>
           </View>
           <Text style={styles.orderId}>
-            Order ID:{" "}
-            <Text style={styles.orderIdValue}>
-              {order.order_no || order.id || "N/A"}
-            </Text>
+            Order ID: <Text style={styles.orderIdValue}>{order.order_no}</Text>
           </Text>
           <Text style={styles.amount}>
             SAR {order.amount || "0.00"}{" "}
             {order.discount && parseInt(order.discount) > 0 && (
-              <Text style={styles.discount}>({order.discount}%)</Text>
+              <Text style={styles.discount}>({order.discount}% off)</Text>
             )}
           </Text>
         </View>
@@ -92,16 +91,21 @@ export default function ServiceDetailsCard({
       <View style={styles.detailsContainer}>
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Date & Time</Text>
-          <Text style={styles.value}>
-            {order.timestamp || order.date || "N/A"}
-          </Text>
+          <Text style={styles.value}>{order.timestamp || "N/A"}</Text>
         </View>
         <DashedSeprator />
 
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Provider</Text>
           <Text style={styles.value}>
-            {order.provider ? order.provider : "Not assigned yet"}
+            {order?.provider?.name || "Not assigned yet"}
+          </Text>
+        </View>
+        <DashedSeprator />
+        <View style={styles.detailsRow}>
+          <Text style={styles.label}>Order Status</Text>
+          <Text style={[styles.value, { color: statusStyle.color }]}>
+            {order.status}
           </Text>
         </View>
         <DashedSeprator />
@@ -109,24 +113,24 @@ export default function ServiceDetailsCard({
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Payment Status</Text>
           <Text style={styles.paymentStatus}>
-            {order.paymentStatus || order.status || "N/A"}
+            {order?.payment_status || "Pending"}
           </Text>
         </View>
-
-        {order.status?.toLowerCase() === "completed" && orderScreen && (
+        {order.status === "completed" && (
           <>
+            {" "}
             <DashedSeprator />
             <View style={styles.detailsRow}>
               <Text style={styles.label}>Rating</Text>
               <View style={styles.ratingContainer}>
-                <Star />
+                <Text style={styles.starIcon}>★</Text>
                 <Text style={styles.value}>{order.rating || "0"}</Text>
               </View>
             </View>
             <DashedSeprator />
             <View style={styles.detailsRow}>
               <Text style={styles.label}>Tipped</Text>
-              <Text style={styles.tip}>SAR {order.tip || "0"}</Text>
+              <Text style={styles.tip}>SAR {order.tip || "0.00"}</Text>
             </View>
           </>
         )}
@@ -141,10 +145,10 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginTop: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowColor: Colors.gray100,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.01,
+    shadowRadius: 6,
     elevation: 2,
   },
   orderTopSection: {
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
     width: 62,
     borderRadius: 8,
     backgroundColor: Colors.white,
-    padding: 8,
+    padding: 12,
   },
   orderInfo: {
     flex: 1,
@@ -172,12 +176,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: Colors.secondary,
+    flex: 1,
+    textTransform: "capitalize",
   },
-  status: {
-    padding: 8,
+  statusContainer: {
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  statusText: {
     fontSize: 14,
     fontWeight: "500",
-    borderRadius: 8,
     textTransform: "capitalize",
   },
   orderId: {
@@ -190,6 +199,7 @@ const styles = StyleSheet.create({
   amount: {
     fontSize: 14,
     color: Colors.secondary,
+    fontWeight: "500",
   },
   discount: {
     color: Colors.success,
@@ -203,7 +213,8 @@ const styles = StyleSheet.create({
   detailsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 4,
+    alignItems: "center",
+    marginVertical: 8,
   },
   label: {
     color: Colors.secondary300,
@@ -213,6 +224,7 @@ const styles = StyleSheet.create({
     color: Colors.secondary,
     fontSize: 14,
     fontWeight: "600",
+    textTransform: "capitalize",
   },
   paymentStatus: {
     color: Colors.success,
@@ -223,6 +235,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+  },
+  starIcon: {
+    color: "#FFD700",
+    fontSize: 16,
   },
   tip: {
     color: Colors.success,

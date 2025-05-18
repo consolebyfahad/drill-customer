@@ -21,11 +21,12 @@ export type Order = {
   image_url?: string;
   images?: string;
   cat_id: string;
+  to_id?: string;
+  provider?: any; // Changed to any to handle both string and object
   // UI specific fields
   title?: string;
   amount?: string;
   discount?: string;
-  provider?: string;
   rating?: string;
   tip?: string;
 };
@@ -75,20 +76,8 @@ export default function Orders() {
     try {
       const response = await apiCall(formData);
       if (response && response.data && response.data.length > 0) {
-        const transformedOrders = response.data.map((order: any) => ({
-          ...order,
-          title: order.cat_name || "Service",
-          amount: order.order_price || "0",
-          discount: order.discount || "0",
-          paymentStatus: order.payment_method || "Unknown",
-          provider:
-            order.to_id !== "0"
-              ? order.provider || "Assigned Provider"
-              : "Waiting for provider",
-          image: require("@/assets/images/cleaning_service.png"),
-        }));
-
-        setOrders(transformedOrders);
+        const orders = response.data;
+        setOrders(orders);
       } else {
         setOrders([]);
       }
@@ -154,20 +143,8 @@ export default function Orders() {
             ) : filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
                 <ServiceDetailsCard
-                  key={index}
-                  order={{
-                    id: order.order_no,
-                    title: order.title || `Service `,
-                    status: order.status,
-                    amount: order.amount || "0.00",
-                    discount: order.discount || "0",
-                    date: order.created_at,
-                    provider: order.provider || "Unassigned",
-                    paymentStatus: order.payment_method,
-                    rating: order.rating || "0",
-                    tip: order.tip || "0",
-                    image: { uri: order.image_url },
-                  }}
+                  key={`order-${order.id}`}
+                  order={order}
                   orderScreen={true}
                   onPress={() => handleOrderScreen(order)}
                 />

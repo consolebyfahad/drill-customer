@@ -97,6 +97,7 @@ export default function ViewProfile() {
     status: "",
     timestamp: "",
     user_type: "",
+    online_status: "",
   });
 
   useFocusEffect(
@@ -179,6 +180,7 @@ export default function ViewProfile() {
           lng: profileData.lng || "",
           state: profileData.state || "",
           status: profileData.status || "",
+          online_status: profileData.online_status || "",
           timestamp: profileData.timestamp || "",
           user_type: profileData.user_type || "",
         });
@@ -214,8 +216,10 @@ export default function ViewProfile() {
               style={styles.profileImage}
               resizeMode="cover"
             />
-            {user.status === "1" && <View style={styles.onlineIndicator} />}
-            {user.user_type === "verified" && (
+            {user.online_status === "1" && (
+              <View style={styles.onlineIndicator} />
+            )}
+            {user.status === "1" && (
               <MaterialIcons
                 style={styles.verifiedIcon}
                 name="verified"
@@ -229,8 +233,8 @@ export default function ViewProfile() {
 
           <View style={styles.ratingContainer}>
             <Star />
-            <Text style={styles.ratingText}>4.8</Text>
-            <Text style={styles.reviewCount}>(120+ reviews)</Text>
+            <Text style={styles.ratingText}>{user?.rating}</Text>
+            <Text style={styles.reviewCount}>({user?.review})</Text>
           </View>
 
           <Text style={styles.balance}>Balance: SAR {user.balance}</Text>

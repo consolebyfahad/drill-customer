@@ -1,44 +1,226 @@
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
-import { Colors } from "~/constants/Colors";
-import Timeup from "@/assets/svgs/timeup.svg";
-import Tipup from "@/assets/svgs/tipup.svg";
+import Arrived from "@/assets/svgs/arrived.svg";
+import EmptyStarIcon from "@/assets/svgs/emptyStar.svg";
 import OrderComplete from "@/assets/svgs/orderComplete.svg";
 import StarIcon from "@/assets/svgs/Star.svg";
-import EmptyStarIcon from "@/assets/svgs/emptyStar.svg";
+import Timeup from "@/assets/svgs/timeup.svg";
+import Tipup from "@/assets/svgs/tipup.svg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState } from "react";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Colors } from "~/constants/Colors";
+import { apiCall } from "~/utils/api";
 import Button from "./button";
-type PopupType = "timeup" | "tipup" | "orderComplete" | "review";
+
+type PopupType =
+  | "timeup"
+  | "tipup"
+  | "orderComplete"
+  | "review"
+  | "accepted"
+  | "arrived"
+  | "on-way"
+  | "completed"
+  | "time-up";
 
 type PopupProps = {
   setShowPopup: React.Dispatch<React.SetStateAction<PopupType | null>>;
   type: PopupType;
+  orderId: string;
+  onCompleted?: () => void;
 };
 
-export default function Popup({ setShowPopup, type }: PopupProps) {
+export default function Popup({
+  setShowPopup,
+  type,
+  orderId,
+  onCompleted,
+}: PopupProps) {
   const [tipAmount, setTipAmount] = useState("");
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
 
   const handleNext = () => {
-    setShowPopup(false);
+    setShowPopup(null);
   };
+
   const handleHide = () => {
-    setShowPopup(false);
+    setShowPopup(null);
   };
-  const handleSubmit = () => {
-    setShowPopup(false);
+
+  const handleStartService = async () => {
+    try {
+      if (!orderId) {
+        Alert.alert("Error", "Order information not found");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("type", "update_data");
+      formData.append("table_name", "orders");
+      formData.append("id", orderId);
+      formData.append("status", "started");
+
+      const response = await apiCall(formData);
+
+      if (response && response.result === true) {
+        setShowPopup(null);
+        Alert.alert("Success", "Service has been started");
+      } else {
+        Alert.alert("Error", "Failed to start service");
+      }
+    } catch (error) {
+      console.error("Error starting service:", error);
+      Alert.alert("Error", "An error occurred while starting the service");
+    }
   };
-  const handleRatingChange = (value: number) => {
-    setRating(value);
+
+  const handleTipSubmit = async () => {
+    try {
+      if (!orderId) {
+        Alert.alert("Error", "Order information not found");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("type", "update_data");
+      formData.append("table_name", "orders");
+      formData.append("id", orderId);
+      formData.append("tip_amount", tipAmount || "0");
+
+      const response = await apiCall(formData);
+
+      if (response && response.result === true) {
+        // Show review popup after successful tip submission
+        setShowPopup("review");
+      } else {
+        Alert.alert("Error", "Failed to submit tip");
+      }
+    } catch (error) {
+      console.error("Error submitting tip:", error);
+      Alert.alert("Error", "An error occurred while submitting the tip");
+    }
+  };
+
+  const handleAddReview = async () => {
+    try {
+      const userId = await AsyncStorage.getItem("user_id");
+
+      if (!userId || !orderId) {
+        Alert.alert("Error", "User or order information not found");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("type", "add_data");
+      formData.append("table_name", "reviews");
+      formData.append("order_id", orderId);
+      formData.append("user_id", userId);
+      formData.append("rating", rating.toString());
+      formData.append("review", review);
+      formData.append("review_by", "user");
+
+      const response = await apiCall(formData);
+
+      if (response && response.result === true) {
+        // Show order complete popup after review submission
+        setShowPopup("orderComplete");
+      } else {
+        Alert.alert("Error", "Failed to submit review");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      Alert.alert("Error", "An error occurred while submitting the review");
+    }
+  };
+
+  const handleComplete = () => {
+    if (onCompleted) {
+      onCompleted();
+    } else {
+      setShowPopup(null);
+    }
+  };
+
+  const handleMoveHigher = () => {
+    // Just hide the popup
+    setShowPopup(null);
   };
 
   const ratingText = ["Poor", "Fair", "Good", "Very Good", "Excellent"];
+
+  // Render arrived popup content
+  if (type === "arrived") {
+    return (
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.dateTime}>21 July 2023, 10:35 AM</Text>
+          <View style={styles.arrivedImageContainer}>
+            <Arrived />
+          </View>
+          <Text style={styles.title}>Service Provider Arrived!</Text>
+          <Text style={styles.description}>
+            If yes, please confirm. Otherwise, the order will automatically
+            start in 5 minutes.
+          </Text>
+        </View>
+        <View style={styles.footerButtons}>
+          <Button
+            title="Not Yet"
+            variant="secondary"
+            fullWidth={false}
+            width="34%"
+            onPress={handleHide}
+          />
+          <Button
+            title="Arrived"
+            variant="primary"
+            fullWidth={false}
+            width="64%"
+            onPress={handleStartService}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  // Render time-up popup content
+  if (type === "time-up") {
+    return (
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Timeup style={styles.image} />
+          <Text style={styles.title}>Time Up!</Text>
+          <Text style={styles.description}>
+            Your bonus time has also been completed. If any work is still
+            pending, we will be moving you to a higher package.
+          </Text>
+        </View>
+        <View style={styles.footerButtons}>
+          <Button
+            title="Complete"
+            variant="secondary"
+            fullWidth={false}
+            width="34%"
+            onPress={handleComplete}
+          />
+          <Button
+            title="Move Higher"
+            variant="primary"
+            fullWidth={false}
+            width="64%"
+            onPress={handleMoveHigher}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -75,7 +257,7 @@ export default function Popup({ setShowPopup, type }: PopupProps) {
               Thanks! for sharing your experience and valuable feedback.
             </Text>
           </>
-        ) : (
+        ) : type === "review" ? (
           <>
             <Text style={styles.title}>Rate Your Experience</Text>
             <Text style={styles.description}>How was your service?</Text>
@@ -85,26 +267,29 @@ export default function Popup({ setShowPopup, type }: PopupProps) {
                   {star <= rating ? (
                     <StarIcon height={24} width={24} />
                   ) : (
-                    <EmptyStarIcon />
+                    <EmptyStarIcon height={24} width={24} />
                   )}
                 </TouchableOpacity>
               ))}
             </View>
-            <>
-              <Text style={styles.ratingText}>{ratingText[rating - 1]}</Text>
-              <Text style={styles.description}>
-                You gave {rating} star{rating > 1 ? "s" : ""} to Shoaib.
-              </Text>
-              <TextInput
-                style={styles.textarea}
-                placeholder="Write a review..."
-                multiline
-                value={review}
-                onChangeText={setReview}
-              />
-            </>
+            {rating > 0 && (
+              <>
+                <Text style={styles.ratingText}>{ratingText[rating - 1]}</Text>
+                <Text style={styles.description}>
+                  You gave {rating} star{rating > 1 ? "s" : ""} to the service
+                  provider.
+                </Text>
+                <TextInput
+                  style={styles.textarea}
+                  placeholder="Write a review..."
+                  multiline
+                  value={review}
+                  onChangeText={setReview}
+                />
+              </>
+            )}
           </>
-        )}
+        ) : null}
       </View>
       <View style={styles.footerButtons}>
         {type === "timeup" ? (
@@ -114,14 +299,14 @@ export default function Popup({ setShowPopup, type }: PopupProps) {
               variant="secondary"
               fullWidth={false}
               width="34%"
-              onPress={handleHide}
+              onPress={handleComplete}
             />
             <Button
               title="Move Higher"
               variant="primary"
               fullWidth={false}
               width="64%"
-              onPress={handleNext}
+              onPress={handleMoveHigher}
             />
           </>
         ) : type === "tipup" ? (
@@ -131,14 +316,14 @@ export default function Popup({ setShowPopup, type }: PopupProps) {
               variant="secondary"
               fullWidth={false}
               width="34%"
-              onPress={handleHide}
+              onPress={() => setShowPopup("review")}
             />
             <Button
               title="Continue"
               variant="primary"
               fullWidth={false}
               width="64%"
-              onPress={handleNext}
+              onPress={handleTipSubmit}
             />
           </>
         ) : type === "orderComplete" ? (
@@ -147,20 +332,18 @@ export default function Popup({ setShowPopup, type }: PopupProps) {
             variant="primary"
             fullWidth={true}
             width="100%"
-            onPress={handleNext}
+            onPress={handleComplete}
           />
-        ) : (
+        ) : type === "review" ? (
           <Button
             title="Submit"
             variant="primary"
             fullWidth={true}
             width="100%"
-            onPress={() => {
-              console.log("Review Submitted:", { rating, review });
-              handleHide();
-            }}
+            onPress={handleAddReview}
+            disabled={rating === 0}
           />
-        )}
+        ) : null}
       </View>
     </View>
   );
@@ -188,6 +371,24 @@ const styles = StyleSheet.create({
   content: {
     alignItems: "center",
     marginBottom: 16,
+    width: "100%",
+  },
+  dateTime: {
+    color: Colors.secondary300,
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  arrivedImageContainer: {
+    backgroundColor: Colors.primary300,
+    borderRadius: 16,
+    padding: 10,
+    marginBottom: 15,
+    width: "90%",
+    alignItems: "center",
+  },
+  arrivedImage: {
+    width: 200,
+    height: 160,
   },
   image: {
     marginBottom: 12,
@@ -204,9 +405,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     marginBottom: 16,
+    paddingHorizontal: 10,
   },
   input: {
-    width: 370,
+    width: "100%",
     backgroundColor: Colors.primary300,
     borderRadius: 10,
     padding: 16,
@@ -219,11 +421,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 10,
-  },
-  star: {
-    width: 30,
-    height: 30,
-    marginHorizontal: 5,
+    gap: 8,
   },
   ratingText: {
     fontSize: 16,
@@ -233,7 +431,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   textarea: {
-    width: 370,
+    width: "100%",
     backgroundColor: Colors.primary300,
     borderRadius: 10,
     padding: 10,

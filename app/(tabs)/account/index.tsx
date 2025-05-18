@@ -1,6 +1,6 @@
 import Rating from "@/assets/svgs/emptyStar.svg";
 import About from "@/assets/svgs/info.svg";
-import Notification from "@/assets/svgs/Notification.svg";
+// import Notification from "@/assets/svgs/Notification.svg";
 import Card from "@/assets/svgs/profile/Card.svg";
 import AccountStatus from "@/assets/svgs/profile/security.svg";
 import Support from "@/assets/svgs/profile/support.svg";
@@ -17,7 +17,6 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -52,7 +51,7 @@ type User = {
 };
 
 export default function Account() {
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  // const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const router = useRouter();
   const [user, setUser] = useState<User>({
     id: "",
@@ -85,32 +84,20 @@ export default function Account() {
     try {
       const userId = await AsyncStorage.getItem("user_id");
       if (!userId) throw new Error("User ID not found");
+
       const formData = new FormData();
       formData.append("type", "profile");
       formData.append("user_id", userId);
+
       const response = await apiCall(formData);
-      if (response.profile) {
-        const profileData = response.profile;
-        setUser({
-          id: profileData.id || "",
-          name: profileData.name || "Username",
-          email: profileData.email || "emailaddress",
-          phone: profileData.phone || "+92000000000",
-          dob: profileData.dob !== "0000-00-00" ? profileData.dob : "",
-          address: profileData.address || "",
-          city: profileData.city || "",
-          zip: profileData.postal || "",
-          image: profileData.image || "",
-          balance: profileData.balance || "0",
-          country: profileData.country || "",
-          gender: profileData.gender || "",
-          lat: profileData.lat || "",
-          lng: profileData.lng || "",
-          state: profileData.state || "",
-          status: profileData.status || "",
-          timestamp: profileData.timestamp || "",
-          user_type: profileData.user_type || "",
-        });
+
+      if (response.profile || response.user) {
+        const profileData = response.profile || response.user;
+        setUser(profileData);
+
+        // if (profileData.notifications_enabled) {
+        //   setNotificationsEnabled(profileData.notifications_enabled === "1");
+        // }
       }
     } catch (err) {
       console.error("Failed to fetch profile:", err);
@@ -126,7 +113,6 @@ export default function Account() {
         router.push("/account/card_list");
         break;
       case "Rate Us":
-        // Open rating modal or external link
         break;
       case "About App":
         router.push("/account/about");
@@ -158,7 +144,7 @@ export default function Account() {
           try {
             await AsyncStorage.clear();
             // Navigate to login screen
-            router.replace("/splash");
+            router.replace("/welcome");
           } catch (error) {
             console.error("Error during logout:", error);
             Alert.alert("Error", "Failed to logout. Please try again.");
@@ -173,19 +159,13 @@ export default function Account() {
   };
 
   const handleEditProfile = () => {
-    router.push({
-      pathname: "/account/edit_profile",
-      params: {
-        ...user,
-        verified: user.status ? "true" : "false",
-      },
-    });
+    router.push("/account/edit_profile");
   };
 
   const iconMap: { [key: string]: JSX.Element } = {
     Account: <AccountStatus />,
     Wallet: <Wallet />,
-    Notification: <Notification />,
+    // Notification: <Notification />,
     Card: <Card />,
     "Rate Us": <Rating />,
     "About App": <About />,
@@ -198,11 +178,11 @@ export default function Account() {
     {
       icon: "Account",
       title: "Account Status",
-      right: user.state === "1" ? "Verified" : "Unverified",
-      rightColor: user.state === "1" ? Colors.success : Colors.danger,
+      right: user.status === "1" ? "Verified" : "Unverified",
+      rightColor: user.status === "1" ? Colors.success : Colors.danger,
     },
     { icon: "Wallet", title: "Wallet", extraRight: "chevron-forward" },
-    { icon: "Notification", title: "Notification", right: "toggle" },
+    // { icon: "Notification", title: "Notification", right: "toggle" },
 
     { icon: "Card", title: "Card", right: "5", extraRight: "chevron-forward" },
     { icon: "Rate Us", title: "Rate Us", extraRight: "chevron-forward" },
@@ -238,8 +218,10 @@ export default function Account() {
               }}
             />
 
-            {user.state === "1" && <Verify style={styles.verifiedIcon} />}
-            {user.status === "1" && <View style={styles.onlineIndicator} />}
+            {user.status === "1" && <Verify style={styles.verifiedIcon} />}
+            {user.online_status === "1" && (
+              <View style={styles.onlineIndicator} />
+            )}
           </View>
           <Text style={styles.userName}>{user.name}</Text>
           <Text style={styles.userEmail}>{user.email}</Text>
@@ -268,7 +250,7 @@ export default function Account() {
         {menuItems.map((item, index) => (
           <View key={index}>
             {/* Handle Notification Toggle Separately */}
-            {item.title === "Notification" ? (
+            {/* {item.title === "Notification" ? (
               <View style={styles.row}>
                 <View style={styles.rowLeft}>
                   {iconMap[item.icon]}
@@ -281,35 +263,35 @@ export default function Account() {
                   thumbColor="white"
                 />
               </View>
-            ) : (
-              <TouchableOpacity onPress={() => handleNavigation(item.title)}>
-                <View style={styles.row}>
-                  <View style={styles.rowLeft}>
-                    {iconMap[item.icon]}
-                    <Text style={styles.itemText}>{item.title}</Text>
-                  </View>
-                  <View style={styles.rowRight}>
-                    {item.right && (
-                      <Text
-                        style={[
-                          styles.itemRightText,
-                          { color: item.rightColor || Colors.secondary300 },
-                        ]}
-                      >
-                        {item.right}
-                      </Text>
-                    )}
-                    {item.extraRight && (
-                      <Ionicons
-                        name={item.extraRight as keyof typeof Ionicons.glyphMap}
-                        size={20}
-                        color={Colors.secondary300}
-                      />
-                    )}
-                  </View>
+            ) : ( */}
+            <TouchableOpacity onPress={() => handleNavigation(item.title)}>
+              <View style={styles.row}>
+                <View style={styles.rowLeft}>
+                  {iconMap[item.icon]}
+                  <Text style={styles.itemText}>{item.title}</Text>
                 </View>
-              </TouchableOpacity>
-            )}
+                <View style={styles.rowRight}>
+                  {item.right && (
+                    <Text
+                      style={[
+                        styles.itemRightText,
+                        { color: item.rightColor || Colors.secondary300 },
+                      ]}
+                    >
+                      {item.right}
+                    </Text>
+                  )}
+                  {item.extraRight && (
+                    <Ionicons
+                      name={item.extraRight as keyof typeof Ionicons.glyphMap}
+                      size={20}
+                      color={Colors.secondary300}
+                    />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
+            {/* )} */}
             <Seprator />
           </View>
         ))}

@@ -12,6 +12,8 @@ type HeaderProps = {
   icon?: boolean;
   support?: boolean;
   backBtn?: boolean;
+  onpress?: any;
+  backAddress?: any;
 };
 
 export default function Header({
@@ -21,6 +23,8 @@ export default function Header({
   icon,
   support,
   backBtn,
+  onpress,
+  backAddress,
 }: HeaderProps) {
   const navigation = useNavigation();
   const router = useRouter();
@@ -28,16 +32,19 @@ export default function Header({
   const handleNotification = () => {
     router.push("/notification/notification");
   };
-
+  const handleGoBack = () => {
+    if (backAddress) {
+      router.push(backAddress);
+    } else {
+      navigation.goBack();
+    }
+  };
   return (
     <View style={styles.container}>
       {/* Left Section (Back Button or Title) */}
       <View style={styles.leftSection}>
         {backBtn === true && (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
+          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
             <AntDesign name="left" size={24} color={Colors.secondary} />
           </TouchableOpacity>
         )}

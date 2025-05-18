@@ -5,6 +5,7 @@ import * as Location from "expo-location";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,15 +13,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LocationScreen() {
   const navigation = useNavigation();
   const params = useLocalSearchParams();
   const mapRef = useRef(null);
-
+  console.log(params);
   const [manualLocation, setManualLocation] = useState(false);
+  const [searchingAddress, setSearchingAddress] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
     address?: string;
     latitude?: number;
@@ -35,6 +37,7 @@ export default function LocationScreen() {
       : -122.4194,
   });
 
+  console.log("selectedLocation", selectedLocation);
   const fetchAddressFromCoords = async (
     latitude: number,
     longitude: number
@@ -56,6 +59,47 @@ export default function LocationScreen() {
     }
   };
 
+  // New function to geocode a manual address
+  const geocodeAddress = async (address: string) => {
+    if (!address.trim()) return;
+
+    try {
+      setSearchingAddress(true);
+      const geocode = await Location.geocodeAsync(address);
+
+      if (geocode.length > 0) {
+        const { latitude, longitude } = geocode[0];
+
+        setSelectedLocation({
+          address,
+          latitude,
+          longitude,
+        });
+
+        // Animate map to the geocoded location
+        mapRef.current?.animateToRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+      } else {
+        Alert.alert(
+          "Location Error",
+          "Could not find location on map. Please try a different address."
+        );
+      }
+    } catch (error) {
+      console.error("Failed to geocode address:", error);
+      Alert.alert(
+        "Error",
+        "Failed to find this address. Please try another one."
+      );
+    } finally {
+      setSearchingAddress(false);
+    }
+  };
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -64,6 +108,32 @@ export default function LocationScreen() {
         return;
       }
 
+      // If we already have coordinates from params, use them
+      if (params?.latitude && params?.longitude) {
+        const latitude = parseFloat(params.latitude as string);
+        const longitude = parseFloat(params.longitude as string);
+
+        setSelectedLocation({
+          latitude,
+          longitude,
+          address: (params?.location as string) || "Fetching address...",
+        });
+
+        if (!params?.location) {
+          fetchAddressFromCoords(latitude, longitude);
+        }
+
+        mapRef.current?.animateToRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+
+        return;
+      }
+
+      // Otherwise get current location
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
 
@@ -84,10 +154,7 @@ export default function LocationScreen() {
     })();
   }, []);
 
-  const handleRegionChange = (region: {
-    latitude: number;
-    longitude: number;
-  }) => {
+  const handleRegionChange = (region: Region) => {
     setSelectedLocation({
       latitude: region.latitude,
       longitude: region.longitude,
@@ -97,32 +164,48 @@ export default function LocationScreen() {
   };
 
   const centerToUserLocation = async () => {
-    const location = await Location.getCurrentPositionAsync({});
-    mapRef.current?.animateToRegion({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-    });
+    try {
+      const location = await Location.getCurrentPositionAsync({});
+      mapRef.current?.animateToRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+    } catch (error) {
+      console.error("Error getting current location:", error);
+      Alert.alert("Error", "Could not access your current location.");
+    }
   };
 
   const handleManualAddressChange = (text: string) => {
     setSelectedLocation((prev) => ({
       ...prev,
       address: text,
-      latitude: undefined,
-      longitude: undefined,
     }));
   };
 
+  const handleSearchAddress = () => {
+    if (selectedLocation.address) {
+      geocodeAddress(selectedLocation.address);
+    }
+  };
+
   const handleConfirm = () => {
+    if (
+      !selectedLocation.address ||
+      !selectedLocation.latitude ||
+      !selectedLocation.longitude
+    ) {
+      Alert.alert("Error", "Please select a valid location");
+      return;
+    }
+
     const newParams = { ...params };
 
-    if (selectedLocation.address) newParams.location = selectedLocation.address;
-    if (selectedLocation.latitude)
-      newParams.latitude = selectedLocation.latitude.toString();
-    if (selectedLocation.longitude)
-      newParams.longitude = selectedLocation.longitude.toString();
+    newParams.location = selectedLocation.address;
+    newParams.latitude = selectedLocation.latitude.toString();
+    newParams.longitude = selectedLocation.longitude.toString();
 
     router.push({ pathname: "/booking", params: newParams });
   };
@@ -151,6 +234,28 @@ export default function LocationScreen() {
           </TouchableOpacity>
         </View>
 
+        {manualLocation && (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter address manually..."
+              value={selectedLocation.address || ""}
+              onChangeText={handleManualAddressChange}
+              multiline={true}
+              numberOfLines={3}
+            />
+            <TouchableOpacity
+              style={styles.searchButton}
+              onPress={handleSearchAddress}
+              disabled={searchingAddress || !selectedLocation.address}
+            >
+              <Text style={styles.searchButtonText}>
+                {searchingAddress ? "Searching..." : "Search"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.mapContainer}>
           <MapView
             ref={mapRef}
@@ -174,22 +279,18 @@ export default function LocationScreen() {
           />
         </View>
 
-        {manualLocation && (
-          <TextInput
-            style={styles.input}
-            placeholder="Enter address manually..."
-            value={selectedLocation.address || ""}
-            onChangeText={handleManualAddressChange}
-            multiline={true}
-            numberOfLines={3}
-          />
-        )}
-
         <View style={styles.addressContainer}>
           <Text style={styles.addressTitle}>Selected Address</Text>
           <Text style={styles.addressText}>
             {selectedLocation.address || "No location selected"}
           </Text>
+          {selectedLocation.latitude && selectedLocation.longitude && (
+            <Text style={styles.coordsText}>
+              {`Lat: ${selectedLocation.latitude.toFixed(
+                6
+              )}, Lng: ${selectedLocation.longitude.toFixed(6)}`}
+            </Text>
+          )}
         </View>
       </ScrollView>
 
@@ -204,7 +305,11 @@ export default function LocationScreen() {
         <Button
           title="Confirm Location"
           onPress={handleConfirm}
-          disabled={!selectedLocation.address}
+          disabled={
+            !selectedLocation.address ||
+            !selectedLocation.latitude ||
+            !selectedLocation.longitude
+          }
         />
         <Button
           variant="secondary"
@@ -233,8 +338,13 @@ const styles = StyleSheet.create({
   backButton: { backgroundColor: "#E5E7EB", padding: 8, borderRadius: 50 },
   headerText: { fontSize: 24, fontWeight: "bold", color: "#374151" },
   iconButton: { padding: 8 },
-  mapContainer: { borderRadius: 16, overflow: "hidden", marginBottom: 16 },
-  map: { width: "100%", height: 450 },
+  mapContainer: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 16,
+    height: 450,
+  },
+  map: { width: "100%", height: "100%" },
   markerFixed: {
     position: "absolute",
     top: "50%",
@@ -263,16 +373,35 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   addressTitle: { fontSize: 18, fontWeight: "bold" },
-  addressText: { color: "#6B7280" },
+  addressText: { color: "#6B7280", marginTop: 4 },
+  coordsText: {
+    color: "#6B7280",
+    marginTop: 4,
+    fontSize: 12,
+    fontStyle: "italic",
+  },
+  searchContainer: {
+    marginBottom: 16,
+  },
   input: {
     backgroundColor: "#fff",
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.gray400,
-    marginBottom: 16,
-    minHeight: 100,
+    borderColor: Colors.gray,
+    marginBottom: 8,
+    minHeight: 50,
     textAlignVertical: "top",
+  },
+  searchButton: {
+    backgroundColor: Colors.primary,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  searchButtonText: {
+    color: "white",
+    fontWeight: "500",
   },
   buttonContainer: { padding: 16, gap: 8 },
 });

@@ -4,7 +4,7 @@
     "slug": "drill-customer",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/adaptive-icon.png",
+    "icon": "./assets/images/appLogo.png",
     "scheme": "drillcustomer",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/appLogo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -37,7 +37,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/adaptive-icon.png"
+      "favicon": "./assets/images/appLogo.png"
     },
     "plugins": [
       "expo-router",

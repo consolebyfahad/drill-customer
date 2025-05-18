@@ -1,12 +1,11 @@
-import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
-import DashedSeparator from "./dashed_seprator";
-import Button from "./button";
 import Call from "@/assets/svgs/Calling.svg";
 import Message from "@/assets/svgs/Chat.svg";
 import Track from "@/assets/svgs/routing.svg";
-import { Colors } from "~/constants/Colors";
 import { router } from "expo-router";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { Colors } from "~/constants/Colors";
+import Button from "./button";
+import DashedSeparator from "./dashed_seprator";
 
 export default function ProviderCard({ provider }) {
   const handleCall = () => {};
@@ -32,7 +31,8 @@ export default function ProviderCard({ provider }) {
           <Text style={styles.providerName}>{provider.name}</Text>
           <Text
             style={styles.grayText}
-          >{`⭐ ${provider.rating} (${provider.reviewscount}) | Provider`}</Text>
+          >{`⭐ ${provider.rating} (${provider.reviewscount})`}</Text>
+          <Text style={styles.grayText}>{` Provider`}</Text>
         </View>
       </View>
       <DashedSeparator />

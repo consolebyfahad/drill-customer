@@ -14,7 +14,7 @@ export const apiCall = async (payload, method = "POST") => {
       throw new Error(data.message || "Something went wrong");
     }
 
-    console.log("✅ API Response:", data);
+    console.log("✅ API Response:", JSON.stringify(data));
     return data;
   } catch (error) {
     console.error("❌ API Error:", error.message);

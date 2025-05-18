@@ -1,16 +1,9 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Platform,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
 import Location from "@/assets/svgs/locationIcon.svg";
 import { Colors } from "@/constants/Colors";
 import * as LocationService from "expo-location";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Category = {
   id: string;
@@ -19,7 +12,10 @@ type Category = {
 };
 
 type Prop = {
-  onSelectLocation?: (location: string) => void;
+  onSelectLocation?: (
+    location: string,
+    coordinates?: { latitude: number; longitude: number }
+  ) => void;
   selectedLocation?: any;
   disabled?: boolean;
   category: Category;
@@ -36,7 +32,7 @@ export default function SelectedLocation({
     selectedLocation || params?.location || null
   );
   const [isLoadingLocation, setIsLoadingLocation] = useState<boolean>(false);
-
+  console.log("address", address);
   useEffect(() => {
     const checkLocationPermission = async () => {
       try {
@@ -65,7 +61,10 @@ export default function SelectedLocation({
         if (geocodedAddress) {
           setAddress(geocodedAddress);
           if (onSelectLocation && !disabled) {
-            onSelectLocation(geocodedAddress);
+            onSelectLocation(geocodedAddress, {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            });
           }
         }
       } catch (error) {

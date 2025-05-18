@@ -1,82 +1,44 @@
 import Button from "@/components/button";
 import Header from "@/components/header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Popup from "~/components/popup";
+import { useToast } from "~/components/ToastProvider";
 import { Colors } from "~/constants/Colors";
+import { OrderType } from "~/types/dataTypes";
 import { apiCall } from "~/utils/api";
+import {
+  getFCMToken,
+  requestFCMPermission,
+  setupNotificationListeners,
+} from "~/utils/notification";
 import ChatScreen from "./chat_screen";
 import OrderDetails from "./order_details";
 
-// Define the interface for order data
-export interface OrderType {
-  id: string;
-  order_no: string;
-  user_id: string;
-  cat_id: string;
-  to_id: string;
-  address: string;
-  lat: string;
-  lng: string;
-  date: string;
-  images: string;
-  description: string;
-  package_id: string;
-  payment_method: string;
-  method_details: string;
-  promo_code: string;
-  status: string;
-  timestamp: string;
-  created_at: string;
-  distance: number;
-  user: UserType;
-  image_url: string;
-  // Additional fields needed for UI
-  title?: string;
-  amount?: string;
-  discount?: string;
-  provider?: ProviderType | null;
-  paymentStatus?: string;
-}
+type PopupType =
+  | "timeup"
+  | "tipup"
+  | "orderComplete"
+  | "review"
+  | "accepted"
+  | "arrived"
+  | "on-way"
+  | "completed"
+  | "time-up";
 
-interface UserType {
-  id: string;
-  email: string;
-  name: string;
-  dob: string;
-  user_type: string;
-  address: string;
-  postal: string;
-  image: string;
-  phone: string;
-  gender: string;
-  city: string;
-  status: string;
-  timestamp: string;
-  // Other user fields as needed
+// Define notification data type
+interface NotificationData {
+  order_id?: string;
+  status?: string;
+  message?: string;
 }
-
-interface ProviderType {
-  id: string;
-  name: string;
-  image: string;
-  rating?: number;
-  jobsCompleted?: number;
-}
-
-type PopupType = "timeup" | "tipup" | "orderComplete" | "review";
 
 const OrderPlace: React.FC = () => {
+  const router = useRouter();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("Details");
   const [popupType, setPopupType] = useState<PopupType | null>(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -85,8 +47,7 @@ const OrderPlace: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState<OrderType | null>(null);
-  const [provider, setProvider] = useState(true);
-  // Effect to show popup whenever popupType updates
+
   useEffect(() => {
     if (popupType) {
       setShowPopup(true);
@@ -94,6 +55,38 @@ const OrderPlace: React.FC = () => {
       setShowPopup(false);
     }
   }, [popupType]);
+  useEffect(() => {
+    const initFCM = async () => {
+      try {
+        await requestFCMPermission();
+        const token = await getFCMToken();
+        console.log("📲 User FCM Token:", token);
+      } catch (error) {
+        console.error("Error initializing FCM:", error);
+      }
+    };
+
+    const handleNotificationPress = async (data: NotificationData) => {
+      console.log("🚨 Customer notification received:", data);
+
+      if (data?.order_id) {
+        // If the notification is about the current order
+        if (orderId && data.order_id === orderId) {
+          // Refresh order details
+          getOrderDetails(data.order_id);
+
+          // Display toast for status change
+          if (data.status) {
+            showStatusNotification(data.status, data.message);
+          }
+        }
+      }
+    };
+
+    initFCM();
+    const unsubscribe = setupNotificationListeners(handleNotificationPress);
+    return () => unsubscribe(); // Clean up listeners
+  }, [orderId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -106,49 +99,176 @@ const OrderPlace: React.FC = () => {
           setUserId(userId);
 
           if (storedOrderId) {
-            getOrderDetails(storedOrderId, userId);
+            getOrderDetails(storedOrderId);
           }
         } catch (error) {
           console.error("Initialization error:", error);
-          Alert.alert("Error", "Failed to initialize order details");
+          showToast("Failed to initialize order details", "error");
         }
       };
       init();
     }, [])
   );
 
-  const getOrderDetails = async (orderID: string, userID: string) => {
+  const getOrderDetails = async (id: string) => {
     setIsLoading(true);
 
     const formData = new FormData();
     formData.append("type", "get_data");
     formData.append("table_name", "orders");
-    formData.append("user_id", userID);
-    formData.append("id", orderID);
+    formData.append("id", id);
 
     try {
       const response = await apiCall(formData);
       if (response && response.data && response.data.length > 0) {
-        const orderDetails = response.data[0];
-        console.log(response);
-        setOrder(orderDetails);
+        const orderData = response.data[0];
+
+        if (order && order.status !== orderData.status) {
+          handleOrderStatusChange(order.status, orderData.status);
+        }
+
+        setOrder(orderData);
       } else {
-        Alert.alert("Error", "No order details found");
+        showToast("No order details found", "error");
+        setOrder(null);
       }
     } catch (error) {
       console.error("Failed to fetch order details", error);
-      Alert.alert("Error", "Failed to fetch order details");
+      showToast("Failed to fetch order details", "error");
+      setOrder(null);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePay = () => {
-    setPopupType("orderComplete");
+  // Handle order status changes
+  const handleOrderStatusChange = (oldStatus: string, newStatus: string) => {
+    console.log(`Order status changed from ${oldStatus} to ${newStatus}`);
+
+    // Show appropriate notification based on the new status
+    showStatusNotification(newStatus);
+  };
+
+  // Show notification for status changes
+  const showStatusNotification = (status: string, customMessage?: string) => {
+    let message = customMessage;
+    let toastType = "info";
+
+    if (!message) {
+      // Default messages based on status
+      switch (status.toLowerCase()) {
+        case "accepted":
+          message = "Your order has been accepted by a service provider!";
+          toastType = "success";
+          break;
+        case "on_the_way":
+          message = "Your service provider is on the way!";
+          toastType = "info";
+          break;
+        case "arrived":
+          message = "Service provider has arrived at your location.";
+          toastType = "success";
+          // Show arrived popup instead of toast for arrived status
+          setPopupType("arrived");
+          return; // Don't show the toast for arrived status
+        case "started":
+          message = "Your service has started.";
+          toastType = "info";
+          break;
+        case "in_progress":
+          message = "Your service is now in progress.";
+          toastType = "info";
+          break;
+        case "completed":
+          message =
+            "Your service has been completed. Please review the service.";
+          toastType = "success";
+          setPopupType("orderComplete");
+          return; // Don't show the toast for completed status
+        case "cancelled":
+          message = "Your order has been cancelled.";
+          toastType = "warning";
+          break;
+        case "time_up":
+          // Show time-up popup
+          setPopupType("time-up");
+          return; // Don't show the toast for time-up status
+        default:
+          message = `Your order status has been updated to: ${status}`;
+          toastType = "info";
+      }
+    }
+
+    // Show toast notification
+    showToast(message, toastType as any);
+  };
+
+  const handlePay = async () => {
+    if (orderId) {
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append("type", "update_data");
+      formData.append("table_name", "orders");
+      formData.append("id", orderId);
+      formData.append("status", "completed");
+
+      try {
+        const response = await apiCall(formData);
+        if (response && response.result === true) {
+          // Show tip popup on successful completion
+          setPopupType("tipup");
+        } else {
+          showToast("Failed to complete order", "error");
+        }
+      } catch (error) {
+        console.error("Error completing order:", error);
+        showToast("An error occurred while completing the order", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   const handleCancel = () => {
-    setPopupType("tipup");
+    // For confirmation dialogs, we still need to use some form of modal
+    // Here, we'll create a simple confirmation dialog using a toast + timeout
+    showToast("Tap again to confirm cancellation", "warning");
+
+    // Set a flag in state to track confirmation intent
+    const confirmTimeout = setTimeout(() => {
+      // Toast to indicate cancellation intent expired
+      showToast("Cancellation request expired", "info");
+    }, 3000);
+
+    // Create a second function to handle the actual cancellation
+    const confirmCancel = async () => {
+      clearTimeout(confirmTimeout);
+
+      if (orderId) {
+        const formData = new FormData();
+        formData.append("type", "update_data");
+        formData.append("table_name", "orders");
+        formData.append("id", orderId);
+        formData.append("status", "cancelled");
+
+        try {
+          const response = await apiCall(formData);
+          if (response && response.result === true) {
+            showToast("Order has been cancelled", "success");
+            router.replace("/(tabs)");
+          } else {
+            showToast("Failed to cancel order", "error");
+          }
+        } catch (error) {
+          console.error("Error cancelling order:", error);
+          showToast("An error occurred while cancelling the order", "error");
+        }
+      }
+    };
+
+    // In a real implementation, you might want to use a modal or create a more robust confirmation flow
+    // This is a simplified example using toasts
   };
 
   const handleActiveChat = () => {
@@ -161,6 +281,29 @@ const OrderPlace: React.FC = () => {
     setDetailsScreen(true);
   };
 
+  const handleOrderCompleted = async () => {
+    if (orderId) {
+      const formData = new FormData();
+      formData.append("type", "update_data");
+      formData.append("table_name", "orders");
+      formData.append("id", orderId);
+      formData.append("status", "completed");
+
+      try {
+        const response = await apiCall(formData);
+        if (response && response.result === true) {
+          setPopupType(null); // Hide popup
+          router.replace("/(tabs)"); // Navigate to tabs screen
+        } else {
+          showToast("Failed to complete order", "error");
+        }
+      } catch (error) {
+        console.error("Error completing order:", error);
+        showToast("An error occurred while completing the order", "error");
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -170,6 +313,7 @@ const OrderPlace: React.FC = () => {
             title="Loading..."
             icon={true}
             support={true}
+            backAddress={"/(tabs)"}
           />
           <View style={styles.loadingContainer}>
             <Text>Loading order details...</Text>
@@ -188,6 +332,7 @@ const OrderPlace: React.FC = () => {
             title="Order Details"
             icon={true}
             support={true}
+            backAddress={"/(tabs)"}
           />
           <View style={styles.loadingContainer}>
             <Text>No order details available</Text>
@@ -205,6 +350,7 @@ const OrderPlace: React.FC = () => {
           title={`Request #${order.order_no}`}
           icon={true}
           support={true}
+          backAddress={"/(tabs)"}
         />
         <View style={styles.tabContainer}>
           <TouchableOpacity
@@ -247,20 +393,32 @@ const OrderPlace: React.FC = () => {
 
       {detailsScreen && (
         <View style={styles.footerButtons}>
-          <Button
-            title="Cancel"
-            variant="secondary"
-            fullWidth={false}
-            width="32%"
-            onPress={handleCancel}
-          />
-          <Button
-            title="Pay Now"
-            variant="primary"
-            fullWidth={false}
-            width="65%"
-            onPress={handlePay}
-          />
+          {order.status !== "started" ? (
+            <>
+              <Button
+                title="Cancel"
+                variant="secondary"
+                fullWidth={false}
+                width="32%"
+                onPress={handleCancel}
+              />
+              <Button
+                title="Pay Now"
+                variant="primary"
+                fullWidth={false}
+                width="65%"
+                onPress={handlePay}
+              />
+            </>
+          ) : (
+            <Button
+              title="Pay Now"
+              variant="primary"
+              fullWidth={true}
+              width="100%"
+              onPress={handlePay}
+            />
+          )}
         </View>
       )}
 
@@ -270,10 +428,15 @@ const OrderPlace: React.FC = () => {
           <View style={styles.overlay}>
             <TouchableOpacity
               style={styles.overlayBackground}
-              onPress={() => setPopupType(null)}
+              onPress={() => popupType !== "arrived" && setPopupType(null)}
             />
             <View style={styles.popupContainer}>
-              <Popup type={popupType} setShowPopup={setPopupType} />
+              <Popup
+                type={popupType}
+                setShowPopup={setPopupType}
+                orderId={orderId || ""}
+                onCompleted={handleOrderCompleted}
+              />
             </View>
           </View>
         </Modal>

@@ -42,6 +42,7 @@ type BookingParams = {
 
 export default function ConfirmBooking() {
   const params = useLocalSearchParams() as BookingParams;
+  console.log("confrim bookingparams", params);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isPromoValid, setIsPromoValid] = useState(false);
@@ -93,7 +94,8 @@ export default function ConfirmBooking() {
       formData.append("payment_method", params.paymentMethod || "");
       formData.append("method_details", params.paymentMethodDetails || "");
       formData.append("promo_code", isPromoValid ? promoCode : "");
-
+      formData.append("amount", totalAmount);
+      console.log("formData", formData);
       const response = await apiCall(formData);
 
       if (response.result) {

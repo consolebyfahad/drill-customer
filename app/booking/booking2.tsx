@@ -39,6 +39,7 @@ const paymentMethods = [
 
 export default function Booking2Screen() {
   const params = useLocalSearchParams();
+  console.log("booking2", params);
 
   // State for packages and selections
   const [packages, setPackages] = useState<Package[]>([]);
@@ -102,6 +103,8 @@ export default function Booking2Screen() {
         location: params.location,
         selectedImage: params.selectedImage,
         description: params.description,
+        latitude: params.latitude,
+        longitude: params.longitude,
 
         // Current screen selections
         packageId: selectedPackage.id,
