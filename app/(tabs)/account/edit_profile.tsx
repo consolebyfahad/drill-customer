@@ -330,7 +330,7 @@ export default function EditProfile() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 8, backgroundColor: "white" },
-  scrollContainer: { paddingBottom: 100 },
+  scrollContainer: { paddingBottom: 50 },
   loadingScreen: { flex: 1, justifyContent: "center", alignItems: "center" },
   profileContainer: { alignItems: "center" },
   imageWrapper: {

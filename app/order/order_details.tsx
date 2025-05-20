@@ -55,7 +55,7 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
       </Text>
 
       {order.provider ? (
-        <ProviderCard provider={order.provider} />
+        <ProviderCard order={order} />
       ) : (
         <View style={styles.noProviderContainer}>
           <Text style={styles.noProviderText}>

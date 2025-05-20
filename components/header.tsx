@@ -68,14 +68,14 @@ export default function Header({
       {icon &&
         (support ? (
           <TouchableOpacity>
-            <ChatSupport width={24} height={24} fill="#000" />
+            <ChatSupport />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             onPress={handleNotification}
             style={styles.notificationButton}
           >
-            <NotificationBell width={24} height={24} fill="#000" />
+            <NotificationBell />
           </TouchableOpacity>
         ))}
     </View>

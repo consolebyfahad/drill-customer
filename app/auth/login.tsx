@@ -1,10 +1,10 @@
+import Flag from "@/assets/svgs/saudiarabia.svg";
 import Button from "@/components/button";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import {
-  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -78,10 +78,7 @@ export default function Login() {
           onPress={() => modalRef.current.open()}
           style={styles.countrySelector}
         >
-          <Image
-            source={require("@/assets/images/saudia.png")}
-            style={styles.countryFlag}
-          />
+          <Flag />
           <Text style={styles.countryText}>{countryCode.label}</Text>
           <Ionicons name="chevron-down" size={20} />
         </TouchableOpacity>
@@ -149,10 +146,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
-  },
-  countryFlag: {
-    width: 32,
-    height: 32,
   },
   countryText: {
     fontSize: 18,

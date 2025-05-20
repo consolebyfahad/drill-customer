@@ -21,9 +21,9 @@ export default function Welcome() {
         />
         <View style={styles.textContainer}>
           <Text style={styles.title}>Welcome!</Text>
-          <Text style={styles.subtitle}>The Service Provider App</Text>
+          <Text style={styles.subtitle}>The Home Service App</Text>
           <Text style={styles.description}>
-            Application for easily finding a services Jobs!
+            Application for easily finding a Home Serviceman.
           </Text>
         </View>
       </View>
@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   title: {
-    fontSize: 32,
+    fontSize: 35,
     fontWeight: "bold",
     marginBottom: 8,
     color: Colors.secondary,
   },
   subtitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "600",
     marginBottom: 12,
     color: Colors.secondary,
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     color: Colors.secondary100,
+    paddingHorizontal: 20,
   },
   buttonContainer: {
     paddingHorizontal: 12,

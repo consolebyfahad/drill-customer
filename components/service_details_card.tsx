@@ -118,7 +118,6 @@ export default function ServiceDetailsCard({
         </View>
         {order.status === "completed" && (
           <>
-            {" "}
             <DashedSeprator />
             <View style={styles.detailsRow}>
               <Text style={styles.label}>Rating</Text>

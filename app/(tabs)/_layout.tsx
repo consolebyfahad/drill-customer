@@ -1,14 +1,15 @@
-import { Tabs, useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
-import { Colors } from "@/constants/Colors";
+import Plus from "@/assets/svgs/element-plus.svg";
 import Home from "@/assets/svgs/home.svg";
 import HomeFill from "@/assets/svgs/homeFill.svg";
-import Packages from "@/assets/svgs/packages.svg";
-import Orders from "@/assets/svgs/orders.svg";
 import OrdersFill from "@/assets/svgs/orderFill.svg";
-import Profile from "@/assets/svgs/profileIcon.svg";
+import Orders from "@/assets/svgs/orders.svg";
+import Packages from "@/assets/svgs/packages.svg";
 import ProfileFill from "@/assets/svgs/profileFill.svg";
-import Plus from "@/assets/svgs/element-plus.svg";
+import Profile from "@/assets/svgs/profileIcon.svg";
+import { Colors } from "@/constants/Colors";
+import { Tabs, useRouter } from "expo-router";
+import { TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type CustomTabBarButtonProps = {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ type CustomTabBarButtonProps = {
 
 function CustomTabBarButton({ children }: CustomTabBarButtonProps) {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <TouchableOpacity
@@ -30,6 +32,8 @@ function CustomTabBarButton({ children }: CustomTabBarButtonProps) {
         borderRadius: 35,
         borderWidth: 4,
         borderColor: "white",
+        // Adjust for safe area if needed
+        marginBottom: insets.bottom > 0 ? -insets.bottom / 2 : 0,
       }}
     >
       {children}
@@ -38,29 +42,32 @@ function CustomTabBarButton({ children }: CustomTabBarButtonProps) {
 }
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,
         tabBarStyle: {
+          height: 100 + insets.bottom,
+          paddingBottom: insets.bottom,
+          borderTopColor: "#eee",
           position: "absolute",
-          bottom: 0,
-          left: 20,
-          right: 20,
-          elevation: 5,
+          left: 0,
+          right: 0,
+          elevation: 0,
+          zIndex: 10,
           backgroundColor: "#fff",
-          borderRadius: 15,
-          height: 120,
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowOffset: { width: 0, height: 4 },
-          shadowRadius: 4,
           borderTopWidth: 40,
           borderColor: Colors.primary200,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
         },
         tabBarLabelStyle: {
           color: Colors.secondary,
+          fontSize: 12,
+          marginBottom: 5,
         },
       }}
     >
@@ -68,14 +75,22 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ focused }) => (focused ? <HomeFill /> : <Home />),
+          tabBarIcon: ({ focused }) => (
+            <View style={iconContainerStyle(focused)}>
+              {focused ? <HomeFill /> : <Home />}
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
         name="packages"
         options={{
           title: "Packages",
-          tabBarIcon: ({ focused }) => (focused ? <Packages /> : <Packages />),
+          tabBarIcon: ({ focused }) => (
+            <View style={iconContainerStyle(focused)}>
+              <Packages />
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
@@ -93,17 +108,33 @@ export default function TabLayout() {
         name="orders"
         options={{
           title: "Orders",
-          tabBarIcon: ({ focused }) => (focused ? <OrdersFill /> : <Orders />),
+          tabBarIcon: ({ focused }) => (
+            <View style={iconContainerStyle(focused)}>
+              {focused ? <OrdersFill /> : <Orders />}
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
           title: "Account",
-          tabBarIcon: ({ focused }) =>
-            focused ? <ProfileFill /> : <Profile />,
+          tabBarIcon: ({ focused }) => (
+            <View style={iconContainerStyle(focused)}>
+              {focused ? <ProfileFill /> : <Profile />}
+            </View>
+          ),
         }}
       />
     </Tabs>
   );
 }
+
+const iconContainerStyle = (focused: boolean) => ({
+  alignItems: "center",
+  borderTopWidth: focused ? 3 : 0,
+  borderTopColor: Colors.secondary,
+  borderRadius: 2,
+  paddingTop: 6,
+  paddingBottom: 6, // consistent padding
+});

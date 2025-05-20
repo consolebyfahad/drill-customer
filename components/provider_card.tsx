@@ -1,20 +1,44 @@
 import Call from "@/assets/svgs/Calling.svg";
 import Message from "@/assets/svgs/Chat.svg";
 import Track from "@/assets/svgs/routing.svg";
+import { useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import Button from "./button";
 import DashedSeparator from "./dashed_seprator";
 
-export default function ProviderCard({ provider }) {
+export default function ProviderCard({ order }) {
+  console.log("order==", order);
+
+  // Get the current route name to check if we're on the track screen
+  const route = useRoute();
+  const isOnTrackScreen = route.name === "order/track";
+  if (!order) {
+    return (
+      <View style={styles.providerContainer}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="small" color={Colors.primary} />
+          <Text style={styles.loadingText}>Loading provider details...</Text>
+        </View>
+      </View>
+    );
+  }
+  const provider = order.provider || {};
   const handleCall = () => {};
   const handleChat = () => {
     router.push("/order/order_place");
   };
   const handleTrack = () => {
-    router.push("/order/track");
+    {
+      !isOnTrackScreen &&
+        router.push({
+          pathname: "/order/track",
+          params: { orderId: order.id },
+        });
+    }
   };
+
   return (
     <View style={styles.providerContainer}>
       <View
@@ -28,10 +52,10 @@ export default function ProviderCard({ provider }) {
           style={styles.providerImage}
         />
         <View style={styles.providerInfo}>
-          <Text style={styles.providerName}>{provider.name}</Text>
-          <Text
-            style={styles.grayText}
-          >{`⭐ ${provider.rating} (${provider.reviewscount})`}</Text>
+          <Text style={styles.providerName}>{provider.name || "Unknown"}</Text>
+          <Text style={styles.grayText}>{`⭐ ${provider.rating || 0} (${
+            provider.reviewscount || 0
+          })`}</Text>
           <Text style={styles.grayText}>{` Provider`}</Text>
         </View>
       </View>
@@ -53,6 +77,8 @@ export default function ProviderCard({ provider }) {
           variant="primary"
           onPress={handleChat}
         />
+        {/* Only show Track button if NOT on track screen */}
+
         <Button
           Icon={<Track />}
           fullWidth={false}
@@ -65,74 +91,8 @@ export default function ProviderCard({ provider }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
-  tabContainer: {
-    flexDirection: "row",
-    backgroundColor: Colors.primary300,
-    borderRadius: 25,
-    marginHorizontal: 16,
-  },
-  orderHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  orderDetailsContainer: {
-    backgroundColor: Colors.primary300,
-    marginTop: 24,
-    borderRadius: 25,
-    padding: 16,
-    marginBottom: 24,
-  },
-  activeTab: {
-    fontSize: 18,
-    fontWeight: "bold",
-    padding: 16,
-    backgroundColor: Colors.secondary,
-    color: Colors.white,
-    borderRadius: 25,
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  activeTabText: { color: Colors.white, fontSize: 18, fontWeight: "500" },
-  inactiveTabText: {
-    color: Colors.secondary300,
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  inactiveTab: {
-    fontSize: 18,
-    color: "gray",
-    padding: 16,
-    borderRadius: 25,
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sectionTitle: { fontSize: 18, fontWeight: "500", color: Colors.secondary },
-  orderDetails: {
-    marginTop: 8,
-    padding: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-  },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  boldText: { fontWeight: "500", color: Colors.secondary300 },
-  blueText: { fontWeight: "bold", color: Colors.secondary },
-  grayText: { color: Colors.secondary },
-  problemImage: { width: 64, height: 64, borderRadius: 8 },
-  separator: {
-    marginVertical: 8,
-    borderBottomWidth: 1,
-    borderStyle: "dashed",
-    borderColor: "gray",
-  },
   providerContainer: {
     padding: 16,
     backgroundColor: Colors.gray400,
@@ -145,34 +105,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  chatContainer: { flex: 1, padding: 16 },
-  userMessage: {
-    alignSelf: "flex-end",
-    backgroundColor: "blue",
-    padding: 8,
-    borderRadius: 8,
-    marginBottom: 4,
-  },
-  providerMessage: {
-    alignSelf: "flex-start",
-    backgroundColor: "lightgray",
-    padding: 8,
-    borderRadius: 8,
-    marginBottom: 4,
-  },
-  whiteText: { color: "white" },
-  chatInputContainer: { flexDirection: "row", borderTopWidth: 1, padding: 8 },
-  chatInput: { flex: 1, borderWidth: 1, padding: 8, borderRadius: 8 },
-  footerButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderTopWidth: 1,
-    gap: 4,
-  },
   providerName: {
     fontWeight: "600",
     color: Colors.secondary,
     fontSize: 18,
     marginBottom: 4,
+  },
+  grayText: { color: Colors.secondary },
+  loadingContainer: {
+    minHeight: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    color: Colors.secondary,
+    fontSize: 14,
   },
 });

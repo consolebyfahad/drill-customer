@@ -94,7 +94,7 @@ const OrderPlace: React.FC = () => {
         try {
           const storedOrderId = await AsyncStorage.getItem("order_id");
           const userId = await AsyncStorage.getItem("user_id");
-
+          console.log("order_id", storedOrderId);
           setOrderId(storedOrderId);
           setUserId(userId);
 

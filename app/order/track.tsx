@@ -57,13 +57,13 @@ export default function Track() {
     () => params.orderId?.toString() || "",
     [params.orderId]
   );
+  console.log("orderId", orderId);
   const locationSubscriptionRef = useRef(null);
 
   const getOrderDetails = useCallback(async () => {
     if (isOrderLoaded || !orderId) return;
 
     setIsLoading(true);
-
     const formData = new FormData();
     formData.append("type", "get_data");
     formData.append("table_name", "orders");
@@ -74,6 +74,7 @@ export default function Track() {
       if (response && response.data && response.data.length > 0) {
         const orderData = response.data[0];
         setOrder(orderData);
+        setStatus(orderData?.status);
       } else {
         console.log("No order details found");
         setOrder(null);
@@ -203,7 +204,7 @@ export default function Track() {
       </View>
     );
   }
-
+  console.log("oredr+", order);
   return (
     <SafeAreaProvider style={styles.container}>
       {/* Map View */}
@@ -287,7 +288,7 @@ export default function Track() {
             <View style={styles.statusItem}>
               <Accepted width={40} height={40} />
               <Text style={styles.statusText}>Order</Text>
-              <Text style={styles.statusText}>Accepted</Text>
+              <Text style={styles.statusText2}>Accepted</Text>
             </View>
             <View style={styles.line} />
             <View style={styles.statusItem}>
@@ -320,7 +321,7 @@ export default function Track() {
             </View>
           </View>
 
-          <ProviderCard provider={order} />
+          <ProviderCard order={order} />
         </View>
       </Animated.View>
     </SafeAreaProvider>
@@ -385,6 +386,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 14,
   },
+  statusText2: {
+    fontSize: 12,
+    color: Colors.gray300,
+    textAlign: "center",
+  },
   activeStatusText: {
     color: Colors.primary,
     fontWeight: "bold",
@@ -419,6 +425,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     overflow: "hidden",
     maxHeight: "60%", // Prevent overflow
+    paddingBottom: 50,
   },
   contentHeader: {
     backgroundColor: Colors.primary,
