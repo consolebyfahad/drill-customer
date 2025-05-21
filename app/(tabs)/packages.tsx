@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DashedSeparator from "~/components/dashed_seprator";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 interface Package {
@@ -165,6 +166,7 @@ const styles = StyleSheet.create({
     color: "red",
     marginBottom: 16,
     textAlign: "center",
+    fontFamily: FONTS.bold,
   },
   retryButton: {
     backgroundColor: Colors.primary,
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
   },
   retryButtonText: {
     color: Colors.white,
-    fontWeight: "500",
+    fontFamily: FONTS.bold,
   },
   emptyContainer: {
     flex: 1,
@@ -185,6 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.secondary,
     textAlign: "center",
+    fontFamily: FONTS.bold,
   },
   packageCard: {
     backgroundColor: Colors.primary300,
@@ -208,13 +211,14 @@ const styles = StyleSheet.create({
   },
   packageName: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
     marginBottom: 4,
   },
   packageDetails: {
     fontSize: 14,
     color: Colors.secondary,
+    fontFamily: FONTS.medium,
   },
   radioOuter: {
     width: 24,
@@ -240,11 +244,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.primary,
     marginRight: 8,
+    fontFamily: FONTS.regular,
   },
   featureText: {
     fontSize: 14,
     color: Colors.secondary,
     flex: 1,
     lineHeight: 20,
+    fontFamily: FONTS.regular,
   },
 });

@@ -27,6 +27,7 @@ import Logout from "@/assets/svgs/Logout.svg";
 import Verify from "@/assets/svgs/verify.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type User = {
@@ -143,7 +144,6 @@ export default function Account() {
         onPress: async () => {
           try {
             await AsyncStorage.clear();
-            // Navigate to login screen
             router.replace("/welcome");
           } catch (error) {
             console.error("Error during logout:", error);
@@ -196,7 +196,7 @@ export default function Account() {
     { icon: "Support", title: "Support", extraRight: "chevron-forward" },
     { icon: "Logout", title: "Logout", extraRight: "chevron-forward" },
   ];
-
+  const isValidImage = user.image && /\.(jpg|jpeg|png|webp)$/i.test(user.image);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -210,7 +210,7 @@ export default function Account() {
         <View style={styles.profileContainer}>
           <View style={styles.imageWrapper}>
             <Image
-              source={user.image ? { uri: user.image } : defaultProfile}
+              source={isValidImage ? { uri: user.image } : defaultProfile}
               style={styles.image}
               resizeMode="cover"
               onError={({ nativeEvent }) => {
@@ -223,8 +223,12 @@ export default function Account() {
               <View style={styles.onlineIndicator} />
             )}
           </View>
-          <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userName}>
+            {user.name ? user.name : "Dear Member"}
+          </Text>
+          <Text style={styles.userEmail}>
+            {user.email ? user.email : "member@xyz.com"}
+          </Text>
         </View>
 
         {/* Buttons */}
@@ -310,7 +314,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContent: {
-    paddingBottom: 140,
+    paddingBottom: 100,
   },
   profileContainer: {
     alignItems: "flex-start",
@@ -345,12 +349,13 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 24,
-    fontWeight: "700",
+    fontFamily: FONTS.extrabold,
     color: Colors.secondary,
     marginTop: 8,
   },
   userEmail: {
     fontSize: 16,
+    fontFamily: FONTS.regular,
     color: Colors.secondary300,
   },
   buttonRow: {
@@ -374,9 +379,11 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
+    fontFamily: FONTS.medium,
     color: Colors.secondary,
   },
   itemRightText: {
     fontSize: 14,
+    fontFamily: FONTS.medium,
   },
 });

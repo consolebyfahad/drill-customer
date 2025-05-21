@@ -14,6 +14,7 @@ import {
 import ModalSelector from "react-native-modal-selector";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type CountryCode = {
@@ -78,7 +79,7 @@ export default function Login() {
           onPress={() => modalRef.current.open()}
           style={styles.countrySelector}
         >
-          <Flag />
+          <Flag width={25} height={25} />
           <Text style={styles.countryText}>{countryCode.label}</Text>
           <Ionicons name="chevron-down" size={20} />
         </TouchableOpacity>
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     marginBottom: 8,
     color: Colors.secondary,
   },
@@ -133,6 +134,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: Colors.secondary100,
     marginBottom: 32,
+    fontFamily: FONTS.regular,
   },
   inputContainer: {
     borderWidth: 1,
@@ -150,6 +152,7 @@ const styles = StyleSheet.create({
   countryText: {
     fontSize: 18,
     color: Colors.secondary,
+    fontFamily: FONTS.regular,
   },
   divider: {
     borderTopWidth: 1,
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
   privacyText: {
     textAlign: "center",
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
     marginBottom: 24,
   },
@@ -175,5 +178,6 @@ const styles = StyleSheet.create({
     marginTop: -20,
     marginBottom: 16,
     paddingLeft: 12,
+    fontFamily: FONTS.regular,
   },
 });

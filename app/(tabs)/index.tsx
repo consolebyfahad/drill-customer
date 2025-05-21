@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { BackHandler, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Banner from "@/components/banner";
@@ -17,7 +17,6 @@ const Home = () => {
     useCallback(() => {
       const fetchAsyncStorageData = async () => {
         try {
-          // Get user name
           const storedUserName = await AsyncStorage.getItem("user_name");
           if (storedUserName) {
             console.log("User name:", storedUserName);
@@ -26,7 +25,6 @@ const Home = () => {
             console.log("No user name found.");
           }
 
-          // Get all AsyncStorage data (for debugging)
           const keys = await AsyncStorage.getAllKeys();
           if (keys.length > 0) {
             const stores = await AsyncStorage.multiGet(keys);
@@ -41,6 +39,17 @@ const Home = () => {
       };
 
       fetchAsyncStorageData();
+
+      const onBackPress = () => {
+        return true;
+      };
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+
+      return () => subscription.remove();
     }, [])
   );
 
@@ -55,7 +64,6 @@ const Home = () => {
         <Banner />
         <Search />
         <Categories />
-        {/* <PopularServices /> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -70,10 +78,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    padding: 12,
   },
   contentContainer: {
-    paddingBottom: 150,
+    paddingBottom: 100,
   },
 });

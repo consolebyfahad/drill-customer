@@ -4,6 +4,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation, useRouter } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 type HeaderProps = {
   userName?: string;
@@ -41,7 +42,6 @@ export default function Header({
   };
   return (
     <View style={styles.container}>
-      {/* Left Section (Back Button or Title) */}
       <View style={styles.leftSection}>
         {backBtn === true && (
           <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
@@ -64,7 +64,6 @@ export default function Header({
         )}
       </View>
 
-      {/* Right Section (Notification Icon) */}
       {icon &&
         (support ? (
           <TouchableOpacity>
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   userContainer: {
@@ -119,12 +118,12 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 22,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   userName: {
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: FONTS.medium,
     color: Colors.secondary100,
   },
   notificationButton: {

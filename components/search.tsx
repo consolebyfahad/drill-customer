@@ -1,9 +1,9 @@
-import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
-import LocationIcon from "@/assets/svgs/locationIcon.svg";
 import CurrentLocation from "@/assets/svgs/GPS.svg";
+import LocationIcon from "@/assets/svgs/locationIcon.svg";
 import SearchIcon from "@/assets/svgs/searchIcon.svg";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 export default function Search() {
   return (
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     color: Colors.secondary100,
     marginLeft: 8,
     fontSize: 16,
+    fontFamily: FONTS.medium,
   },
   searchButton: {
     backgroundColor: Colors.secondary,

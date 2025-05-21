@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 export default function VerifiedScreen() {
   const router = useRouter();
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     marginBottom: 8,
     color: Colors.secondary,
   },
@@ -64,5 +65,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: Colors.secondary,
     marginBottom: 32,
+    fontFamily: FONTS.medium,
   },
 });

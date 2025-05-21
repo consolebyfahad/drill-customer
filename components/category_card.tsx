@@ -1,11 +1,12 @@
-import { Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 type CategoryCardProps = {
   item: {
-    image: string; // Change to string (URL)
-    name: string; // Update title to name
+    image: string;
+    name: string;
   };
   onPress: () => void;
 };
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.secondary,
     textAlign: "center",
+    fontFamily: FONTS.regular,
   },
 });
 

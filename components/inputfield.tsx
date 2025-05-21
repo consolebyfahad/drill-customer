@@ -1,6 +1,7 @@
-import { View, Text, TextInput, StyleSheet } from "react-native";
-import React from "react";
 import { Colors } from "@/constants/Colors";
+import React from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { FONTS } from "~/constants/Fonts";
 
 interface InputFieldProps {
   label?: string;
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     color: Colors.secondary,
     marginBottom: 8,
   },
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
+    fontFamily: FONTS.regular,
     color: Colors.secondary,
   },
 });

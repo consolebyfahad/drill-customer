@@ -2,11 +2,19 @@ import Header from "@/components/header";
 import ServiceDetailsCard from "@/components/service_details_card";
 import { Colors } from "@/constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 // Order type definition
@@ -22,8 +30,7 @@ export type Order = {
   images?: string;
   cat_id: string;
   to_id?: string;
-  provider?: any; // Changed to any to handle both string and object
-  // UI specific fields
+  provider?: any;
   title?: string;
   amount?: string;
   discount?: string;
@@ -45,21 +52,9 @@ export default function Orders() {
     { label: "Completed", value: "completed" },
   ]);
 
-  useFocusEffect(
-    useCallback(() => {
-      const init = async () => {
-        try {
-          const user_id = await AsyncStorage.getItem("user_id");
-          setUserId(user_id);
-          fetchOrders();
-        } catch (error) {
-          console.error("Initialization error:", error);
-          Alert.alert("Error", "Failed to initialize orders");
-        }
-      };
-      init();
-    }, [])
-  );
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -90,7 +85,6 @@ export default function Orders() {
   };
 
   const handleOrderScreen = (order: Order) => {
-    // Store the order ID in AsyncStorage for the order place screen
     AsyncStorage.setItem("order_id", order.id).then(() => {
       router.push("/order/order_place");
     });
@@ -131,14 +125,14 @@ export default function Orders() {
         <ScrollView
           contentContainerStyle={[
             styles.scrollContainer,
-            open && { paddingTop: 120 }, // Add padding when dropdown is open
+            open && { paddingTop: 120 },
           ]}
           showsVerticalScrollIndicator={false}
         >
           <View>
             {isLoading ? (
               <View style={styles.loadingContainer}>
-                <Text>Loading orders...</Text>
+                <ActivityIndicator size="large" color={Colors.primary} />
               </View>
             ) : filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
@@ -186,6 +180,7 @@ const styles = StyleSheet.create({
   dropdownText: {
     fontSize: 16,
     color: Colors.secondary,
+    fontFamily: FONTS.medium,
   },
   dropdownList: {
     backgroundColor: "#fff",

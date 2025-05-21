@@ -18,6 +18,8 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -26,6 +28,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "~/components/button";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type User = {
@@ -226,7 +229,10 @@ export default function EditProfile() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Header title="Edit Profile" backBtn />
         {loading ? (
           <View style={styles.loadingScreen}>
@@ -323,14 +329,14 @@ export default function EditProfile() {
             <Button onPress={handleUpdate} title="Update" />
           </ScrollView>
         )}
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 8, backgroundColor: "white" },
-  scrollContainer: { paddingBottom: 50 },
+  container: { flex: 1, padding: 12, backgroundColor: "white" },
+  scrollContainer: { paddingBottom: 100 },
   loadingScreen: { flex: 1, justifyContent: "center", alignItems: "center" },
   profileContainer: { alignItems: "center" },
   imageWrapper: {
@@ -356,12 +362,17 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 24,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     color: Colors.secondary,
     marginTop: 12,
   },
-  userEmail: { color: Colors.secondary300 },
+  userEmail: { color: Colors.secondary300, fontFamily: FONTS.regular },
   rowContainer: { flexDirection: "row", paddingBottom: 12, gap: 16 },
   flexItem: { flex: 1 },
-  errorText: { color: "red", textAlign: "center", marginTop: 10 },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
+    fontFamily: FONTS.medium,
+  },
 });

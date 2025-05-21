@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type Category = {
@@ -87,6 +88,7 @@ const Categories: React.FC = () => {
         <Text style={styles.errorText}>{error}</Text>
       ) : (
         <FlatList
+          scrollEnabled={false}
           data={visibleData}
           keyExtractor={(item) => item.id}
           numColumns={3}
@@ -113,12 +115,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   seeAllText: {
     color: Colors.primary,
-    fontWeight: "500",
+    fontFamily: FONTS.medium,
   },
   columnWrapper: {
     justifyContent: "space-between",
@@ -128,6 +130,7 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 10,
+    fontFamily: FONTS.bold,
   },
 });
 

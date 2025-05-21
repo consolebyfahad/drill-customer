@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 import {
   getFCMToken,
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     textAlign: "center",
     color: Colors.secondary,
   },
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     marginBottom: 8,
     color: Colors.secondary,
   },
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: Colors.secondary,
     marginBottom: 32,
+    fontFamily: FONTS.medium,
   },
   buttonContainer: {
     width: "100%",
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
   },
   laterText: {
     color: Colors.primary,
-    fontWeight: "bold",
+    fontFamily: FONTS.medium,
     marginLeft: 4,
   },
 });

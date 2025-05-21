@@ -7,9 +7,10 @@ import ServiceDetailsCard from "@/components/service_details_card";
 import { Colors } from "@/constants/Colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   ScrollView,
@@ -19,6 +20,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type Order = {
@@ -76,8 +78,6 @@ export default function ViewProfile() {
   const [showAllOrders, setShowAllOrders] = useState<boolean>(true);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigation = useNavigation();
-  const router = useRouter();
 
   const [user, setUser] = useState<User>({
     id: "",
@@ -229,21 +229,27 @@ export default function ViewProfile() {
             )}
           </View>
 
-          <Text style={styles.userName}>{user.name || "Unnamed User"}</Text>
+          <Text style={styles.userName}>{user.name || "Dear Member"}</Text>
 
           <View style={styles.ratingContainer}>
             <Star />
-            <Text style={styles.ratingText}>{user?.rating}</Text>
-            <Text style={styles.reviewCount}>({user?.review})</Text>
+            <Text style={styles.ratingText}>
+              {user?.rating ? user?.rating : "0"}
+            </Text>
+            <Text style={styles.reviewCount}>
+              ({user?.review ? user?.review : "0"})
+            </Text>
           </View>
 
           <Text style={styles.balance}>Balance: SAR {user.balance}</Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userEmail}>
+            {user.email ? user.email : "member@xyz.com"}
+          </Text>
 
           <View style={styles.locationContainer}>
             <LocationIcon />
             <Text style={styles.locationText}>
-              {user.address || "Your City"}, {user.city || "Your Country"}
+              {user.address || "Address not set"} {user.city}
             </Text>
           </View>
         </View>
@@ -272,7 +278,7 @@ export default function ViewProfile() {
         </TouchableOpacity>
 
         {isLoading ? (
-          <Text style={styles.loadingText}>Loading orders...</Text>
+          <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
           showAllOrders &&
           (orders.length > 0 ? (
@@ -330,7 +336,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
     marginTop: 12,
   },
@@ -340,21 +346,24 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   ratingText: {
-    fontWeight: "500",
+    fontFamily: FONTS.medium,
     color: Colors.secondary,
   },
   reviewCount: {
     color: Colors.gray300,
     fontSize: 12,
+    fontFamily: FONTS.medium,
   },
   balance: {
     color: Colors.secondary300,
     fontSize: 18,
+    fontFamily: FONTS.medium,
   },
   userEmail: {
     color: Colors.secondary300,
     fontSize: 16,
     marginTop: 4,
+    fontFamily: FONTS.medium,
   },
   locationContainer: {
     flexDirection: "row",
@@ -365,6 +374,7 @@ const styles = StyleSheet.create({
   locationText: {
     color: Colors.secondary300,
     fontSize: 16,
+    fontFamily: FONTS.medium,
   },
   orderToggle: {
     flexDirection: "row",
@@ -372,21 +382,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   orderTitle: {
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
   },
   orderCount: {
     fontSize: 14,
     color: Colors.secondary300,
-    fontWeight: "normal",
-  },
-  loadingText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: Colors.secondary300,
+    fontFamily: FONTS.medium,
   },
   noOrdersText: {
     textAlign: "center",
     marginTop: 20,
     color: Colors.secondary300,
+    fontFamily: FONTS.medium,
   },
 });

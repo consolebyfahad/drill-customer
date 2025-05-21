@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
-import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { FONTS } from "~/constants/Fonts";
 
 type NotificationCardProps = {
   icon: React.ReactNode;
@@ -50,15 +50,17 @@ const styles = StyleSheet.create({
   },
   title: {
     color: Colors.secondary,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
   },
   message: {
     color: Colors.secondary300,
     fontSize: 14,
+    fontFamily: FONTS.regular,
   },
   dateTime: {
     color: Colors.secondary300,
     fontSize: 14,
+    fontFamily: FONTS.regular,
   },
 });
 

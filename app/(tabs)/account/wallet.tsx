@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
-import { LineChart } from "react-native-gifted-charts";
-import { Ionicons } from "@expo/vector-icons";
+import Button from "@/components/button";
 import Header from "@/components/header";
 import Seprator from "@/components/seprator";
-import Button from "@/components/button";
 import TransactionCard from "@/components/transaction_card";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useState } from "react";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 
 const { width } = Dimensions.get("window");
 
@@ -72,7 +72,7 @@ const Wallet = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Header title="Wallet" backBtn={true} />
 
-        <View style={styles.chartSection}>
+        {/* <View style={styles.chartSection}>
           <View style={styles.rowCenter}>
             <Ionicons name="calendar-outline" size={20} color="gray" />
             <Text style={styles.textSecondary}>This month</Text>
@@ -98,19 +98,16 @@ const Wallet = () => {
           spacing={(width - 40) / chartData.length}
         />
 
-        <Seprator />
+        <Seprator /> */}
 
         <View style={styles.balanceSection}>
           <View>
             <Text style={styles.textSecondary}>Available Balance</Text>
             <Text style={styles.availableBalance}>SAR 13,455.23</Text>
           </View>
-          <Button
-            title="Add"
-            width="30%"
-            onPress={handleAdd}
-            variant="secondary"
-          />
+          <View style={{ width: "20%" }}>
+            <Button title="Add" onPress={handleAdd} variant="secondary" />
+          </View>
         </View>
 
         <Seprator />
@@ -166,15 +163,18 @@ const styles = StyleSheet.create({
   textSecondary: {
     color: "#6B7280",
     fontSize: 18,
+    fontFamily: FONTS.semiBold,
   },
   totalExpense: {
     color: "#6B7280",
     fontWeight: "600",
     fontSize: 20,
+    fontFamily: FONTS.medium,
   },
   textGray: {
     color: "#9CA3AF",
     fontSize: 14,
+    fontFamily: FONTS.semiBold,
   },
   balanceSection: {
     flexDirection: "row",
@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     fontWeight: "500",
     fontSize: 24,
+    fontFamily: FONTS.semiBold,
   },
   transactionHeader: {
     flexDirection: "row",
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   transactionTitle: {
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     fontSize: 18,
     color: "#6B7280",
   },

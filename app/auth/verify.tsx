@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type InputRef = TextInput | null;
@@ -29,6 +30,9 @@ export default function Verify() {
       try {
         const userId = await AsyncStorage.getItem("user_id");
         setUserId(userId);
+        setTimeout(() => {
+          inputs.current[0]?.focus();
+        }, 100);
       } catch (error) {
         console.error("Error fetching user_id:", error);
         setError("Something went wrong. Please try again.");
@@ -38,14 +42,16 @@ export default function Verify() {
   }, []);
 
   const handleChangeText = (text: string, index: number) => {
+    const trimmed = text.trim();
+    if (trimmed.length > 1) return;
+
     const newCode = [...code];
-    newCode[index] = text;
+    newCode[index] = trimmed;
     setCode(newCode);
 
-    // Clear error when user types
     if (error) setError("");
 
-    if (text && index < 3) {
+    if (trimmed && index < inputs.current.length - 1) {
       inputs.current[index + 1]?.focus();
     }
   };
@@ -87,6 +93,7 @@ export default function Verify() {
 
       if (response.result) {
         await AsyncStorage.setItem("user_num_id", response?.user?.id);
+        await AsyncStorage.setItem("user_name", response?.user?.name);
         setTimeout(() => router.push("/auth/verified"), 800);
       } else {
         setError(response.message || "Verification failed.");
@@ -131,6 +138,9 @@ export default function Verify() {
               onChangeText={(text) => handleChangeText(text, index)}
               onKeyPress={(e) => handleKeyPress(e, index)}
               value={digit}
+              returnKeyType="next"
+              importantForAutofill="yes"
+              textContentType="oneTimeCode"
             />
           ))}
         </View>
@@ -163,13 +173,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     textAlign: "center",
     color: Colors.secondary,
   },
   title: {
     fontSize: 36,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     marginBottom: 8,
     color: Colors.secondary,
   },
@@ -177,6 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: Colors.secondary100,
     marginBottom: 24,
+    fontFamily: FONTS.medium,
   },
   otpContainer: {
     alignItems: "center",
@@ -213,13 +224,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 12,
     textAlign: "center",
+    fontFamily: FONTS.medium,
   },
   resendText: {
     fontSize: 16,
     color: Colors.secondary100,
+    fontFamily: FONTS.medium,
   },
   resendLink: {
     fontWeight: "500",
     color: Colors.primary,
+    fontFamily: FONTS.medium,
   },
 });

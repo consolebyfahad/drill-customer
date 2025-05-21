@@ -8,8 +8,9 @@ import ProfileFill from "@/assets/svgs/profileFill.svg";
 import Profile from "@/assets/svgs/profileIcon.svg";
 import { Colors } from "@/constants/Colors";
 import { Tabs, useRouter } from "expo-router";
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 
 type CustomTabBarButtonProps = {
   children: React.ReactNode;
@@ -64,39 +65,55 @@ export default function TabLayout() {
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         },
-        tabBarLabelStyle: {
-          color: Colors.secondary,
-          fontSize: 12,
-          marginBottom: 5,
-        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
               {focused ? <HomeFill /> : <Home />}
             </View>
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                color: Colors.secondary,
+                fontSize: 12,
+                marginBottom: 5,
+                fontFamily: focused ? FONTS.bold : FONTS.medium,
+              }}
+            >
+              Home
+            </Text>
           ),
         }}
       />
       <Tabs.Screen
         name="packages"
         options={{
-          title: "Packages",
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
               <Packages />
             </View>
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                color: Colors.secondary,
+                fontSize: 12,
+                marginBottom: 5,
+                fontFamily: focused ? FONTS.bold : FONTS.medium,
+              }}
+            >
+              Packages
+            </Text>
           ),
         }}
       />
       <Tabs.Screen
         name="add"
         options={{
-          title: "Add",
           tabBarButton: (props) => (
             <CustomTabBarButton {...props}>
               <Plus height={28} width={28} />
@@ -107,22 +124,44 @@ export default function TabLayout() {
       <Tabs.Screen
         name="orders"
         options={{
-          title: "Orders",
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
               {focused ? <OrdersFill /> : <Orders />}
             </View>
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                color: Colors.secondary,
+                fontSize: 12,
+                marginBottom: 5,
+                fontFamily: focused ? FONTS.bold : FONTS.medium,
+              }}
+            >
+              Orders
+            </Text>
           ),
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
-          title: "Account",
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
               {focused ? <ProfileFill /> : <Profile />}
             </View>
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{
+                color: Colors.secondary,
+                fontSize: 12,
+                marginBottom: 5,
+                fontFamily: focused ? FONTS.bold : FONTS.medium,
+              }}
+            >
+              Account
+            </Text>
           ),
         }}
       />
@@ -136,5 +175,5 @@ const iconContainerStyle = (focused: boolean) => ({
   borderTopColor: Colors.secondary,
   borderRadius: 2,
   paddingTop: 6,
-  paddingBottom: 6, // consistent padding
+  paddingBottom: 6,
 });

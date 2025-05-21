@@ -1,4 +1,4 @@
-import BannerImage from "@/assets/svgs/banner.svg";
+import BannerImage from "@/assets/svgs/Discount card.svg";
 import { StyleSheet, View } from "react-native";
 
 export default function Banner() {
