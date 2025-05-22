@@ -1,7 +1,8 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import DashedSeparator from "./dashed_seprator";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
+import DashedSeparator from "./dashed_seprator";
 
 const OrderDetailsSection = ({ order }: OrderType) => {
   return (
@@ -223,14 +224,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 4,
   },
-  boldText: {
-    fontWeight: "500",
-    color: Colors.secondary300,
-  },
-  blueText: {
-    fontWeight: "bold",
-    color: Colors.secondary,
-  },
+  boldText: { fontFamily: FONTS.semiBold, color: Colors.secondary300 },
+  blueText: { fontFamily: FONTS.semiBold, color: Colors.secondary },
   grayText: {
     color: Colors.secondary,
   },

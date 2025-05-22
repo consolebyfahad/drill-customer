@@ -21,6 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type BookingParams = {
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
   innerContainer: { flex: 1, padding: 16 },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     marginBottom: 8,
     color: Colors.secondary,
   },
@@ -245,9 +246,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  packageTitle: { fontSize: 16, fontWeight: "500", color: Colors.secondary },
+  packageTitle: {
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
+  },
   packageSubtitle: { color: "gray" },
-  packagePrice: { fontSize: 16, fontWeight: "500", color: Colors.secondary },
+  packagePrice: {
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
+  },
   paymentContainer: {
     backgroundColor: Colors.primary300,
     padding: 16,
@@ -257,7 +266,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  paymentText: { fontSize: 16 },
+  paymentText: { fontSize: 16, fontFamily: FONTS.regular },
   separator: { height: 1, backgroundColor: "gray", marginVertical: 16 },
   promoContainer: {
     flexDirection: "row",
@@ -283,7 +292,13 @@ const styles = StyleSheet.create({
   },
   rowBetween: { flexDirection: "row", justifyContent: "space-between" },
   grayText: { color: "gray" },
-  boldText: { fontWeight: "500", color: Colors.secondary },
-  discountText: { fontWeight: "500", color: "red" },
-  primaryText: { fontWeight: "500", color: "#007AFF" },
+  boldText: {
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
+  },
+  discountText: { fontFamily: FONTS.semiBold, color: "red" },
+  primaryText: {
+    fontFamily: FONTS.semiBold,
+    color: "#007AFF",
+  },
 });

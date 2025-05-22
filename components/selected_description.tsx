@@ -1,6 +1,7 @@
-import { View, Text, TextInput, StyleSheet } from "react-native";
-import React, { useState, useEffect } from "react";
 import { Colors } from "@/constants/Colors";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { FONTS } from "~/constants/Fonts";
 
 type Props = {
   onDescriptionChange?: (description: string) => void;
@@ -58,7 +59,7 @@ export default function SelectedDescription({
 const styles = StyleSheet.create({
   title: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     marginBottom: 8,
     color: Colors.secondary,
   },

@@ -20,6 +20,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import DashedSeparator from "~/components/dashed_seprator";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 interface Package {
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     marginBottom: 16,
     color: Colors.secondary,
   },
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   },
   packageName: {
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     color: Colors.secondary,
   },
   packageDetails: {

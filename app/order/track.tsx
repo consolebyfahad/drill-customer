@@ -20,6 +20,7 @@ import Button from "~/components/button";
 import Header from "~/components/header";
 import ProviderCard from "~/components/provider_card";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
 import { apiCall } from "~/utils/api";
 type LocationStateType = {
@@ -350,6 +351,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+    fontFamily: FONTS.regular,
     color: Colors.primary,
   },
   errorContainer: {
@@ -360,6 +362,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
+    fontFamily: FONTS.regular,
     color: "red",
     textAlign: "center",
     marginBottom: 20,
@@ -382,18 +385,20 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
+    fontFamily: FONTS.regular,
     color: Colors.gray300,
     textAlign: "center",
     marginTop: 14,
   },
   statusText2: {
     fontSize: 12,
+    fontFamily: FONTS.regular,
     color: Colors.gray300,
     textAlign: "center",
   },
   activeStatusText: {
     color: Colors.primary,
-    fontWeight: "bold",
+    fontFamily: FONTS.semiBold,
   },
   line: {
     height: 3,
@@ -438,7 +443,7 @@ const styles = StyleSheet.create({
   title: {
     color: Colors.white,
     fontSize: 12,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     textAlign: "center",
     maxWidth: "80%",
   },
@@ -481,6 +486,7 @@ const styles = StyleSheet.create({
   },
   noOrderText: {
     fontSize: 16,
+    fontFamily: FONTS.regular,
     color: Colors.gray300,
   },
   arrived: {
@@ -493,11 +499,12 @@ const styles = StyleSheet.create({
   arrivedTitle: {
     fontSize: 22,
     color: Colors.secondary,
-    fontWeight: "700",
+    fontFamily: FONTS.bold,
     marginTop: 12,
   },
   arrivedText: {
     fontSize: 17,
+    fontFamily: FONTS.regular,
     paddingHorizontal: 16,
     marginBottom: 12,
     textAlign: "center",

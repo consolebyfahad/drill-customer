@@ -11,6 +11,7 @@ import OrderDetailsSection from "~/components/order_details";
 import ProviderCard from "~/components/provider_card";
 import ServiceDetailsCard from "~/components/service_details_card";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
 
 interface OrderDetailsProps {
@@ -84,7 +85,11 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 24,
   },
-  sectionTitle: { fontSize: 18, fontWeight: "500", color: Colors.secondary },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
+  },
   orderDetails: {
     marginTop: 8,
     padding: 16,
@@ -97,8 +102,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 4,
   },
-  boldText: { fontWeight: "500", color: Colors.secondary300 },
-  blueText: { fontWeight: "bold", color: Colors.secondary },
+  boldText: {
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary300,
+  },
+  blueText: {
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
+  },
   grayText: { color: Colors.secondary },
   problemImage: { width: 64, height: 64, borderRadius: 8 },
   noImage: {
@@ -118,6 +129,6 @@ const styles = StyleSheet.create({
   noProviderText: {
     color: Colors.secondary,
     textAlign: "center",
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
 });

@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 export default function ConfirmedBooking() {
   const router = useRouter();
@@ -58,13 +59,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 32,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     marginBottom: 8,
     color: Colors.secondary,
     textAlign: "center",
   },
   paragraph: {
     fontSize: 16,
+    fontFamily: FONTS.regular,
     textAlign: "center",
     color: Colors.secondary300,
     marginBottom: 32,
@@ -78,7 +80,5 @@ const styles = StyleSheet.create({
   noteText: {
     color: Colors.secondary,
   },
-  boldText: {
-    fontWeight: "600",
-  },
+  boldText: { fontFamily: FONTS.bold },
 });

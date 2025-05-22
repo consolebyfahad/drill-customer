@@ -5,6 +5,7 @@ import { useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import Button from "./button";
 import DashedSeparator from "./dashed_seprator";
 
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   providerName: {
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
     fontSize: 18,
     marginBottom: 4,
@@ -121,5 +122,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: Colors.secondary,
     fontSize: 14,
+    fontFamily: FONTS.regular,
   },
 });

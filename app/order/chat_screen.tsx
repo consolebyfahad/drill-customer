@@ -1,26 +1,24 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  Image,
-  Pressable,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-  Modal,
-} from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import Button from "~/components/button";
-import { Colors } from "~/constants/Colors";
 import Add from "@/assets/svgs/plus.svg";
-import Smile from "@/assets/svgs/smile.svg";
 import Send from "@/assets/svgs/send.svg";
+import Smile from "@/assets/svgs/smile.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiCall } from "~/utils/api";
-import { useFocusEffect } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
+import { apiCall } from "~/utils/api";
 
 // Define a simpler emoji picker array instead of using the library
 const EMOJI_LIST = [
@@ -581,6 +579,7 @@ const styles = StyleSheet.create({
   messageText: {
     color: Colors.secondary,
     fontSize: 16,
+    fontFamily: FONTS.regular,
   },
   messageImage: {
     width: 200,
@@ -614,6 +613,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
     fontSize: 16,
+    fontFamily: FONTS.regular,
     maxHeight: 100,
   },
   sendButton: {
@@ -640,13 +640,13 @@ const styles = StyleSheet.create({
   },
   emojiPickerTitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     color: Colors.secondary,
   },
   closeButton: {
     color: Colors.primary,
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
   emojiScrollView: {
     flex: 1,
@@ -666,6 +666,7 @@ const styles = StyleSheet.create({
   },
   emojiText: {
     fontSize: 24,
+    fontFamily: FONTS.regular,
   },
   modalOverlay: {
     flex: 1,
@@ -684,6 +685,7 @@ const styles = StyleSheet.create({
   },
   mediaOptionText: {
     fontSize: 18,
+    fontFamily: FONTS.regular,
     color: Colors.primary,
   },
   mediaDivider: {
@@ -696,7 +698,7 @@ const styles = StyleSheet.create({
   cancelText: {
     fontSize: 18,
     color: "red",
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
   inlineAttachmentContainer: {
     position: "relative",
@@ -721,7 +723,7 @@ const styles = StyleSheet.create({
   removeButtonText: {
     color: Colors.white,
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
   },
   noMessagesContainer: {
     flex: 1,
@@ -732,6 +734,7 @@ const styles = StyleSheet.create({
   noMessagesText: {
     color: Colors.gray,
     fontSize: 16,
+    fontFamily: FONTS.regular,
   },
   loadingOverlay: {
     position: "absolute",

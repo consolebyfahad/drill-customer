@@ -4,6 +4,7 @@ import * as LocationService from "expo-location";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FONTS } from "~/constants/Fonts";
 
 type Category = {
   id: string;
@@ -176,11 +177,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     color: Colors.secondary,
   },
   changeText: {
     fontSize: 14,
+    fontFamily: FONTS.regular,
     color: Colors.primary,
   },
   locationContainer: {
@@ -203,6 +205,7 @@ const styles = StyleSheet.create({
   disabledText: {
     color: Colors.secondary300,
     fontSize: 12,
+    fontFamily: FONTS.regular,
     marginTop: 8,
     textAlign: "center",
   },

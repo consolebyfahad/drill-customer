@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
+import { FONTS } from "~/constants/Fonts";
 
 export default function AddCard() {
   const navigation = useNavigation();
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: FONTS.semiBold,
     marginLeft: 16,
     color: "#374151",
   },
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     marginBottom: 8,
   },
   input: {

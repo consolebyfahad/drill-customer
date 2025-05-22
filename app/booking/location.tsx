@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import MapView, { Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 
 export default function LocationScreen() {
   const navigation = useNavigation();
@@ -336,7 +337,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   backButton: { backgroundColor: "#E5E7EB", padding: 8, borderRadius: 50 },
-  headerText: { fontSize: 24, fontWeight: "bold", color: "#374151" },
+  headerText: { fontSize: 24, fontFamily: FONTS.semiBold, color: "#374151" },
   iconButton: { padding: 8 },
   mapContainer: {
     borderRadius: 16,
@@ -372,7 +373,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 16,
   },
-  addressTitle: { fontSize: 18, fontWeight: "bold" },
+  addressTitle: { fontSize: 18, fontFamily: FONTS.medium },
   addressText: { color: "#6B7280", marginTop: 4 },
   coordsText: {
     color: "#6B7280",
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
   },
   searchButtonText: {
     color: "white",
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
   buttonContainer: { padding: 16, gap: 8 },
 });

@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
   },
   resendLink: {
-    fontWeight: "500",
     color: Colors.primary,
     fontFamily: FONTS.medium,
   },

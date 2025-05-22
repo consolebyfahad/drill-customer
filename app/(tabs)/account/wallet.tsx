@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
   },
   totalExpense: {
     color: "#6B7280",
-    fontWeight: "600",
     fontSize: 20,
     fontFamily: FONTS.medium,
   },
@@ -183,7 +182,6 @@ const styles = StyleSheet.create({
   },
   availableBalance: {
     color: "#6B7280",
-    fontWeight: "500",
     fontSize: 24,
     fontFamily: FONTS.semiBold,
   },

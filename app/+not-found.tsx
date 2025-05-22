@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FONTS } from "~/constants/Fonts";
 
 export default function NotFoundScreen() {
   const router = useRouter();
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 48,
-    fontWeight: "bold",
+    fontFamily: FONTS.semiBold,
     color: "#333",
     marginBottom: 8,
   },

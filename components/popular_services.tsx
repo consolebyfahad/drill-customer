@@ -1,7 +1,8 @@
-import { View, Text, FlatList, StyleSheet } from "react-native";
 import React from "react";
-import ServiceCard from "./service_card";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
+import ServiceCard from "./service_card";
 
 type Service = {
   id: string;
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   seeAllText: {

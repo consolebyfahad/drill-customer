@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Popup from "~/components/popup";
 import { useToast } from "~/components/ToastProvider";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
 import { apiCall } from "~/utils/api";
 import {
@@ -455,7 +456,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     padding: 16,
     backgroundColor: Colors.secondary,
     borderRadius: 25,
@@ -463,11 +464,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  activeTabText: { color: Colors.white, fontSize: 16, fontWeight: "500" },
+  activeTabText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
+  },
   inactiveTabText: {
     color: Colors.secondary300,
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
   inactiveTab: {
     fontSize: 16,

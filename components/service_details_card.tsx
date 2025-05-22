@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FONTS } from "~/constants/Fonts";
 import { Colors } from "../constants/Colors";
 import DashedSeprator from "./dashed_seprator";
 
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     color: Colors.secondary,
     flex: 1,
     textTransform: "capitalize",
@@ -185,20 +186,19 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     textTransform: "capitalize",
   },
   orderId: {
     fontSize: 14,
+    fontFamily: FONTS.regular,
     color: Colors.secondary300,
   },
-  orderIdValue: {
-    fontWeight: "500",
-  },
+  orderIdValue: { fontFamily: FONTS.semiBold },
   amount: {
     fontSize: 14,
     color: Colors.secondary,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
   discount: {
     color: Colors.success,
@@ -218,17 +218,18 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.secondary300,
     fontSize: 14,
+    fontFamily: FONTS.regular,
   },
   value: {
     color: Colors.secondary,
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
     textTransform: "capitalize",
   },
   paymentStatus: {
     color: Colors.success,
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: FONTS.bold,
   },
   ratingContainer: {
     flexDirection: "row",
@@ -238,10 +239,11 @@ const styles = StyleSheet.create({
   starIcon: {
     color: "#FFD700",
     fontSize: 16,
+    fontFamily: FONTS.semiBold,
   },
   tip: {
     color: Colors.success,
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
   },
 });

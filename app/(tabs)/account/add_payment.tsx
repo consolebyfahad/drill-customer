@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "~/components/button";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 const { width } = Dimensions.get("window");
 
@@ -135,9 +136,9 @@ const styles = StyleSheet.create({
     padding: 16,
     marginRight: 8,
   },
-  cardName: { color: "white", fontSize: 18, fontWeight: "bold" },
+  cardName: { color: "white", fontSize: 18, fontFamily: FONTS.semiBold },
   cardNumber: { color: "white", fontSize: 16 },
-  cardBalance: { color: "white", fontSize: 20, fontWeight: "bold" },
+  cardBalance: { color: "white", fontSize: 20, fontFamily: FONTS.semiBold },
   dotsContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginHorizontal: 4,
   },
-  sectionTitle: { fontSize: 18, fontWeight: "bold", marginTop: 24 },
+  sectionTitle: { fontSize: 18, fontFamily: FONTS.semiBold, marginTop: 24 },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -166,5 +167,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 24,
   },
-  confirmText: { color: "white", fontSize: 18, fontWeight: "bold" },
+  confirmText: { color: "white", fontSize: 18, fontFamily: FONTS.semiBold },
 });

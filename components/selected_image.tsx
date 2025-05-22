@@ -1,16 +1,17 @@
+import Camera from "@/assets/svgs/camera.svg";
+import { Colors } from "@/constants/Colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
+import { useState } from "react";
 import {
-  View,
+  Alert,
+  Image,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
-  Alert,
-  StyleSheet,
+  View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import * as ImagePicker from "expo-image-picker";
-import { Colors } from "@/constants/Colors";
-import Camera from "@/assets/svgs/camera.svg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
 type Props = {
@@ -152,7 +153,7 @@ export default function SelectedImage({
 const styles = StyleSheet.create({
   title: {
     fontSize: 18,
-    fontWeight: "500",
+    fontFamily: FONTS.semiBold,
     marginBottom: 8,
     color: Colors.secondary,
   },
@@ -188,6 +189,7 @@ const styles = StyleSheet.create({
     color: Colors.secondary300,
     fontSize: 12,
     marginTop: 8,
+    fontFamily: FONTS.regular,
     textAlign: "center",
   },
 });

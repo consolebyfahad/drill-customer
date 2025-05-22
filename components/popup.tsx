@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 import Button from "./button";
 
@@ -396,13 +397,14 @@ const styles = StyleSheet.create({
   title: {
     color: Colors.secondary,
     fontSize: 22,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     textAlign: "center",
     marginBottom: 8,
   },
   description: {
     color: Colors.secondary300,
     fontSize: 14,
+    fontFamily: FONTS.regular,
     textAlign: "center",
     marginBottom: 16,
     paddingHorizontal: 10,
@@ -413,6 +415,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 16,
+    fontFamily: FONTS.regular,
     marginTop: 10,
     textAlign: "center",
   },
@@ -425,7 +428,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: FONTS.bold,
     color: Colors.black,
     textAlign: "center",
     marginTop: 5,
@@ -436,6 +439,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     fontSize: 16,
+    fontFamily: FONTS.regular,
     marginTop: 10,
     textAlignVertical: "top",
     height: 100,

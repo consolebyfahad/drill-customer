@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import Tick from "@/assets/svgs/tick.svg";
 import DashedSeparator from "@/components/dashed_seprator";
 import { Colors } from "@/constants/Colors";
-import Tick from "@/assets/svgs/tick.svg";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { FONTS } from "~/constants/Fonts";
 interface StepperProps {
   step?: boolean;
 }
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   stepText: {
     fontSize: 10,
     marginTop: 4,
+    fontFamily: FONTS.regular,
   },
   separator: {
     marginHorizontal: 14,
