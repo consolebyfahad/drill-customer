@@ -116,12 +116,11 @@ export default function AccessLocation() {
         return;
       }
       const location = await Location.getCurrentPositionAsync({});
+      console.log(location.coords);
       const { latitude, longitude } = location.coords;
 
-      await AsyncStorage.setItem(
-        "user_location",
-        JSON.stringify({ latitude, longitude })
-      );
+      await AsyncStorage.setItem("latitude", String(latitude));
+      await AsyncStorage.setItem("longitude", String(longitude));
 
       // Alert.alert("Success", "Location saved successfully!");
       router.push("/(tabs)");

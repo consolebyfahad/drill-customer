@@ -17,6 +17,7 @@ type ServiceCardProps = {
 };
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ item }) => {
+  console.log("first,", item);
   return (
     <View style={styles.card}>
       {/* Service Image */}

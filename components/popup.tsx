@@ -56,6 +56,9 @@ export default function Popup({
   };
 
   const handleStartService = async () => {
+    const userId = await AsyncStorage.getItem("user_id");
+    const latitude = await AsyncStorage.getItem("latitude");
+    const longitude = await AsyncStorage.getItem("longitude");
     try {
       if (!orderId) {
         Alert.alert("Error", "Order information not found");
@@ -63,16 +66,19 @@ export default function Popup({
       }
 
       const formData = new FormData();
-      formData.append("type", "update_data");
-      formData.append("table_name", "orders");
-      formData.append("id", orderId);
+      formData.append("type", "add_data");
+      formData.append("table_name", "order_history");
+      formData.append("user_id", userId);
+      formData.append("lat", latitude || "");
+      formData.append("lng", longitude || "");
+      formData.append("order_id", orderId);
       formData.append("status", "started");
 
+      console.log(formData);
       const response = await apiCall(formData);
-
       if (response && response.result === true) {
         setShowPopup(null);
-        Alert.alert("Success", "Service has been started");
+        // Alert.alert("Success", "Service has been started");
       } else {
         Alert.alert("Error", "Failed to start service");
       }

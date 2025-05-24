@@ -3,7 +3,14 @@ import Message from "@/assets/svgs/Chat.svg";
 import Track from "@/assets/svgs/routing.svg";
 import { useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
-import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import Button from "./button";
@@ -26,18 +33,35 @@ export default function ProviderCard({ order }) {
     );
   }
   const provider = order.provider || {};
-  const handleCall = () => {};
-  const handleChat = () => {
-    router.push("/order/order_place");
-  };
-  const handleTrack = () => {
-    {
-      !isOnTrackScreen &&
-        router.push({
-          pathname: "/order/track",
-          params: { orderId: order.id },
-        });
+  const handleCall = () => {
+    if (provider.phone) {
+      const phoneNumber = `tel:${provider.phone}`;
+      Linking.openURL(phoneNumber);
+    } else {
+      console.warn("No phone number available for customer.");
     }
+  };
+  const handleChat = () => {
+    router.push({
+      pathname: "/order/order_place",
+      params: { orderId: order.id, tab: "Chat" },
+    });
+  };
+  console.log(isOnTrackScreen);
+  const handleTrack = () => {
+    if (
+      isOnTrackScreen ||
+      order?.status === "completed" ||
+      order?.status === "started"
+    ) {
+      console.log("Track button clicked, but navigation is disabled.");
+      return;
+    }
+
+    router.push({
+      pathname: "/order/track",
+      params: { orderId: order.id },
+    });
   };
 
   return (

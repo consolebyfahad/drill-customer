@@ -8,6 +8,7 @@ import Banner from "@/components/banner";
 import Header from "@/components/header";
 import Search from "@/components/search";
 import Categories from "@/sections/categories";
+import PopularServices from "~/components/popular_services";
 import { Colors } from "~/constants/Colors";
 
 const Home = () => {
@@ -64,6 +65,7 @@ const Home = () => {
         <Banner />
         <Search />
         <Categories />
+        <PopularServices />
       </ScrollView>
     </SafeAreaView>
   );
@@ -74,6 +76,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 16,
     backgroundColor: Colors.white,
   },
   scrollView: {

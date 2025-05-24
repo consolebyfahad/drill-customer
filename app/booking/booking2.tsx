@@ -201,7 +201,7 @@ export default function Booking2Screen() {
         <View style={styles.buttonRow}>
           <Button
             title="Later"
-            onPress={() => router.push("/")}
+            onPress={handleNext}
             variant="secondary"
             fullWidth={false}
             width="29%"

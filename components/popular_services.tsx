@@ -1,60 +1,114 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { apiCall } from "~/utils/api";
 import ServiceCard from "./service_card";
 
 type Service = {
   id: string;
-  image: any;
+  image: string; // Changed to string for URL
   title: string;
-  rating: string;
-  reviews: string;
+  rating: number;
+  reviews: number;
   price: number;
   provider: string;
-  providerImage: any;
+  providerImage?: string; // Optional since API doesn't provide this
+};
+
+type ApiService = {
+  id: string;
+  image: string;
+  name: string;
+  rating: number;
+  reviews: number;
+  price: string;
+  company_name: string;
+  banners: string;
+  status: string;
+  timestamp: string;
+  translations: string;
 };
 
 const PopularServices: React.FC = () => {
-  const services: Service[] = [
-    {
-      id: "1",
-      image: require("@/assets/images/cleaning_service.png"),
-      title: "Cleaning Service",
-      rating: "4.9",
-      reviews: "1k_reviews",
-      price: 60,
-      provider: "John Doe",
-      providerImage: require("@/assets/images/user.png"),
-    },
-    {
-      id: "2",
-      image: require("@/assets/images/cleaning_service.png"),
-      title: "Cleaning Service",
-      rating: "4.8",
-      reviews: "800_reviews",
-      price: 75,
-      provider: "Alice Smith",
-      providerImage: require("@/assets/images/user.png"),
-    },
-    {
-      id: "3",
-      image: require("@/assets/images/cleaning_service.png"),
-      title: "Cleaning Service",
-      rating: "4.7",
-      reviews: "500_reviews",
-      price: 50,
-      provider: "Mike Johnson",
-      providerImage: require("@/assets/images/user.png"),
-    },
-  ];
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const IMAGE_BASE_URL = "https://7tracking.com/saudiservices/images/";
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const formData = new FormData();
+        formData.append("type", "home");
+        const response = await apiCall(formData);
+        console.log("response", response);
+
+        // Transform API data to match Service type
+        if (response?.data) {
+          const transformedServices: Service[] = response.data.map(
+            (apiService: ApiService) => ({
+              id: apiService.id,
+              image: `${IMAGE_BASE_URL}${apiService.image}`,
+              title: apiService.name,
+              rating: apiService.rating || 0,
+              reviews: apiService.reviews || 0,
+              price: parseFloat(apiService.price) || 0,
+              provider: apiService.company_name || "Service Provider",
+              providerImage: apiService.banners
+                ? `${IMAGE_BASE_URL}${apiService.banners}`
+                : undefined,
+            })
+          );
+          setServices(transformedServices);
+        }
+      } catch (err) {
+        setError("Something went wrong. Please try again.");
+        console.error("API Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Popular Services</Text>
+          {/* <Text style={styles.seeAllText}>See All</Text> */}
+        </View>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading services...</Text>
+        </View>
+      </>
+    );
+  }
+
+  if (error && services.length === 0) {
+    return (
+      <>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Popular Services</Text>
+          {/* <Text style={styles.seeAllText}>See All</Text> */}
+        </View>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      </>
+    );
+  }
 
   return (
     <>
       {/* Header */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Popular Services</Text>
-        <Text style={styles.seeAllText}>See All</Text>
+        {/* <Text style={styles.seeAllText}>See All</Text> */}
       </View>
 
       {/* Horizontal Scrollable List */}
@@ -84,6 +138,23 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     color: Colors.primary,
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  loadingText: {
+    color: Colors.secondary,
+    fontSize: 16,
+  },
+  errorContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 

@@ -1,7 +1,7 @@
 import Button from "@/components/button";
 import Header from "@/components/header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -40,7 +40,10 @@ interface NotificationData {
 const OrderPlace: React.FC = () => {
   const router = useRouter();
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<string>("Details");
+  const { tab } = useLocalSearchParams();
+  const [activeTab, setActiveTab] = useState<string>(
+    tab ? String(tab) : "Details"
+  );
   const [popupType, setPopupType] = useState<PopupType | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [detailsScreen, setDetailsScreen] = useState(true);
@@ -56,6 +59,7 @@ const OrderPlace: React.FC = () => {
       setShowPopup(false);
     }
   }, [popupType]);
+
   useEffect(() => {
     const initFCM = async () => {
       try {
@@ -93,6 +97,18 @@ const OrderPlace: React.FC = () => {
     useCallback(() => {
       const init = async () => {
         try {
+          const keys = await AsyncStorage.getAllKeys();
+
+          // Get all key-value pairs
+          const result = await AsyncStorage.multiGet(keys);
+
+          // Convert to object format
+          const data = {};
+          result.forEach(([key, value]) => {
+            data[key] = value;
+          });
+
+          console.log("All AsyncStorage data:", data);
           const storedOrderId = await AsyncStorage.getItem("order_id");
           const userId = await AsyncStorage.getItem("user_id");
           console.log("order_id", storedOrderId);
@@ -205,71 +221,66 @@ const OrderPlace: React.FC = () => {
   };
 
   const handlePay = async () => {
-    if (orderId) {
-      setIsLoading(true);
+    // const userId = await AsyncStorage.getItem("user_id");
+    // const latitude = await AsyncStorage.getItem("latitude");
+    // const longitude = await AsyncStorage.getItem("longitude");
 
+    // if (orderId) {
+    //   setIsLoading(true);
+
+    //   const formData = new FormData();
+    //   formData.append("type", "add_data");
+    //   formData.append("table_name", "order_history");
+    //   formData.append("user_id", userId);
+    //   formData.append("lat", latitude || "");
+    //   formData.append("lng", longitude || "");
+    //   formData.append("order_id", orderId);
+    //   formData.append("status", "completed");
+
+    //   try {
+    //     const response = await apiCall(formData);
+    //     if (response && response.result === true) {
+    // Show tip popup on successful completion
+    setPopupType("tipup");
+    //     } else {
+    //       showToast("Failed to complete order", "error");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error completing order:", error);
+    //     showToast("An error occurred while completing the order", "error");
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // }
+  };
+
+  const handleCancel = async () => {
+    const userId = await AsyncStorage.getItem("user_id");
+    const latitude = await AsyncStorage.getItem("latitude");
+    const longitude = await AsyncStorage.getItem("longitude");
+    if (orderId) {
       const formData = new FormData();
-      formData.append("type", "update_data");
+      formData.append("type", "add_data");
       formData.append("table_name", "orders");
-      formData.append("id", orderId);
-      formData.append("status", "completed");
+      formData.append("user_id", userId);
+      formData.append("lat", latitude || "");
+      formData.append("lng", longitude || "");
+      formData.append("order_id", orderId);
+      formData.append("status", "cancelled");
 
       try {
         const response = await apiCall(formData);
         if (response && response.result === true) {
-          // Show tip popup on successful completion
-          setPopupType("tipup");
+          showToast("Order has been cancelled", "success");
+          router.replace("/(tabs)");
         } else {
-          showToast("Failed to complete order", "error");
+          showToast("Failed to cancel order", "error");
         }
       } catch (error) {
-        console.error("Error completing order:", error);
-        showToast("An error occurred while completing the order", "error");
-      } finally {
-        setIsLoading(false);
+        console.error("Error cancelling order:", error);
+        showToast("An error occurred while cancelling the order", "error");
       }
     }
-  };
-
-  const handleCancel = () => {
-    // For confirmation dialogs, we still need to use some form of modal
-    // Here, we'll create a simple confirmation dialog using a toast + timeout
-    showToast("Tap again to confirm cancellation", "warning");
-
-    // Set a flag in state to track confirmation intent
-    const confirmTimeout = setTimeout(() => {
-      // Toast to indicate cancellation intent expired
-      showToast("Cancellation request expired", "info");
-    }, 3000);
-
-    // Create a second function to handle the actual cancellation
-    const confirmCancel = async () => {
-      clearTimeout(confirmTimeout);
-
-      if (orderId) {
-        const formData = new FormData();
-        formData.append("type", "update_data");
-        formData.append("table_name", "orders");
-        formData.append("id", orderId);
-        formData.append("status", "cancelled");
-
-        try {
-          const response = await apiCall(formData);
-          if (response && response.result === true) {
-            showToast("Order has been cancelled", "success");
-            router.replace("/(tabs)");
-          } else {
-            showToast("Failed to cancel order", "error");
-          }
-        } catch (error) {
-          console.error("Error cancelling order:", error);
-          showToast("An error occurred while cancelling the order", "error");
-        }
-      }
-    };
-
-    // In a real implementation, you might want to use a modal or create a more robust confirmation flow
-    // This is a simplified example using toasts
   };
 
   const handleActiveChat = () => {
@@ -283,11 +294,17 @@ const OrderPlace: React.FC = () => {
   };
 
   const handleOrderCompleted = async () => {
+    const userId = await AsyncStorage.getItem("user_id");
+    const latitude = await AsyncStorage.getItem("latitude");
+    const longitude = await AsyncStorage.getItem("longitude");
     if (orderId) {
       const formData = new FormData();
-      formData.append("type", "update_data");
+      formData.append("type", "add_data");
       formData.append("table_name", "orders");
-      formData.append("id", orderId);
+      formData.append("user_id", userId);
+      formData.append("lat", latitude || "");
+      formData.append("lng", longitude || "");
+      formData.append("order_id", orderId);
       formData.append("status", "completed");
 
       try {
@@ -392,9 +409,9 @@ const OrderPlace: React.FC = () => {
         )}
       </View>
 
-      {detailsScreen && (
+      {activeTab === "Details" && (
         <View style={styles.footerButtons}>
-          {order.status !== "started" ? (
+          {order?.status === "completed" ? null : order.status !== "started" ? (
             <>
               <Button
                 title="Cancel"

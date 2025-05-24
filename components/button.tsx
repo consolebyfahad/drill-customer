@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  DimensionValue,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ViewStyle,
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 type ButtonProps = {
   title?: string;
-  onPress: () => Promise<void> | void;
+  onPress?: () => Promise<void> | void;
   variant?: "primary" | "secondary";
   fullWidth?: boolean;
-  width?: number | string;
+  width?: DimensionValue;
   bgColor?: string;
   textColor?: string;
   Icon?: React.ReactNode;
+  textSize?: number;
+  paddingvertical?: number;
   disabled?: boolean;
+  style?: any;
 };
 
 export default function Button({
@@ -31,7 +34,10 @@ export default function Button({
   bgColor,
   textColor,
   Icon,
+  textSize,
+  paddingvertical,
   disabled,
+  style,
 }: ButtonProps) {
   const [loading, setLoading] = useState(false);
 
@@ -42,21 +48,24 @@ export default function Button({
     setLoading(false);
   };
 
-  const buttonStyle: ViewStyle[] = [
-    styles.button,
-    fullWidth ? styles.fullWidth : { width: width as any },
-    variant === "primary" ? styles.primary : styles.secondary,
-  ];
-
-  if (bgColor) {
-    buttonStyle.push({ backgroundColor: bgColor });
-  }
-
   return (
     <TouchableOpacity
-      style={buttonStyle}
+      style={[
+        style,
+        styles.button,
+        fullWidth
+          ? styles.fullWidth
+          : width !== undefined
+          ? { width: width as DimensionValue }
+          : null,
+        variant === "primary" ? styles.primary : styles.secondary,
+        bgColor && { backgroundColor: bgColor },
+        paddingvertical !== undefined
+          ? { paddingVertical: paddingvertical }
+          : null,
+      ]}
       onPress={handlePress}
-      disabled={loading}
+      disabled={loading || disabled}
     >
       {loading ? (
         <ActivityIndicator
@@ -70,6 +79,7 @@ export default function Button({
               styles.text,
               variant === "primary" ? styles.textPrimary : styles.textSecondary,
               textColor && { color: textColor },
+              textSize !== undefined ? { fontSize: textSize } : null,
             ]}
           >
             {title}
@@ -105,5 +115,8 @@ const styles = StyleSheet.create({
   },
   textSecondary: {
     color: "#333333",
+  },
+  disabledButton: {
+    backgroundColor: Colors.secondary200,
   },
 });
