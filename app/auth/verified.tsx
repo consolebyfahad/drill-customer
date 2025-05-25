@@ -1,13 +1,13 @@
 import Button from "@/components/button";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
-export default function VerifiedScreen() {
-  const router = useRouter();
-
+export default function Verified() {
+  const { t } = useTranslation();
   const handleBrowse = () => {
     router.push("/auth/access_location");
   };
@@ -22,14 +22,12 @@ export default function VerifiedScreen() {
         />
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Verified!</Text>
-          <Text style={styles.subtitle}>
-            Hello! You have successfully verifed the account.
-          </Text>
+          <Text style={styles.title}>{t("verified.title")}</Text>
+          <Text style={styles.subtitle}>{t("verified.subtitle")}</Text>
         </View>
       </View>
 
-      <Button title="Browse Home" onPress={handleBrowse} />
+      <Button title={t("verified.browseHome")} onPress={handleBrowse} />
     </SafeAreaView>
   );
 }

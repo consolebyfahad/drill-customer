@@ -1,55 +1,38 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
-import { BackHandler, ScrollView, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import Banner from "@/components/banner";
 import Header from "@/components/header";
 import Search from "@/components/search";
 import Categories from "@/sections/categories";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { BackHandler, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import PopularServices from "~/components/popular_services";
 import { Colors } from "~/constants/Colors";
 
 const Home = () => {
+  const { t } = useTranslation();
   const [userName, setUserName] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      const fetchAsyncStorageData = async () => {
+      const getUserName = async () => {
         try {
           const storedUserName = await AsyncStorage.getItem("user_name");
-          if (storedUserName) {
-            console.log("User name:", storedUserName);
-            setUserName(storedUserName);
-          } else {
-            console.log("No user name found.");
-          }
-
-          const keys = await AsyncStorage.getAllKeys();
-          if (keys.length > 0) {
-            const stores = await AsyncStorage.multiGet(keys);
-            const allData = stores.map(([key, value]) => ({ key, value }));
-            console.log("All AsyncStorage Data:", allData);
-          } else {
-            console.log("No data found in AsyncStorage.");
-          }
+          setUserName(storedUserName);
         } catch (error) {
           console.error("Failed to fetch AsyncStorage data:", error);
         }
       };
-
-      fetchAsyncStorageData();
-
+      getUserName();
       const onBackPress = () => {
         return true;
       };
-
       const subscription = BackHandler.addEventListener(
         "hardwareBackPress",
         onBackPress
       );
-
       return () => subscription.remove();
     }, [])
   );
@@ -61,7 +44,7 @@ const Home = () => {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Header userName={userName ?? "Dear User"} homeScreen icon />
+        <Header userName={userName ?? t("defaultGreeting")} homeScreen icon />
         <Banner />
         <Search />
         <Categories />

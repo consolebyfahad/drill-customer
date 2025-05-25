@@ -3,8 +3,9 @@ import Button from "@/components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from "expo-device";
 import * as Location from "expo-location";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -25,16 +26,14 @@ import {
 } from "~/utils/notification";
 
 export default function AccessLocation() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  const { t } = useTranslation();
   const handleBrowse = () => {
     router.push("/(tabs)");
   };
 
   const getDeviceInfo = async () => {
     try {
-      // Get device model
       let deviceModel = "unknown";
       if (Device.modelName) {
         deviceModel = Device.modelName;
@@ -56,7 +55,6 @@ export default function AccessLocation() {
   };
 
   useEffect(() => {
-    // Fix: Added proper async function implementation
     const setupNotifications = async () => {
       try {
         const userId = await AsyncStorage.getItem("user_id");
@@ -64,8 +62,6 @@ export default function AccessLocation() {
           console.warn("User ID not found in AsyncStorage");
           return;
         }
-
-        // FCM
         const permissionGranted = await requestFCMPermission();
         if (permissionGranted) {
           const token = await getFCMToken();
@@ -74,7 +70,7 @@ export default function AccessLocation() {
           formData.append("type", "update_noti");
           formData.append("user_id", userId);
           formData.append("devicePlatform", deviceInfo.platform);
-          formData.append("deviceRid", token);
+          formData.append("deviceRid", token || "");
           formData.append("deviceModel", deviceInfo.model);
           try {
             const response = await apiCall(formData);
@@ -92,8 +88,6 @@ export default function AccessLocation() {
 
     const handleNotificationPress = (data: any) => {
       console.log("🔔 Notification Pressed:", data);
-      // Navigate based on data, e.g.:
-      // if (data.screen) router.push(`/${data.screen}`);
     };
 
     setupNotifications();
@@ -111,7 +105,10 @@ export default function AccessLocation() {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        Alert.alert("Permission Denied", "Location access is required.");
+        Alert.alert(
+          t("accessLocation.permissionDenied"),
+          t("accessLocation.permissionRequired")
+        );
         setLoading(false);
         return;
       }
@@ -122,11 +119,10 @@ export default function AccessLocation() {
       await AsyncStorage.setItem("latitude", String(latitude));
       await AsyncStorage.setItem("longitude", String(longitude));
 
-      // Alert.alert("Success", "Location saved successfully!");
       router.push("/(tabs)");
     } catch (error) {
       console.error("Error fetching location:", error);
-      Alert.alert("Error", "Failed to fetch location.");
+      Alert.alert(t("accessLocation.error"), t("accessLocation.errorMessage"));
     } finally {
       setLoading(false);
     }
@@ -134,12 +130,11 @@ export default function AccessLocation() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with Back Button */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push("/auth/verified")}>
           <Arrow />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Allow Location Access</Text>
+        <Text style={styles.headerText}>{t("accessLocation.headerTitle")}</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -152,27 +147,28 @@ export default function AccessLocation() {
         />
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Access Location</Text>
-          <Text style={styles.subtitle}>
-            Allow us to access your location to provide better services near
-            you.
-          </Text>
+          <Text style={styles.title}>{t("accessLocation.title")}</Text>
+          <Text style={styles.subtitle}>{t("accessLocation.subtitle")}</Text>
         </View>
       </View>
 
       <View style={styles.buttonContainer}>
         {/* Allow Location Button */}
         <Button
-          title={loading ? "Loading..." : "Allow Access"}
+          title={
+            loading
+              ? t("accessLocation.loading")
+              : t("accessLocation.allowAccess")
+          }
           onPress={handleLocation}
           disabled={loading}
         />
 
         {/* "Do it Later" Option */}
         <View style={styles.laterContainer}>
-          <Text>Do it</Text>
+          <Text>{t("accessLocation.doIt")}</Text>
           <TouchableOpacity onPress={handleBrowse}>
-            <Text style={styles.laterText}> Later</Text>
+            <Text style={styles.laterText}> {t("accessLocation.later")}</Text>
           </TouchableOpacity>
         </View>
       </View>

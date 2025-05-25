@@ -1,7 +1,8 @@
 import ChatSupport from "@/assets/svgs/chatSupport.svg";
 import NotificationBell from "@/assets/svgs/Notification.svg";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useNavigation, useRouter } from "expo-router";
+import { router, useNavigation } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
@@ -24,11 +25,10 @@ export default function Header({
   icon,
   support,
   backBtn,
-  onpress,
   backAddress,
 }: HeaderProps) {
   const navigation = useNavigation();
-  const router = useRouter();
+  const { t } = useTranslation();
 
   const handleNotification = () => {
     router.push("/notification/notification");
@@ -57,7 +57,7 @@ export default function Header({
               style={styles.userImage}
             />
             <View>
-              <Text style={styles.welcomeText}>Welcome,</Text>
+              <Text style={styles.welcomeText}>{t("welcome")}</Text>
               <Text style={styles.userName}>👋 {userName}</Text>
             </View>
           </View>

@@ -1,4 +1,46 @@
 {
-  "welcome": "Welcome",
-  "login": "Login"
+  "welcome": "Welcome!",
+  "tagline": "The Home Service App",
+  "intro": " Application for easily finding a Home Serviceman.",
+  "getStarted": "Get Started",
+  "continue": "Continue",
+  "defaultGreeting": "Dear Member",
+  "login": {
+    "title": "Welcome",
+    "subtitle": "Enter your phone \nnumber to get started.",
+    "phonePlaceholder": "Phone number",
+    "privacy": "Privacy & Agreements",
+
+    "invalidPhone": "Please enter a valid phone number."
+  },
+  "verify": {
+    "headerTitle": "OTP Verification",
+    "title": "Enter Your 4 digit \nCode",
+    "subtitle": "Please check your email and enter the 4-digit code.",
+    "resendPrefix": "Didn't receive the code?",
+    "resendLink": "Resend",
+    "button": "Verify",
+    "userNotFound": "User not found. Please try logging in again.",
+    "invalidCode": "Please enter a valid 4-digit code.",
+    "verificationFailed": "Verification failed.",
+    "errorFallback": "Something went wrong. Please try again."
+  },
+  "verified": {
+    "title": "Verified!",
+    "subtitle": "Hello! You have successfully verified the account.",
+    "browseHome": "Browse Home"
+  },
+  "accessLocation": {
+    "headerTitle": "Allow Location Access",
+    "title": "Access Location",
+    "subtitle": "Allow us to access your location to provide better services near you.",
+    "allowAccess": "Allow Access",
+    "loading": "Loading...",
+    "doIt": "Do it",
+    "later": "Later",
+    "permissionDenied": "Permission Denied",
+    "permissionRequired": "Location access is required.",
+    "error": "Error",
+    "errorMessage": "Failed to fetch location."
+  }
 }

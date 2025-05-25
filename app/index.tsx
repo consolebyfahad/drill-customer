@@ -1,11 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 export default function Splash() {
-  const router = useRouter();
-
   useEffect(() => {
     const checkUser = async () => {
       try {

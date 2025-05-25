@@ -1,36 +1,32 @@
 import Button from "@/components/button";
-import { useRouter } from "expo-router";
-// import { useTranslation } from "react-i18next";
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+
 export default function Welcome() {
-  const router = useRouter();
   const handleGetStarted = () => {
     router.push("/auth/login");
   };
-  // const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <View>
         <Image
           source={require("../assets/images/onboarding.png")}
           style={styles.image}
           resizeMode="cover"
         />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Welcome!</Text>
-          <Text style={styles.subtitle}>The Home Service App</Text>
-          <Text style={styles.description}>
-            Application for easily finding a Home Serviceman.
-          </Text>
+          <Text style={styles.title}>{t("welcome")}</Text>
+          <Text style={styles.subtitle}>{t("tagline")}</Text>
+          <Text style={styles.description}>{t("intro")}</Text>
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Get Started" onPress={handleGetStarted} />
-      </View>
+      <Button title={t("getStarted")} onPress={handleGetStarted} />
     </SafeAreaView>
   );
 }
@@ -38,11 +34,9 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
     justifyContent: "space-between",
     backgroundColor: Colors.white,
-  },
-  content: {
-    flex: 1,
   },
   image: {
     width: "100%",
@@ -72,9 +66,5 @@ const styles = StyleSheet.create({
     color: Colors.secondary100,
     paddingHorizontal: 20,
     fontFamily: FONTS.medium,
-  },
-  buttonContainer: {
-    paddingHorizontal: 12,
-    paddingBottom: 16,
   },
 });

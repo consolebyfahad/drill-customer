@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   StyleSheet,
   Text,
@@ -32,6 +33,7 @@ export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [error, setError] = useState<string>("");
   const modalRef = useRef<any>(null);
+  const { t } = useTranslation();
 
   const handleContinue = async () => {
     const cleanedNumber = phoneNumber.replace(/\D/g, "");
@@ -58,16 +60,14 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Login Error:", error);
-      setError("Something went wrong. Please try again.");
+      setError(t("login.invalidPhone"));
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.subtitle}>
-        Enter your phone {"\n"}number to get started.
-      </Text>
+      <Text style={styles.title}>{t("welcome")}</Text>
+      <Text style={styles.subtitle}>{t("login.subtitle")}</Text>
 
       <View
         style={[
@@ -97,7 +97,7 @@ export default function Login() {
           style={styles.input}
           keyboardType="numeric"
           placeholderTextColor={Colors.secondary300}
-          placeholder="Phone number"
+          placeholder={t("login.phonePlaceholder")}
           value={phoneNumber}
           maxLength={10}
           onChangeText={(text) => {
@@ -109,10 +109,10 @@ export default function Login() {
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <TouchableOpacity>
-        <Text style={styles.privacyText}>Privacy & Agreements</Text>
+        <Text style={styles.privacyText}>{t("login.privacy")}</Text>
       </TouchableOpacity>
 
-      <Button title="Continue" onPress={handleContinue} />
+      <Button title={t("continue")} onPress={handleContinue} />
     </SafeAreaView>
   );
 }
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 84,
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
     backgroundColor: Colors.white,
   },
   title: {

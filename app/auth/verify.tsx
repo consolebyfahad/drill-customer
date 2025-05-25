@@ -1,8 +1,9 @@
 import Arrow from "@/assets/svgs/arrowLeft.svg";
 import Button from "@/components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   StyleSheet,
   Text,
@@ -14,31 +15,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
-
 type InputRef = TextInput | null;
 
 export default function Verify() {
-  const router = useRouter();
   const [code, setCode] = useState<string[]>(["", "", "", ""]);
   const [error, setError] = useState<string>("");
   const inputs = useRef<InputRef[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
-
-  // Get user ID from AsyncStorage
+  const { t } = useTranslation();
   useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const userId = await AsyncStorage.getItem("user_id");
-        setUserId(userId);
-        setTimeout(() => {
-          inputs.current[0]?.focus();
-        }, 100);
-      } catch (error) {
-        console.error("Error fetching user_id:", error);
-        setError("Something went wrong. Please try again.");
-      }
-    };
-    fetchUserId();
+    setTimeout(() => {
+      inputs.current[0]?.focus();
+    }, 100);
   }, []);
 
   const handleChangeText = (text: string, index: number) => {
@@ -74,13 +61,14 @@ export default function Verify() {
   };
 
   const handleVerify = async () => {
+    const userId = await AsyncStorage.getItem("user_id");
     if (!userId) {
-      setError("User not found. Please try logging in again.");
+      setError(t("verify.userNotFound"));
       return;
     }
 
     if (code.join("").length !== 4) {
-      setError("Please enter a valid 4-digit code.");
+      setError(t("verify.invalidCode"));
       return;
     }
 
@@ -94,34 +82,29 @@ export default function Verify() {
       if (response.result) {
         await AsyncStorage.setItem("user_num_id", response?.user?.id);
         await AsyncStorage.setItem("user_name", response?.user?.name);
-        setTimeout(() => router.push("/auth/verified"), 800);
+        setTimeout(() => router.push("/auth/verified"), 500);
       } else {
-        setError(response.message || "Verification failed.");
+        setError(t("verify.verificationFailed"));
       }
     } catch (error) {
       console.error("Verification Error:", error);
-      setError("Something went wrong. Please try again.");
+      setError(t("verify.errorFallback"));
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push("/auth/login")}>
           <Arrow />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>OTP Verification</Text>
+        <Text style={styles.headerTitle}>{t("verify.headerTitle")} </Text>
         <Text></Text>
       </View>
 
-      {/* Title & Subtitle */}
-      <Text style={styles.title}>Enter Your 4 digit {"\n"}Code</Text>
-      <Text style={styles.subtitle}>
-        Please check your email and enter the 4-digit code.
-      </Text>
+      <Text style={styles.title}>{t("verify.title")}</Text>
+      <Text style={styles.subtitle}>{t("verify.subtitle")}</Text>
 
-      {/* OTP Input */}
       <View
         style={[styles.otpContainer, error ? styles.otpContainerError : null]}
       >
@@ -147,14 +130,14 @@ export default function Verify() {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <TouchableOpacity>
           <Text style={styles.resendText}>
-            Didn&apos;t receive the code?{" "}
-            <Text style={styles.resendLink}>Resend</Text>
+            {t("verify.resendPrefix")}{" "}
+            <Text style={styles.resendLink}>{t("verify.resendLink")}</Text>
           </Text>
         </TouchableOpacity>
       </View>
 
       {/* Verify Button */}
-      <Button title="Verify" onPress={handleVerify} />
+      <Button title={t("verify.button")} onPress={handleVerify} />
     </SafeAreaView>
   );
 }
