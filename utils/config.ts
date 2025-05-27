@@ -5,14 +5,14 @@ import ar from "../locales/ar.json";
 import en from "../locales/en.json";
 
 i18n.use(initReactI18next).init({
-  lng: "en",
+  lng: "en", // Default to English
   fallbackLng: "en",
   resources: {
     en: { translation: en },
     ar: { translation: ar },
   },
   interpolation: {
-    escapeValue: false,
+    escapeValue: false, // Not needed for React
   },
 });
 

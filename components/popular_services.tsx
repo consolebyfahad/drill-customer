@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 import ServiceCard from "./service_card";
-
 type Service = {
   id: string;
   image: string; // Changed to string for URL
@@ -31,6 +31,7 @@ type ApiService = {
 };
 
 const PopularServices: React.FC = () => {
+  const { t } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +80,7 @@ const PopularServices: React.FC = () => {
     return (
       <>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Popular Services</Text>
+          <Text style={styles.headerText}>{t("popularservices")}</Text>
           {/* <Text style={styles.seeAllText}>See All</Text> */}
         </View>
         <View style={styles.loadingContainer}>

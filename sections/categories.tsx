@@ -1,6 +1,7 @@
 import CategoryCard from "@/components/category_card";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -20,7 +21,7 @@ type Category = {
 };
 
 const Categories: React.FC = () => {
-  const router = useRouter();
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,11 +72,11 @@ const Categories: React.FC = () => {
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
-        <Text style={styles.title}>Categories</Text>
+        <Text style={styles.title}>{t("categories")}</Text>
         {categories.length > 6 && (
           <TouchableOpacity onPress={() => setExpanded(!expanded)}>
             <Text style={styles.seeAllText}>
-              {expanded ? "Show Less" : "See All"}
+              {expanded ? t("showless") : t("seeall")}
             </Text>
           </TouchableOpacity>
         )}

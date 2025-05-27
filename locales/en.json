@@ -5,6 +5,12 @@
   "getStarted": "Get Started",
   "continue": "Continue",
   "defaultGreeting": "Dear Member",
+  "cancel": "Cancel",
+  "logout": "Logout",
+  "categories": "Categories",
+  "showless": "Show Less",
+  "seeall": "See All",
+  "popularservices": "Popular Services",
   "login": {
     "title": "Welcome",
     "subtitle": "Enter your phone \nnumber to get started.",
@@ -42,5 +48,16 @@
     "permissionRequired": "Location access is required.",
     "error": "Error",
     "errorMessage": "Failed to fetch location."
+  },
+  "language": {
+    "language": "Language",
+    "selectLanguage": "Select your preferred language",
+    "languageNote": "The app will restart to apply language changes"
+  },
+  "account": {
+    "title": "Account",
+    "viewProfile": "View Profile",
+    "editProfile": "Edit Profile",
+    "logoutConfirmation": "Are you sure you want to logout?"
   }
 }

@@ -1,17 +1,23 @@
 import Rating from "@/assets/svgs/emptyStar.svg";
 import About from "@/assets/svgs/info.svg";
 // import Notification from "@/assets/svgs/Notification.svg";
+import defaultProfile from "@/assets/images/default-profile.png";
+import Language from "@/assets/svgs/language.svg";
+import Logout from "@/assets/svgs/Logout.svg";
 import Card from "@/assets/svgs/profile/Card.svg";
 import AccountStatus from "@/assets/svgs/profile/security.svg";
 import Support from "@/assets/svgs/profile/support.svg";
 import Wallet from "@/assets/svgs/profile/Wallet.svg";
+import Verify from "@/assets/svgs/verify.svg";
 import Button from "@/components/button";
 import Header from "@/components/header";
 import Seprator from "@/components/seprator";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -21,11 +27,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// import Language from "@/assets/svgs/language.svg";
-import defaultProfile from "@/assets/images/default-profile.png";
-import Logout from "@/assets/svgs/Logout.svg";
-import Verify from "@/assets/svgs/verify.svg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
@@ -53,6 +54,7 @@ type User = {
 
 export default function Account() {
   // const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<User>({
     id: "",
@@ -118,9 +120,9 @@ export default function Account() {
       case "About App":
         router.push("/account/about");
         break;
-      // case "Language":
-      //   router.push("/account/language");
-      //   break;
+      case "Language":
+        router.push("/account/language");
+        break;
       case "Support":
         router.push("/account/support");
         break;
@@ -133,25 +135,32 @@ export default function Account() {
   };
 
   const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await AsyncStorage.clear();
-            router.replace("/welcome");
-          } catch (error) {
-            console.error("Error during logout:", error);
-            Alert.alert("Error", "Failed to logout. Please try again.");
-          }
+    Alert.alert(
+      t("account.logoutConfirmation"), // This is the message
+      "", // No title
+      [
+        {
+          text: t("cancel"),
+          style: "cancel",
         },
-      },
-    ]);
+        {
+          text: t("logout"),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await AsyncStorage.clear();
+              router.replace("/welcome");
+            } catch (error) {
+              console.error("Error during logout:", error);
+              Alert.alert(
+                t("account.logoutErrorTitle"),
+                t("account.logoutErrorMessage")
+              );
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleProfile = () => {
@@ -169,7 +178,7 @@ export default function Account() {
     Card: <Card />,
     "Rate Us": <Rating />,
     "About App": <About />,
-    // Language: <Language />,
+    Language: <Language />,
     Support: <Support />,
     Logout: <Logout />,
   };
@@ -187,12 +196,12 @@ export default function Account() {
     { icon: "Card", title: "Card", right: "5", extraRight: "chevron-forward" },
     { icon: "Rate Us", title: "Rate Us", extraRight: "chevron-forward" },
     { icon: "About App", title: "About App", extraRight: "chevron-forward" },
-    // {
-    //   icon: "Language",
-    //   title: "Language",
-    //   right: "English",
-    //   extraRight: "chevron-forward",
-    // },
+    {
+      icon: "Language",
+      title: "Language",
+      right: "English",
+      extraRight: "chevron-forward",
+    },
     { icon: "Support", title: "Support", extraRight: "chevron-forward" },
     { icon: "Logout", title: "Logout", extraRight: "chevron-forward" },
   ];
@@ -204,7 +213,7 @@ export default function Account() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
-        <Header title="Account" homeScreen={false} />
+        <Header title={t("account.title")} homeScreen={false} />
 
         {/* Profile Section */}
         <View style={styles.profileContainer}>
@@ -234,13 +243,13 @@ export default function Account() {
         {/* Buttons */}
         <View style={styles.buttonRow}>
           <Button
-            title="View Profile"
+            title={t("account.viewProfile")}
             width="48%"
             fullWidth={false}
             onPress={handleProfile}
           />
           <Button
-            title="Edit Profile"
+            title={t("account.editProfile")}
             width="48%"
             fullWidth={false}
             variant="secondary"
