@@ -1,13 +1,14 @@
 import Tick from "@/assets/svgs/doubletick.svg";
 import Button from "@/components/button";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 export default function ConfirmedBooking() {
-  const router = useRouter();
+  const { t } = useTranslation();
 
   const handleNext = () => {
     router.push("/order/order_place");
@@ -15,28 +16,21 @@ export default function ConfirmedBooking() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Image at the top */}
+      {/* Top Section */}
       <View style={styles.imageContainer}>
         <Tick />
         <View style={styles.textContainer}>
-          {/* Welcome heading */}
-          <Text style={styles.heading}>Booking placed successfully</Text>
-          {/* Paragraph */}
-          <Text style={styles.paragraph}>
-            Thanks for your Booking. Your Booking has been placed successfully.
-            App will auto-assign you a service provider.
-          </Text>
+          <Text style={styles.heading}>{t("booking.heading")}</Text>
+          <Text style={styles.paragraph}>{t("booking.paragraph")}</Text>
         </View>
       </View>
 
-      {/* Get Started button */}
+      {/* Note and Button */}
       <View style={styles.noteContainer}>
         <Text style={styles.noteText}>
-          <Text style={styles.boldText}>Note:</Text> If service time exceeds
-          from the requested package, then you will be shifted to a higher
-          package and the cost will be added to your total payments.
+          <Text style={styles.boldText}>{t("booking.note")}</Text>
         </Text>
-        <Button title={"Go to Order"} onPress={handleNext} />
+        <Button title={t("booking.button")} onPress={handleNext} />
       </View>
     </SafeAreaView>
   );

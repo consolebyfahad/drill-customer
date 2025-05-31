@@ -7,10 +7,10 @@ import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 export default function Welcome() {
+  const { t } = useTranslation();
   const handleGetStarted = () => {
     router.push("/auth/login");
   };
-  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>

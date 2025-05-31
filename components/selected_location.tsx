@@ -3,6 +3,7 @@ import { Colors } from "@/constants/Colors";
 import * as LocationService from "expo-location";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
 
@@ -29,6 +30,7 @@ export default function SelectedLocation({
   disabled = false,
 }: Prop) {
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const [address, setAddress] = useState<string | null>(
     selectedLocation || params?.location || null
   );
@@ -143,7 +145,7 @@ export default function SelectedLocation({
   return (
     <>
       <View style={styles.header}>
-        <Text style={styles.title}>Requested Service Location</Text>
+        <Text style={styles.title}>{t("booking.location")}</Text>
         {!disabled && (
           <TouchableOpacity onPress={handleLocation}>
             <Text style={styles.changeText}>Change</Text>

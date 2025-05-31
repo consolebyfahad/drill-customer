@@ -4,6 +4,7 @@ import { Colors } from "@/constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -39,17 +40,17 @@ export type Order = {
 };
 
 export default function Orders() {
+  const { t } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
 
   // Dropdown state
   const [open, setOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState("All");
   const [items, setItems] = useState([
-    { label: "All", value: "All" },
-    { label: "Pending", value: "pending" },
-    { label: "Completed", value: "completed" },
+    { label: t("status_all"), value: "All" },
+    { label: t("status_pending"), value: "pending" },
+    { label: t("status_completed"), value: "completed" },
   ]);
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function Orders() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Header title="Orders" icon={true} />
+        <Header title={t("orders")} icon={true} />
 
         {/* Dropdown Picker */}
         <View style={styles.dropdownContainer}>
@@ -135,7 +136,7 @@ export default function Orders() {
                 <ActivityIndicator size="large" color={Colors.primary} />
               </View>
             ) : filteredOrders.length > 0 ? (
-              filteredOrders.map((order, index) => (
+              filteredOrders.map((order) => (
                 <ServiceDetailsCard
                   key={`order-${order.id}`}
                   order={order}
@@ -145,7 +146,7 @@ export default function Orders() {
               ))
             ) : (
               <View style={styles.noOrdersContainer}>
-                <Text>No orders found</Text>
+                <Text>{t("no_order")}</Text>
               </View>
             )}
           </View>
@@ -202,7 +203,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   noOrdersContainer: {
-    padding: 40,
+    flex: 1,
+    paddingTop: 80,
     alignItems: "center",
     justifyContent: "center",
   },

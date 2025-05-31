@@ -1,6 +1,6 @@
 import CategoryCard from "@/components/category_card";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -20,7 +20,7 @@ type Category = {
   name: string;
 };
 
-const Categories: React.FC = () => {
+export default function Categories() {
   const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -102,7 +102,7 @@ const Categories: React.FC = () => {
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -134,5 +134,3 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
   },
 });
-
-export default Categories;

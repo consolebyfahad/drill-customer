@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -44,6 +45,7 @@ type User = {
 };
 
 export default function EditProfile() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User>({
     name: "",
     email: "",
@@ -233,7 +235,7 @@ export default function EditProfile() {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Header title="Edit Profile" backBtn />
+        <Header title={t("account.editProfile")} backBtn />
         {loading ? (
           <View style={styles.loadingScreen}>
             <ActivityIndicator size="large" color={Colors.primary} />
@@ -268,35 +270,35 @@ export default function EditProfile() {
             <Seprator />
 
             <Inputfield
-              label="Full Name"
+              label={t("account.fullname")}
               placeholder="Enter your name"
               IconComponent={<Profile />}
               value={user.name}
               onChangeText={(text) => handleInputChange("name", text)}
             />
             <Inputfield
-              label="Phone Number"
+              label={t("account.phonenumber")}
               placeholder="Enter your phone"
               IconComponent={<Phone />}
               value={user.phone}
               onChangeText={(text) => handleInputChange("phone", text)}
             />
             <Inputfield
-              label="Email Address"
+              label={t("account.emailaddress")}
               placeholder="Enter your email"
               IconComponent={<Email />}
               value={user.email}
               onChangeText={(text) => handleInputChange("email", text)}
             />
             <Inputfield
-              label="Date of Birth"
+              label={t("account.dob")}
               placeholder="YYYY-MM-DD"
               IconComponent={<DOB />}
               value={user.dob}
               onChangeText={(text) => handleInputChange("dob", text)}
             />
             <Inputfield
-              label="Address"
+              label={t("account.address")}
               placeholder="Enter your address"
               IconComponent={<Address />}
               value={user.address}
@@ -306,7 +308,7 @@ export default function EditProfile() {
             <View style={styles.rowContainer}>
               <View style={styles.flexItem}>
                 <Inputfield
-                  label="City"
+                  label={t("account.city")}
                   placeholder="Enter city"
                   IconComponent={<City />}
                   value={user.city}
@@ -315,7 +317,7 @@ export default function EditProfile() {
               </View>
               <View style={styles.flexItem}>
                 <Inputfield
-                  label="Zip Code"
+                  label={t("account.zipcode")}
                   placeholder="Enter zip code"
                   IconComponent={<Zip />}
                   value={user.zip}
@@ -326,7 +328,7 @@ export default function EditProfile() {
             </View>
 
             {error && <Text style={styles.errorText}>{error}</Text>}
-            <Button onPress={handleUpdate} title="Update" />
+            <Button onPress={handleUpdate} title={t("account.update")} />
           </ScrollView>
         )}
       </KeyboardAvoidingView>

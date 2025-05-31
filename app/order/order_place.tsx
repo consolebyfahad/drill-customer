@@ -1,9 +1,17 @@
 import Button from "@/components/button";
 import Header from "@/components/header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import {
+  ActivityIndicator,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Popup from "~/components/popup";
 import { useToast } from "~/components/ToastProvider";
@@ -38,7 +46,7 @@ interface NotificationData {
 }
 
 const OrderPlace: React.FC = () => {
-  const router = useRouter();
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { tab } = useLocalSearchParams();
   const [activeTab, setActiveTab] = useState<string>(
@@ -334,7 +342,7 @@ const OrderPlace: React.FC = () => {
             backAddress={"/(tabs)"}
           />
           <View style={styles.loadingContainer}>
-            <Text>Loading order details...</Text>
+            <ActivityIndicator size={"large"} />
           </View>
         </View>
       </SafeAreaView>
@@ -384,7 +392,7 @@ const OrderPlace: React.FC = () => {
                   : styles.inactiveTabText
               }
             >
-              Detail
+              {t("booking.details")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -398,7 +406,7 @@ const OrderPlace: React.FC = () => {
                   : styles.inactiveTabText
               }
             >
-              Chat
+              {t("booking.chat")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -414,14 +422,14 @@ const OrderPlace: React.FC = () => {
           {order?.status === "completed" ? null : order.status !== "started" ? (
             <>
               <Button
-                title="Cancel"
+                title={t("cancel")}
                 variant="secondary"
                 fullWidth={false}
                 width="32%"
                 onPress={handleCancel}
               />
               <Button
-                title="Pay Now"
+                title={t("paynow")}
                 variant="primary"
                 fullWidth={false}
                 width="65%"
@@ -430,7 +438,7 @@ const OrderPlace: React.FC = () => {
             </>
           ) : (
             <Button
-              title="Pay Now"
+              title={t("paynow")}
               variant="primary"
               fullWidth={true}
               width="100%"

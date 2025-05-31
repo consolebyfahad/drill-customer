@@ -8,6 +8,7 @@ import Seprator from "@/components/seprator";
 import Stepper from "@/components/stepper";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -31,14 +32,8 @@ interface Package {
   features?: string[];
 }
 
-const paymentMethods = [
-  { id: "visa", image: Visa, name: "Visa Card" },
-  { id: "apple", image: Applepay, name: "Apple Pay" },
-  { id: "wallet", image: Appwallet, name: "App Wallet" },
-  { id: "cash", image: Cashonpay, name: "Cash on Pay" },
-];
-
 export default function Booking2Screen() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams();
   console.log("booking2", params);
 
@@ -47,6 +42,12 @@ export default function Booking2Screen() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
 
+  const paymentMethods = [
+    { id: "visa", image: Visa, name: t("booking.visacard") },
+    { id: "apple", image: Applepay, name: t("booking.applepay") },
+    { id: "wallet", image: Appwallet, name: t("booking.appwallet") },
+    { id: "cash", image: Cashonpay, name: t("booking.cashonpay") },
+  ];
   // Fetch available packages on component mount
   useEffect(() => {
     fetchAvailablePlans();
@@ -131,7 +132,7 @@ export default function Booking2Screen() {
           <Stepper step={true} />
 
           {/* Select Package */}
-          <Text style={styles.sectionTitle}>Select Package</Text>
+          <Text style={styles.sectionTitle}>{t("booking.selectpackage")}</Text>
           {packages.map((pkg) => (
             <TouchableOpacity
               key={pkg.id}
@@ -172,7 +173,9 @@ export default function Booking2Screen() {
 
           {/* Payment Method */}
           <View style={styles.rowBetween}>
-            <Text style={styles.sectionTitle}>Payment Method</Text>
+            <Text style={styles.sectionTitle}>
+              {t("booking.paymentmethod")}
+            </Text>
             <TouchableOpacity onPress={handleAddCard}>
               <Text style={styles.addCardText}>Add Card</Text>
             </TouchableOpacity>
@@ -200,14 +203,14 @@ export default function Booking2Screen() {
         {/* Buttons */}
         <View style={styles.buttonRow}>
           <Button
-            title="Later"
+            title={t("later")}
             onPress={handleNext}
             variant="secondary"
             fullWidth={false}
             width="29%"
           />
           <Button
-            title="Pay Advance"
+            title={t("payadvance")}
             onPress={handleNext}
             fullWidth={false}
             width="69%"

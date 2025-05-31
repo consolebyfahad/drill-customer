@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   ScrollView,
@@ -42,6 +43,7 @@ type BookingParams = {
 };
 
 export default function ConfirmBooking() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams() as BookingParams;
   console.log("confrim bookingparams", params);
   const [promoCode, setPromoCode] = useState("");
@@ -118,7 +120,7 @@ export default function ConfirmBooking() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Header backBtn={true} title="Confirm Booking" />
+        <Header backBtn={true} title={t("booking.confrim")} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Stepper step={true} />
 
@@ -151,7 +153,7 @@ export default function ConfirmBooking() {
           <Seprator />
 
           {/* Selected Package */}
-          <Text style={styles.sectionTitle}>Selected Package</Text>
+          <Text style={styles.sectionTitle}>{t("booking.selectpackage")}</Text>
           <View style={styles.packageContainer}>
             <View>
               <Text style={styles.packageTitle}>{params.packageName}</Text>
@@ -165,7 +167,7 @@ export default function ConfirmBooking() {
           <Seprator />
 
           {/* Selected Payment Method */}
-          <Text style={styles.sectionTitle}>Payment Method</Text>
+          <Text style={styles.sectionTitle}>{t("booking.paymentmethod")}</Text>
           <View style={styles.paymentContainer}>
             <Text style={styles.paymentText}>{params.paymentMethod}</Text>
             <Ionicons name="checkmark-circle" size={20} color="blue" />
@@ -174,7 +176,7 @@ export default function ConfirmBooking() {
           <Seprator />
 
           {/* Promo Code Input */}
-          <Text style={styles.sectionTitle}>Add Promo Code</Text>
+          <Text style={styles.sectionTitle}>{t("booking.promocode")}</Text>
           <View style={styles.promoContainer}>
             <TextInput
               style={styles.promoInput}
@@ -191,29 +193,29 @@ export default function ConfirmBooking() {
           </View>
 
           {/* Price Details */}
-          <Text style={styles.sectionTitle}>Price Details</Text>
+          <Text style={styles.sectionTitle}>{t("booking.pricedetails")}</Text>
           <View style={styles.priceContainer}>
             <View style={styles.rowBetween}>
-              <Text style={styles.grayText}>Price</Text>
+              <Text style={styles.grayText}>{t("price")}</Text>
               <Text style={styles.boldText}>SAR {subTotal}</Text>
             </View>
             <DashedSeparator />
             <View style={styles.rowBetween}>
-              <Text style={styles.grayText}>Tax (2%)</Text>
+              <Text style={styles.grayText}>{t("tax")} (2%)</Text>
               <Text style={styles.boldText}>SAR {tax.toFixed(2)}</Text>
             </View>
             {isPromoValid && (
               <>
                 <DashedSeparator />
                 <View style={styles.rowBetween}>
-                  <Text style={styles.grayText}>Discount</Text>
+                  <Text style={styles.grayText}>{t("discount")}</Text>
                   <Text style={styles.discountText}>-SAR {discount}</Text>
                 </View>
               </>
             )}
             <DashedSeparator />
             <View style={styles.rowBetween}>
-              <Text style={styles.grayText}>Total Amount</Text>
+              <Text style={styles.grayText}>{t("totalamount")}</Text>
               <Text style={styles.primaryText}>
                 SAR {totalAmount.toFixed(2)}
               </Text>
@@ -222,7 +224,7 @@ export default function ConfirmBooking() {
         </ScrollView>
 
         {/* Confirm Button */}
-        <Button title="Confirm Booking" onPress={handleConfirmBooking} />
+        <Button title={t("booking.confrim")} onPress={handleConfirmBooking} />
       </View>
     </SafeAreaView>
   );

@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PopularServices from "~/components/popular_services";
 import { Colors } from "~/constants/Colors";
 
-const Home = () => {
+export default function Home() {
   const { t } = useTranslation();
   const [userName, setUserName] = useState<string | null>(null);
 
@@ -52,9 +52,7 @@ const Home = () => {
       </ScrollView>
     </SafeAreaView>
   );
-};
-
-export default Home;
+}
 
 const styles = StyleSheet.create({
   container: {

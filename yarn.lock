@@ -2295,6 +2295,11 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-3.0.8.tgz#f746549c3ae52fdb7794dfc244dfba98ebca37f2"
   integrity sha512-yx6KAqlt3TAHBduS2fMQtJDL2ufIHnDRArrJEOoTTuizxqmjLT+psGYOHpmMl3gvQpFJ11Hs76guUUktzAF9Bg==
 
+"@os-team/i18next-react-native-language-detector@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@os-team/i18next-react-native-language-detector/-/i18next-react-native-language-detector-1.1.6.tgz#b42247843a799c3c0b736b147907c2bde6ba73ba"
+  integrity sha512-+VSf2wJafzqaaUbWl7b8ffcWmS1AhxPyNhUCFvgHXJpIVKhq6Ul1XFK5MUVLkz3HjCmc1qooIf3CAeLlUoGFjQ==
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
@@ -5050,7 +5055,7 @@ expo-linking@~7.1.5:
     expo-constants "~17.1.6"
     invariant "^2.2.4"
 
-expo-localization@^16.1.5:
+expo-localization@~16.1.5:
   version "16.1.5"
   resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-16.1.5.tgz#b2877f514669924b2a99d7f85d90e2378bee9e10"
   integrity sha512-dymvf0S11afyMeRbnoXd2iWWzFYwg21jHTnLBO/7ObNO1rKlYpus0ghVDnh+sJFV2u7s518e/JTcAqNR69EZkw==
@@ -5896,7 +5901,17 @@ i18next-browser-languagedetector@^8.1.0:
   dependencies:
     "@babel/runtime" "^7.23.2"
 
-i18next@^25.1.2:
+i18next-react-native-async-storage@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/i18next-react-native-async-storage/-/i18next-react-native-async-storage-1.0.4.tgz#affe8f9bf4ed266520685ce2d7f88792550d02b2"
+  integrity sha512-udxag0zffOTy6aCaeEh+886wrIGdbpXjt+j9WdPMpXMN48u+rz/Ux9N9jonUA+r3viURK3Hg2aR7MS2jZ+lN2A==
+
+i18next-react-native-language-detector@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/i18next-react-native-language-detector/-/i18next-react-native-language-detector-1.0.2.tgz#5c47482611a44262302a363d5be34a42b11ddfc6"
+  integrity sha512-ihg5pX5ESZ+Bx2ARI4loBNwcF3z6RyVmVKyV5QRF9Srbbdp/Jb7KW3o3NZINpc+lJasEok+L75gBHfwwXzI7xg==
+
+i18next@^25.2.1:
   version "25.2.1"
   resolved "https://registry.yarnpkg.com/i18next/-/i18next-25.2.1.tgz#23cf8794904f551f577558d93c84b0fb6cd489a2"
   integrity sha512-+UoXK5wh+VlE1Zy5p6MjcvctHXAhRwQKCxiJD8noKZzIXmnAX8gdHX5fLPA3MEVxEN4vbZkQFy8N0LyD9tUqPw==
@@ -7902,7 +7917,7 @@ react-freeze@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-freeze/-/react-freeze-1.0.4.tgz#cbbea2762b0368b05cbe407ddc9d518c57c6f3ad"
   integrity sha512-r4F0Sec0BLxWicc7HEyo2x3/2icUTrRmDjaaRyzzn+7aDyFZliszMDOgLVwSnQnYENOlL1o569Ze2HZefk8clA==
 
-react-i18next@^15.5.1:
+react-i18next@^15.5.2:
   version "15.5.2"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-15.5.2.tgz#2cfbd8e055efea077a7cbd7fbd9528c76d31925e"
   integrity sha512-ePODyXgmZQAOYTbZXQn5rRsSBu3Gszo69jxW6aKmlSgxKAI1fOhDwSu6bT4EKHciWPKQ7v7lPrjeiadR6Gi+1A==

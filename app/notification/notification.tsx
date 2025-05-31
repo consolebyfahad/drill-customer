@@ -2,6 +2,7 @@ import AccountIcon from "@/assets/svgs/profileIcon.svg";
 import Header from "@/components/header";
 import NotificationCard from "@/components/notification_card";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,31 +20,14 @@ const notifications: Notification[] = [
     message: "Your account has been successfully created.",
     dateTime: "05 Jan 2023 | 10:00 AM",
   },
-  {
-    icon: <AccountIcon width={24} height={24} fill="#000" />,
-    title: "Security",
-    message: "New security update available.",
-    dateTime: "06 Jan 2023 | 02:30 PM",
-  },
-  {
-    icon: <AccountIcon width={24} height={24} fill="#000" />,
-    title: "Reward Received",
-    message: "Congratulations! You have received a reward.",
-    dateTime: "07 Jan 2023 | 08:45 AM",
-  },
-  {
-    icon: <AccountIcon width={24} height={24} fill="#000" />,
-    title: "New Message",
-    message: "You have a new message from support.",
-    dateTime: "08 Jan 2023 | 06:15 PM",
-  },
 ];
 
-const NotificationScreen: React.FC = () => {
+export default function NotificationScreen() {
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Header backBtn={true} title="Notifications" />
+        <Header backBtn={true} title={t("notifications")} />
         <View style={styles.notificationList}>
           {notifications.map((notification, index) => (
             <NotificationCard
@@ -58,7 +42,7 @@ const NotificationScreen: React.FC = () => {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -73,5 +57,3 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 });
-
-export default NotificationScreen;

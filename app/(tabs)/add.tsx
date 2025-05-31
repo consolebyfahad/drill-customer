@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -7,7 +8,6 @@ import {
   Text,
   View,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import CategoryCard from "~/components/category_card";
 import Header from "~/components/header";
@@ -21,6 +21,7 @@ type Category = {
 };
 
 export default function Add() {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,37 +65,33 @@ export default function Add() {
     });
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.centeredContainer}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </SafeAreaView>
-    );
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView style={styles.centeredContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Header title="Categories" icon />
-        <FlatList
-          data={categories}
-          keyExtractor={(item) => item.id}
-          numColumns={3}
-          columnWrapperStyle={styles.columnWrapper}
-          nestedScrollEnabled
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <CategoryCard item={item} onPress={() => handleBooking(item)} />
-          )}
-        />
+        <Header title={t("categories")} icon />
+        {loading && (
+          <View style={styles.centeredContainer}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        )}
+        {error && categories.length === 0 && !loading && (
+          <View style={styles.centeredContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+        {!loading && (
+          <FlatList
+            data={categories}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            columnWrapperStyle={styles.columnWrapper}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <CategoryCard item={item} onPress={() => handleBooking(item)} />
+            )}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -113,7 +110,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.white,
   },
   errorText: {
     color: Colors.danger,

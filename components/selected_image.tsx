@@ -3,6 +3,7 @@ import { Colors } from "@/constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -28,6 +29,7 @@ export default function SelectedImage({
   const [localImage, setLocalImage] = useState<string | null>(
     selectedImage || null
   );
+  const { t } = useTranslation();
 
   const BASE_URL = "https://7tracking.com/saudiservices/images/";
 
@@ -127,7 +129,7 @@ export default function SelectedImage({
 
   return (
     <>
-      <Text style={styles.title}>Upload Picture</Text>
+      <Text style={styles.title}>{t("booking.uploadpicture")}</Text>
       <TouchableOpacity
         onPress={openImagePicker}
         style={styles.uploadContainer}

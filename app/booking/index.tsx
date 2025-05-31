@@ -8,11 +8,13 @@ import Seprator from "@/components/seprator";
 import Stepper from "@/components/stepper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 
 export default function BookingScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   console.log("params", params);
@@ -98,7 +100,7 @@ export default function BookingScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           {/* Header */}
-          <Header backBtn={true} title="Book Service" />
+          <Header backBtn={true} title={t("booking.bookservice")} />
           <Stepper />
 
           {/* Service Details */}
@@ -144,7 +146,7 @@ export default function BookingScreen() {
 
       {/* Next Button */}
       <View style={styles.buttonContainer}>
-        <Button title="Next" onPress={handleNext} />
+        <Button title={t("next")} onPress={handleNext} />
       </View>
     </SafeAreaView>
   );

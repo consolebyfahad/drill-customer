@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ScrollView,
   StyleSheet,
@@ -20,6 +21,7 @@ interface OrderDetailsProps {
 
 export default function OrderDetails({ order }: OrderDetailsProps) {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <ScrollView
@@ -32,7 +34,7 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
           style={styles.orderHeader}
           onPress={() => setShowOrderDetails(!showOrderDetails)}
         >
-          <Text style={styles.sectionTitle}>Order Details</Text>
+          <Text style={styles.sectionTitle}>{t("booking.orderdetails")}</Text>
           <Text style={styles.grayText}>
             {showOrderDetails ? (
               <Ionicons
@@ -52,17 +54,14 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
         {showOrderDetails && <OrderDetailsSection order={order} />}
       </View>
       <Text style={[styles.sectionTitle, { marginBottom: 8 }]}>
-        About Service Provider
+        {t("booking.aboutserviceprovider")}
       </Text>
 
       {order.provider ? (
         <ProviderCard order={order} />
       ) : (
         <View style={styles.noProviderContainer}>
-          <Text style={styles.noProviderText}>
-            No provider assigned yet. We'll notify you when a provider accepts
-            your request.
-          </Text>
+          <Text style={styles.noProviderText}>{t("booking.noprovider")}</Text>
         </View>
       )}
     </ScrollView>

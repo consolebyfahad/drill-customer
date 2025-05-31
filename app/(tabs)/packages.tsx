@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -24,6 +25,7 @@ interface Package {
 }
 
 export default function Packages() {
+  const { t } = useTranslation();
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,7 +114,7 @@ export default function Packages() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Header title="Packages" icon={true} />
+        <Header title={t("packages")} icon={true} />
 
         {loading ? (
           <View style={styles.loaderContainer}>

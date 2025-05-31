@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 import ServiceCard from "./service_card";
+
 type Service = {
   id: string;
-  image: string; // Changed to string for URL
+  image: string;
   title: string;
   rating: number;
   reviews: number;
   price: number;
   provider: string;
-  providerImage?: string; // Optional since API doesn't provide this
+  providerImage?: string;
 };
 
 type ApiService = {
@@ -30,7 +31,7 @@ type ApiService = {
   translations: string;
 };
 
-const PopularServices: React.FC = () => {
+export default function PopularServices() {
   const { t } = useTranslation();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,12 +44,13 @@ const PopularServices: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
+
         const formData = new FormData();
         formData.append("type", "home");
+
         const response = await apiCall(formData);
         console.log("response", response);
 
-        // Transform API data to match Service type
         if (response?.data) {
           const transformedServices: Service[] = response.data.map(
             (apiService: ApiService) => ({
@@ -73,57 +75,53 @@ const PopularServices: React.FC = () => {
         setLoading(false);
       }
     };
+
     getCategories();
   }, []);
 
-  if (loading) {
-    return (
-      <>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>{t("popularservices")}</Text>
-          {/* <Text style={styles.seeAllText}>See All</Text> */}
-        </View>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading services...</Text>
-        </View>
-      </>
-    );
-  }
-
-  if (error && services.length === 0) {
-    return (
-      <>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Popular Services</Text>
-          {/* <Text style={styles.seeAllText}>See All</Text> */}
-        </View>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      </>
-    );
-  }
-
   return (
-    <>
+    <View>
       {/* Header */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Popular Services</Text>
+        <Text style={styles.headerText}>{t("popularservices")}</Text>
         {/* <Text style={styles.seeAllText}>See All</Text> */}
       </View>
 
-      {/* Horizontal Scrollable List */}
-      <FlatList
-        data={services}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        nestedScrollEnabled={true}
-        renderItem={({ item }) => <ServiceCard item={item} />}
-      />
-    </>
+      {/* Loading State */}
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>{t("loadingservices")}</Text>
+        </View>
+      )}
+
+      {/* Error State */}
+      {error && services.length === 0 && !loading && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      )}
+
+      {/* Services List */}
+      {!loading && (
+        <FlatList
+          data={services}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          nestedScrollEnabled={true}
+          renderItem={({ item }) => <ServiceCard item={item} />}
+          ListEmptyComponent={
+            !error && services.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No services available</Text>
+              </View>
+            ) : null
+          }
+        />
+      )}
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -157,6 +155,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
+  emptyContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  emptyText: {
+    color: Colors.secondary,
+    fontSize: 16,
+    textAlign: "center",
+  },
 });
-
-export default PopularServices;

@@ -1,4 +1,3 @@
-import * as Updates from "expo-updates";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -38,37 +37,11 @@ const Language: React.FC = () => {
 
   const changeLanguage = async (languageCode: string): Promise<void> => {
     if (i18n.language === languageCode) {
-      return; // Already selected
+      return;
     }
 
     try {
       await i18n.changeLanguage(languageCode);
-
-      // Show confirmation dialog
-      Alert.alert(
-        t("language.restartRequired") || "Restart Required",
-        t("language.restartMessage") ||
-          "The app needs to restart to apply language changes. Restart now?",
-        [
-          {
-            text: t("later") || "Later",
-            style: "cancel",
-          },
-          {
-            text: t("language.restartNow") || "Restart Now",
-            onPress: async () => {
-              try {
-                // Restart the app to apply language changes
-                await Updates.reloadAsync();
-              } catch (error) {
-                console.error("Failed to restart app:", error);
-                // Fallback: just force a re-render
-                // You might want to navigate to a different screen and back
-              }
-            },
-          },
-        ]
-      );
     } catch (error) {
       console.error("Failed to change language:", error);
       Alert.alert(

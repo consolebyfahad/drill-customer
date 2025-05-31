@@ -1,5 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
 
@@ -15,6 +16,7 @@ export default function SelectedDescription({
   disabled = false,
 }: Props) {
   const [description, setDescription] = useState(propDescription || "");
+  const { t } = useTranslation();
 
   // Update local state if prop changes
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function SelectedDescription({
 
   return (
     <>
-      <Text style={styles.title}>Describe Your Problem</Text>
+      <Text style={styles.title}>{t("booking.discribeproblem")}</Text>
       {disabled ? (
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>

@@ -1,7 +1,6 @@
+import defaultProfile from "@/assets/images/default-profile.png";
 import Rating from "@/assets/svgs/emptyStar.svg";
 import About from "@/assets/svgs/info.svg";
-// import Notification from "@/assets/svgs/Notification.svg";
-import defaultProfile from "@/assets/images/default-profile.png";
 import Language from "@/assets/svgs/language.svg";
 import Logout from "@/assets/svgs/Logout.svg";
 import Card from "@/assets/svgs/profile/Card.svg";
@@ -16,6 +15,7 @@ import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
+import i18n from "i18next";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -53,7 +53,6 @@ type User = {
 };
 
 export default function Account() {
-  // const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<User>({
@@ -97,36 +96,33 @@ export default function Account() {
       if (response.profile || response.user) {
         const profileData = response.profile || response.user;
         setUser(profileData);
-
-        // if (profileData.notifications_enabled) {
-        //   setNotificationsEnabled(profileData.notifications_enabled === "1");
-        // }
       }
     } catch (err) {
       console.error("Failed to fetch profile:", err);
     }
   };
 
-  const handleNavigation = (title: string) => {
-    switch (title) {
-      case "Wallet":
+  const handleNavigation = (key: string) => {
+    switch (key) {
+      case "wallet":
         router.push("/account/wallet");
         break;
-      case "Card":
+      case "card":
         router.push("/account/card_list");
         break;
-      case "Rate Us":
+      case "rateUs":
+        // Add rate us logic here
         break;
-      case "About App":
+      case "aboutApp":
         router.push("/account/about");
         break;
-      case "Language":
+      case "language":
         router.push("/account/language");
         break;
-      case "Support":
+      case "support":
         router.push("/account/support");
         break;
-      case "Logout":
+      case "logout":
         handleLogout();
         break;
       default:
@@ -174,7 +170,6 @@ export default function Account() {
   const iconMap: { [key: string]: JSX.Element } = {
     Account: <AccountStatus />,
     Wallet: <Wallet />,
-    // Notification: <Notification />,
     Card: <Card />,
     "Rate Us": <Rating />,
     "About App": <About />,
@@ -182,29 +177,62 @@ export default function Account() {
     Support: <Support />,
     Logout: <Logout />,
   };
-
+  console.log(t("language"));
   const menuItems = [
     {
       icon: "Account",
-      title: "Account Status",
-      right: user.status === "1" ? "Verified" : "Unverified",
+      key: "accountStatus",
+      title: t("account.accountStatus"),
+      right:
+        user.status === "1" ? t("account.verified") : t("account.unverified"),
       rightColor: user.status === "1" ? Colors.success : Colors.danger,
     },
-    { icon: "Wallet", title: "Wallet", extraRight: "chevron-forward" },
-    // { icon: "Notification", title: "Notification", right: "toggle" },
-
-    { icon: "Card", title: "Card", right: "5", extraRight: "chevron-forward" },
-    { icon: "Rate Us", title: "Rate Us", extraRight: "chevron-forward" },
-    { icon: "About App", title: "About App", extraRight: "chevron-forward" },
     {
-      icon: "Language",
-      title: "Language",
-      right: "English",
+      icon: "Wallet",
+      key: "wallet",
+      title: t("account.wallet"),
       extraRight: "chevron-forward",
     },
-    { icon: "Support", title: "Support", extraRight: "chevron-forward" },
-    { icon: "Logout", title: "Logout", extraRight: "chevron-forward" },
+    {
+      icon: "Card",
+      key: "card",
+      title: t("account.card"),
+      right: "5",
+      extraRight: "chevron-forward",
+    },
+    {
+      icon: "Rate Us",
+      key: "rateUs",
+      title: t("account.rateUs"),
+      extraRight: "chevron-forward",
+    },
+    {
+      icon: "About App",
+      key: "aboutApp",
+      title: t("account.aboutApp"),
+      extraRight: "chevron-forward",
+    },
+    {
+      icon: "Language",
+      key: "language",
+      title: t("account.language"),
+      right: t(`language.${i18n.language}`),
+      extraRight: "chevron-forward",
+    },
+    {
+      icon: "Support",
+      key: "support",
+      title: t("account.support"),
+      extraRight: "chevron-forward",
+    },
+    {
+      icon: "Logout",
+      key: "logout",
+      title: t("account.logout"),
+      extraRight: "chevron-forward",
+    },
   ];
+
   const isValidImage = user.image && /\.(jpg|jpeg|png|webp)$/i.test(user.image);
   return (
     <SafeAreaView style={styles.container}>
@@ -233,7 +261,7 @@ export default function Account() {
             )}
           </View>
           <Text style={styles.userName}>
-            {user.name ? user.name : "Dear Member"}
+            {user.name ? user.name : t("account.defaultName")}
           </Text>
           <Text style={styles.userEmail}>
             {user.email ? user.email : "member@xyz.com"}
@@ -262,22 +290,7 @@ export default function Account() {
         {/* Menu Items */}
         {menuItems.map((item, index) => (
           <View key={index}>
-            {/* Handle Notification Toggle Separately */}
-            {/* {item.title === "Notification" ? (
-              <View style={styles.row}>
-                <View style={styles.rowLeft}>
-                  {iconMap[item.icon]}
-                  <Text style={styles.itemText}>{item.title}</Text>
-                </View>
-                <Switch
-                  value={notificationsEnabled}
-                  onValueChange={setNotificationsEnabled}
-                  trackColor={{ false: "#ccc", true: Colors.success }}
-                  thumbColor="white"
-                />
-              </View>
-            ) : ( */}
-            <TouchableOpacity onPress={() => handleNavigation(item.title)}>
+            <TouchableOpacity onPress={() => handleNavigation(item.key)}>
               <View style={styles.row}>
                 <View style={styles.rowLeft}>
                   {iconMap[item.icon]}

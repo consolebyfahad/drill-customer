@@ -9,6 +9,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -72,9 +73,11 @@ type User = {
   status: string;
   timestamp: string;
   user_type: string;
+  online_status: string;
 };
 
 export default function ViewProfile() {
+  const { t } = useTranslation();
   const [showAllOrders, setShowAllOrders] = useState<boolean>(true);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -203,7 +206,7 @@ export default function ViewProfile() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
       >
-        <Header title="View Profile" backBtn={true} />
+        <Header title={t("account.viewProfile")} backBtn={true} />
 
         <View style={styles.profileContainer}>
           <View style={styles.imageWrapper}>
@@ -229,7 +232,9 @@ export default function ViewProfile() {
             )}
           </View>
 
-          <Text style={styles.userName}>{user.name || "Dear Member"}</Text>
+          <Text style={styles.userName}>
+            {user.name || t("account.defaultName")}
+          </Text>
 
           <View style={styles.ratingContainer}>
             <Star />
@@ -241,7 +246,10 @@ export default function ViewProfile() {
             </Text>
           </View>
 
-          <Text style={styles.balance}>Balance: SAR {user.balance}</Text>
+          <Text style={styles.balance}>
+            {t("account.balance")}
+            {user.balance}
+          </Text>
           <Text style={styles.userEmail}>
             {user.email ? user.email : "member@xyz.com"}
           </Text>
@@ -249,14 +257,14 @@ export default function ViewProfile() {
           <View style={styles.locationContainer}>
             <LocationIcon />
             <Text style={styles.locationText}>
-              {user.address || "Address not set"} {user.city}
+              {user.address || t("account.defaultAddress")} {user.city}
             </Text>
           </View>
         </View>
 
         <Button
           variant="secondary"
-          title="Edit Profile"
+          title={t("account.editProfile")}
           onPress={handleEditProfile}
         />
 
@@ -267,7 +275,7 @@ export default function ViewProfile() {
           style={styles.orderToggle}
         >
           <Text style={styles.orderTitle}>
-            Completed Orders{" "}
+            {t("account.completedOrders")}{" "}
             <Text style={styles.orderCount}>({orders.length})</Text>
           </Text>
           <Ionicons
@@ -286,7 +294,7 @@ export default function ViewProfile() {
               <ServiceDetailsCard key={index} order={order} />
             ))
           ) : (
-            <Text style={styles.noOrdersText}>No orders found</Text>
+            <Text style={styles.noOrdersText}>{t("no_order")}</Text>
           ))
         )}
       </ScrollView>
