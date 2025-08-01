@@ -9,7 +9,13 @@ import Stepper from "@/components/stepper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 
@@ -97,57 +103,67 @@ export default function BookingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
-          {/* Header */}
-          <Header backBtn={true} title={t("booking.bookservice")} />
-          <Stepper />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 25}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          <View style={styles.content}>
+            {/* Header */}
+            <Header backBtn={true} title={t("booking.bookservice")} />
+            <Stepper />
 
-          {/* Service Details */}
-          <SelectedService
-            category={{
-              name: serviceDetails.name,
-              image: serviceDetails.image,
-            }}
-          />
-          <Seprator />
+            {/* Service Details */}
+            <SelectedService
+              category={{
+                name: serviceDetails.name,
+                image: serviceDetails.image,
+              }}
+            />
+            <Seprator />
 
-          {/* Requested Service Location */}
-          <SelectedLocation
-            category={{
-              id: serviceDetails.id,
-              name: serviceDetails.name,
-              image: serviceDetails.image,
-            }}
-            onSelectLocation={(address, coordinates) => {
-              setSelectedLocation(address);
-              if (coordinates) {
-                setLatlng(coordinates);
-              }
-            }}
-            selectedLocation={selectedLocation}
-          />
-          <Seprator />
+            {/* Requested Service Location */}
+            <SelectedLocation
+              category={{
+                id: serviceDetails.id,
+                name: serviceDetails.name,
+                image: serviceDetails.image,
+              }}
+              onSelectLocation={(address, coordinates) => {
+                setSelectedLocation(address);
+                if (coordinates) {
+                  setLatlng(coordinates);
+                }
+              }}
+              selectedLocation={selectedLocation}
+            />
+            <Seprator />
 
-          {/* Upload Picture */}
-          <SelectedImage
-            onSelectImage={setSelectedImage}
-            selectedImage={selectedImage}
-          />
-          <Seprator />
+            {/* Upload Picture */}
+            <SelectedImage
+              onSelectImage={setSelectedImage}
+              selectedImage={selectedImage}
+            />
+            <Seprator />
 
-          {/* Describe Your Problem */}
-          <SelectedDescription
-            onDescriptionChange={setDescription}
-            description={description}
-          />
+            {/* Describe Your Problem */}
+            <SelectedDescription
+              onDescriptionChange={setDescription}
+              description={description}
+            />
+          </View>
+        </ScrollView>
+
+        {/* Next Button */}
+        <View style={styles.buttonContainer}>
+          <Button title={t("next")} onPress={handleNext} />
         </View>
-      </ScrollView>
-
-      {/* Next Button */}
-      <View style={styles.buttonContainer}>
-        <Button title={t("next")} onPress={handleNext} />
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

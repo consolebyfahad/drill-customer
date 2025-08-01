@@ -296,6 +296,7 @@ export default function EditProfile() {
               IconComponent={<DOB />}
               value={user.dob}
               onChangeText={(text) => handleInputChange("dob", text)}
+              dateFormat={true}
             />
             <Inputfield
               label={t("account.address")}

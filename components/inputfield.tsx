@@ -10,6 +10,7 @@ interface InputFieldProps {
   value?: string;
   maxLength?: number;
   onChangeText: (text: string) => void;
+  dateFormat?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -19,7 +20,36 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   maxLength,
   onChangeText,
+  dateFormat = false,
 }) => {
+  const handleTextChange = (text: string) => {
+    if (dateFormat) {
+      // Remove all non-digits
+      const sanitizedText = text.replace(/[^0-9]/g, "");
+
+      // Format as YYYY-MM-DD
+      let formattedText = sanitizedText;
+      if (sanitizedText.length >= 5) {
+        formattedText =
+          sanitizedText.slice(0, 4) + "-" + sanitizedText.slice(4);
+      }
+      if (sanitizedText.length >= 7) {
+        formattedText =
+          sanitizedText.slice(0, 4) +
+          "-" +
+          sanitizedText.slice(4, 6) +
+          "-" +
+          sanitizedText.slice(6, 8);
+      }
+
+      // Limit to 10 characters (YYYY-MM-DD)
+      formattedText = formattedText.slice(0, 10);
+      onChangeText(formattedText);
+    } else {
+      onChangeText(text);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -31,7 +61,8 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholderTextColor={Colors.secondary300}
           value={value}
           maxLength={maxLength}
-          onChangeText={onChangeText}
+          onChangeText={handleTextChange}
+          keyboardType={dateFormat ? "numeric" : "default"}
         />
       </View>
     </View>

@@ -14,7 +14,9 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need your location to show your position on the map.",
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       },
       "entitlements": {
         "aps-environment": "production"
@@ -26,8 +28,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "sa.com.drill.app",
       "googleServicesFile": "./google-services.json",
+      "package": "sa.com.drill.app",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAQiilQ_i4LRPFyMhfLB5ZT3UGMTIxqL0Y"
@@ -40,6 +42,7 @@
       "favicon": "./assets/images/appLogo.png"
     },
     "plugins": [
+      "expo-font",
       "expo-router",
       "expo-localization",
       "@react-native-firebase/app",
@@ -52,7 +55,6 @@
           }
         }
       ],
-      "expo-font",
       [
         "expo-splash-screen",
         {
