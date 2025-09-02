@@ -8,6 +8,7 @@ export default function Splash() {
     const checkUser = async () => {
       try {
         const userId = await AsyncStorage.getItem("user_id");
+        console.log("userId", userId);
         setTimeout(() => {
           if (userId) {
             router.replace("/(tabs)");

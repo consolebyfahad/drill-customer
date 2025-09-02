@@ -14,40 +14,45 @@ const resources = {
   ar: { translation: ar },
 };
 
-const languageDetector = {
-  type: "languageDetector",
-  async: true,
-  detect: async (callback) => {
-    try {
-      const savedLanguage = await AsyncStorage.getItem(LANGUAGE_PREFERENCE);
-      if (savedLanguage) {
-        return callback(savedLanguage);
-      }
-    } catch (e) {
-      console.error("Failed to get saved language:", e);
-    }
-    return callback(Localization.locale.startsWith("ar") ? "ar" : "en");
+// Initialize i18n with a simple configuration first
+i18n.use(initReactI18next).init({
+  lng: Localization.getLocales()[0]?.languageCode?.startsWith("ar")
+    ? "ar"
+    : "en",
+  fallbackLng: "en",
+  compatibilityJSON: "v4",
+  resources,
+  interpolation: {
+    escapeValue: false,
   },
-  init: () => {},
-  cacheUserLanguage: async (lng) => {
-    try {
-      await AsyncStorage.setItem(LANGUAGE_PREFERENCE, lng);
-    } catch (e) {
-      console.error("Failed to save language:", e);
-    }
+  react: {
+    useSuspense: false, // This is important for React Native
   },
+});
+
+// Load saved language preference after initialization
+const loadSavedLanguage = async () => {
+  try {
+    const savedLanguage = await AsyncStorage.getItem(LANGUAGE_PREFERENCE);
+    if (savedLanguage && savedLanguage !== i18n.language) {
+      await i18n.changeLanguage(savedLanguage);
+    }
+  } catch (e) {
+    console.error("Failed to load saved language:", e);
+  }
 };
 
-i18n
-  .use(languageDetector)
-  .use(initReactI18next)
-  .init({
-    fallbackLng: "en",
-    compatibilityJSON: "v3",
-    resources,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+// Load saved language
+loadSavedLanguage();
+
+// Function to save language preference
+export const saveLanguagePreference = async (language: string) => {
+  try {
+    await AsyncStorage.setItem(LANGUAGE_PREFERENCE, language);
+    await i18n.changeLanguage(language);
+  } catch (e) {
+    console.error("Failed to save language:", e);
+  }
+};
 
 export default i18n;

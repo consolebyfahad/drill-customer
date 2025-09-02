@@ -20,7 +20,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded]);
-
+  console.log("fontsLoaded", fontsLoaded);
   if (!fontsLoaded) return null;
 
   return (

@@ -7,10 +7,24 @@ import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 export default function Welcome() {
-  const { t } = useTranslation();
+  console.log("Welcome component rendering");
+  const { t, ready, i18n } = useTranslation();
   const handleGetStarted = () => {
     router.push("/auth/login");
   };
+
+  console.log("i18n ready:", ready, "language:", i18n.language);
+
+  // Show loading state while i18n is initializing
+  if (!ready) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,6 +51,16 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: "space-between",
     backgroundColor: Colors.white,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 18,
+    color: Colors.secondary,
+    fontFamily: FONTS.medium,
   },
   image: {
     width: "100%",
