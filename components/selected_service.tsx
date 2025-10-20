@@ -10,9 +10,17 @@ type Category = {
 };
 type Props = {
   category: Category;
+  serviceType: "instant" | "schedule";
+  scheduleDate: string;
+  scheduleTime: string;
 };
 
-export default function SelectedService({ category }: Props) {
+export default function SelectedService({
+  category,
+  serviceType,
+  scheduleDate,
+  scheduleTime,
+}: Props) {
   const currentDate = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",
@@ -29,7 +37,24 @@ export default function SelectedService({ category }: Props) {
       <View style={styles.textContainer}>
         <Text style={styles.title}>{category.name}</Text>
         <Text style={styles.date}>
-          Date: <Text style={styles.dateValue}>{currentDate}</Text>
+          Date:{" "}
+          <Text style={styles.dateValue}>
+            {serviceType === "schedule"
+              ? (() => {
+                  // Parse date string safely to avoid timezone issues
+                  const [year, month, day] = scheduleDate
+                    .split("-")
+                    .map(Number);
+                  const localDate = new Date(year, month - 1, day);
+                  return localDate.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  });
+                })()
+              : currentDate}
+          </Text>
         </Text>
       </View>
       <TouchableOpacity onPress={handleSelectService}>

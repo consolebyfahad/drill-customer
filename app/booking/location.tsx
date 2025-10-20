@@ -204,9 +204,29 @@ export default function LocationScreen() {
 
     const newParams = { ...params };
 
+    // Update location data
     newParams.location = selectedLocation.address;
     newParams.latitude = selectedLocation.latitude.toString();
     newParams.longitude = selectedLocation.longitude.toString();
+
+    // Preserve schedule parameters if they exist
+    if (params.service_type) {
+      newParams.service_type = params.service_type as string;
+    }
+    if (params.schedule_date) {
+      newParams.schedule_date = params.schedule_date as string;
+    }
+    if (params.schedule_time) {
+      newParams.schedule_time = params.schedule_time as string;
+    }
+
+    // Preserve other booking parameters
+    if (params.selectedImage) {
+      newParams.selectedImage = params.selectedImage as string;
+    }
+    if (params.description) {
+      newParams.description = params.description as string;
+    }
 
     router.push({ pathname: "/booking", params: newParams });
   };

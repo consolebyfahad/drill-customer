@@ -63,8 +63,12 @@ export default function Categories() {
 
   const handleBooking = (category: Category) => {
     router.push({
-      pathname: "/booking",
-      params: { id: category.id, name: category.name, image: category.image },
+      pathname: "/booking/serviceType",
+      params: {
+        id: category.id,
+        name: category.name,
+        image: category.image,
+      },
     });
   };
 

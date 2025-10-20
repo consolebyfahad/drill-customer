@@ -107,6 +107,9 @@ export default function Booking2Screen() {
         description: params.description,
         latitude: params.latitude,
         longitude: params.longitude,
+        service_type: params.service_type,
+        schedule_date: params.schedule_date,
+        schedule_time: params.schedule_time,
 
         // Current screen selections
         packageId: selectedPackage.id,

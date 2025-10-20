@@ -37,6 +37,13 @@ export type Order = {
   discount?: string;
   rating?: string;
   tip?: string;
+  service_type?: string;
+  schedule_date?: string;
+  schedule_time?: string;
+  category?: {
+    name: string;
+    image: string;
+  };
 };
 
 export default function Orders() {

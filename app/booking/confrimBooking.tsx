@@ -40,6 +40,9 @@ type BookingParams = {
   packagePrice?: string;
   paymentMethod?: string;
   paymentMethodDetails?: string;
+  service_type?: "instant" | "schedule";
+  schedule_date?: string;
+  schedule_time?: string;
 };
 
 export default function ConfirmBooking() {
@@ -85,7 +88,7 @@ export default function ConfirmBooking() {
       const formData = new FormData();
       formData.append("type", "add_data");
       formData.append("table_name", "orders");
-      formData.append("user_id", userId);
+      formData.append("user_id", userId || "");
       formData.append("cat_id", params.id);
       formData.append("address", params.location);
       formData.append("lat", params.latitude || "");
@@ -97,8 +100,13 @@ export default function ConfirmBooking() {
       formData.append("payment_method", params.paymentMethod || "");
       formData.append("method_details", params.paymentMethodDetails || "");
       formData.append("promo_code", isPromoValid ? promoCode : "");
-      formData.append("amount", totalAmount);
-      console.log("formData", formData);
+      formData.append("amount", totalAmount.toString());
+      if (params.service_type === "schedule") {
+        formData.append("service_type", params.service_type);
+        formData.append("schedule_date", params.schedule_date || "");
+        formData.append("schedule_time", params.schedule_time || "");
+      }
+      console.log("formData", JSON.stringify(formData));
       const response = await apiCall(formData);
 
       if (response.result) {
@@ -125,6 +133,9 @@ export default function ConfirmBooking() {
           <Stepper step={true} />
 
           <SelectedService
+            serviceType={params.service_type || "instant"}
+            scheduleDate={params.schedule_date || ""}
+            scheduleTime={params.schedule_time || ""}
             category={{
               name: params.name,
               image: params.image,
@@ -150,6 +161,53 @@ export default function ConfirmBooking() {
             description={params.description}
             disabled={true}
           />
+          <Seprator />
+
+          {/* Service Type and Schedule Info */}
+          <Text style={styles.sectionTitle}>Service Details</Text>
+          <View style={styles.serviceInfoContainer}>
+            <View style={styles.serviceInfoRow}>
+              <Text style={styles.packageTitle}>Service Type:</Text>
+              <Text style={styles.serviceInfoValue}>
+                {params.service_type === "schedule"
+                  ? "Scheduled"
+                  : "⚡ Instant"}
+              </Text>
+            </View>
+            {params.service_type === "schedule" &&
+              params.schedule_date &&
+              params.schedule_time && (
+                <>
+                  <View style={styles.serviceInfoRow}>
+                    <Text style={styles.packageTitle}>Scheduled Date:</Text>
+                    <Text style={styles.serviceInfoValue}>
+                      {new Date(params.schedule_date).toLocaleDateString(
+                        "en-US",
+                        {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </Text>
+                  </View>
+                  <View style={styles.serviceInfoRow}>
+                    <Text style={styles.packageTitle}>Scheduled Time:</Text>
+                    <Text style={styles.serviceInfoValue}>
+                      {new Date(
+                        `2000-01-01T${params.schedule_time}`
+                      ).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </Text>
+                  </View>
+                </>
+              )}
+          </View>
+
           <Seprator />
 
           {/* Selected Package */}
@@ -302,5 +360,27 @@ const styles = StyleSheet.create({
   primaryText: {
     fontFamily: FONTS.semiBold,
     color: "#007AFF",
+  },
+  serviceInfoContainer: {
+    backgroundColor: Colors.primary300,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  serviceInfoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  serviceInfoLabel: {
+    fontSize: 14,
+    fontFamily: FONTS.medium,
+    color: Colors.secondary,
+  },
+  serviceInfoValue: {
+    fontSize: 14,
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
   },
 });

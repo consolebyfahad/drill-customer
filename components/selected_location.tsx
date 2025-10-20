@@ -137,6 +137,13 @@ export default function SelectedLocation({
           categoryId: category.id,
           categoryName: category.name,
           categoryImage: category.image,
+          // Pass through schedule parameters if they exist
+          service_type: params.service_type,
+          schedule_date: params.schedule_date,
+          schedule_time: params.schedule_time,
+          // Pass through other booking parameters
+          selectedImage: params.selectedImage,
+          description: params.description,
         },
       });
     }

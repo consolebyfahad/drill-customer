@@ -7,17 +7,28 @@ export type Order = {
   id: string;
   title?: string;
   orderId?: string;
+  order_no?: string;
   status: string;
   amount?: string;
   discount?: string;
   date?: string;
+  timestamp?: string;
   customer?: string;
-  provider?: string;
+  provider?: any;
   paymentStatus?: string;
+  payment_status?: string;
   rating?: string;
   tip?: string;
   image?: any;
   imageUrl?: string;
+  image_url?: string;
+  service_type?: string;
+  schedule_date?: string;
+  schedule_time?: string;
+  category?: {
+    name: string;
+    image: string;
+  };
 };
 
 type ServiceDetailsCardProps = {
@@ -30,6 +41,34 @@ export default function ServiceDetailsCard({
   order,
   onPress,
 }: ServiceDetailsCardProps) {
+  // Function to format schedule date and time
+  const formatScheduleDateTime = (dateString: string, timeString: string) => {
+    try {
+      const [year, month, day] = dateString.split("-").map(Number);
+      const [hours, minutes] = timeString.split(":").map(Number);
+
+      const scheduleDate = new Date(year, month - 1, day, hours, minutes);
+
+      const formattedDate = scheduleDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      const formattedTime = scheduleDate.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+
+      return `${formattedDate} at ${formattedTime}`;
+    } catch (error) {
+      console.error("Error formatting schedule date/time:", error);
+      return "Invalid date/time";
+    }
+  };
+
   // Function to get different status styles based on status
   const getStatusStyle = (status: string | undefined) => {
     switch (status?.toLowerCase()) {
@@ -56,7 +95,11 @@ export default function ServiceDetailsCard({
       {/* Order Top Section */}
       <View style={styles.orderTopSection}>
         <Image
-          source={{ uri: `${order.image_url}${order?.category?.image}` }}
+          source={{
+            uri: `${order.imageUrl || order.image_url}${
+              order?.category?.image
+            }`,
+          }}
           style={styles.image}
           resizeMode="cover"
         />
@@ -77,7 +120,10 @@ export default function ServiceDetailsCard({
             </View>
           </View>
           <Text style={styles.orderId}>
-            Order ID: <Text style={styles.orderIdValue}>{order.order_no}</Text>
+            Order ID:{" "}
+            <Text style={styles.orderIdValue}>
+              {order.orderId || order.order_no}
+            </Text>
           </Text>
           <Text style={styles.amount}>
             SAR {order.amount || "0.00"}{" "}
@@ -90,16 +136,54 @@ export default function ServiceDetailsCard({
 
       {/* Order Details Section */}
       <View style={styles.detailsContainer}>
-        <View style={styles.detailsRow}>
-          <Text style={styles.label}>Date & Time</Text>
-          <Text style={styles.value}>{order.timestamp || "N/A"}</Text>
-        </View>
-        <DashedSeprator />
+        {/* Service Type and Schedule Information */}
+        {order.service_type === "schedule" &&
+        order.schedule_date &&
+        order.schedule_time ? (
+          <>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Service Type</Text>
+              <Text style={[styles.value, { color: Colors.primary }]}>
+                Scheduled
+              </Text>
+            </View>
+            <DashedSeprator />
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Scheduled For</Text>
+              <Text style={styles.value}>
+                {formatScheduleDateTime(
+                  order.schedule_date,
+                  order.schedule_time
+                )}
+              </Text>
+            </View>
+            <DashedSeprator />
+          </>
+        ) : (
+          <>
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Service Type</Text>
+              <Text style={[styles.value, { color: Colors.primary }]}>
+                Instant
+              </Text>
+            </View>
+            <DashedSeprator />
+            <View style={styles.detailsRow}>
+              <Text style={styles.label}>Date & Time</Text>
+              <Text style={styles.value}>
+                {order.date || order.timestamp || "N/A"}
+              </Text>
+            </View>
+            <DashedSeprator />
+          </>
+        )}
 
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Provider</Text>
           <Text style={styles.value}>
-            {order?.provider?.name || "Not assigned yet"}
+            {typeof order?.provider === "object"
+              ? order?.provider?.name
+              : order?.provider || "Not assigned yet"}
           </Text>
         </View>
         <DashedSeprator />
@@ -114,7 +198,7 @@ export default function ServiceDetailsCard({
         <View style={styles.detailsRow}>
           <Text style={styles.label}>Payment Status</Text>
           <Text style={styles.paymentStatus}>
-            {order?.payment_status || "Pending"}
+            {order?.paymentStatus || order?.payment_status || "Pending"}
           </Text>
         </View>
         {order.status === "completed" && (
