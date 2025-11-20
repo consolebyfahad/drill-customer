@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   ScrollView,
@@ -20,6 +21,7 @@ import { FONTS } from "~/constants/Fonts";
 export default function LocationScreen() {
   const navigation = useNavigation();
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const mapRef = useRef(null);
   console.log(params);
   const [manualLocation, setManualLocation] = useState(false);
@@ -86,15 +88,15 @@ export default function LocationScreen() {
         });
       } else {
         Alert.alert(
-          "Location Error",
-          "Could not find location on map. Please try a different address."
+          t("booking.locationError"),
+          t("booking.couldNotFindLocation")
         );
       }
     } catch (error) {
       console.error("Failed to geocode address:", error);
       Alert.alert(
-        "Error",
-        "Failed to find this address. Please try another one."
+        t("error"),
+        t("booking.failedToFindAddress")
       );
     } finally {
       setSearchingAddress(false);
@@ -175,7 +177,7 @@ export default function LocationScreen() {
       });
     } catch (error) {
       console.error("Error getting current location:", error);
-      Alert.alert("Error", "Could not access your current location.");
+      Alert.alert(t("error"), t("booking.couldNotAccessLocation"));
     }
   };
 
@@ -198,7 +200,7 @@ export default function LocationScreen() {
       !selectedLocation.latitude ||
       !selectedLocation.longitude
     ) {
-      Alert.alert("Error", "Please select a valid location");
+      Alert.alert(t("error"), t("booking.pleaseSelectValidLocation"));
       return;
     }
 
@@ -246,7 +248,7 @@ export default function LocationScreen() {
           >
             <Ionicons name="chevron-back" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Select Location</Text>
+          <Text style={styles.headerText}>{t("booking.selectLocation")}</Text>
           <TouchableOpacity
             style={styles.iconButton}
             onPress={centerToUserLocation}
@@ -259,7 +261,7 @@ export default function LocationScreen() {
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Enter address manually..."
+              placeholder={t("booking.enterAddressManually")}
               value={selectedLocation.address || ""}
               onChangeText={handleManualAddressChange}
               multiline={true}
@@ -271,7 +273,7 @@ export default function LocationScreen() {
               disabled={searchingAddress || !selectedLocation.address}
             >
               <Text style={styles.searchButtonText}>
-                {searchingAddress ? "Searching..." : "Search"}
+                {searchingAddress ? t("booking.searching") : t("booking.search")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -301,9 +303,9 @@ export default function LocationScreen() {
         </View>
 
         <View style={styles.addressContainer}>
-          <Text style={styles.addressTitle}>Selected Address</Text>
+          <Text style={styles.addressTitle}>{t("booking.selectedAddress")}</Text>
           <Text style={styles.addressText}>
-            {selectedLocation.address || "No location selected"}
+            {selectedLocation.address || t("booking.noLocationSelected")}
           </Text>
           {selectedLocation.latitude && selectedLocation.longitude && (
             <Text style={styles.coordsText}>
@@ -324,7 +326,7 @@ export default function LocationScreen() {
 
       <View style={styles.buttonContainer}>
         <Button
-          title="Confirm Location"
+          title={t("booking.confirmLocation")}
           onPress={handleConfirm}
           disabled={
             !selectedLocation.address ||
@@ -335,7 +337,7 @@ export default function LocationScreen() {
         <Button
           variant="secondary"
           textColor={Colors.primary}
-          title={manualLocation ? "Use Map Instead" : "Enter Location Manually"}
+          title={manualLocation ? t("booking.useMapInstead") : t("booking.enterLocationManually")}
           onPress={toggleLocation}
         />
       </View>

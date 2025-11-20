@@ -1,32 +1,33 @@
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 const About = () => {
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>About This App</Text>
+      <Header title={t("account.aboutApp")} backBtn={true} />
+      <Text style={styles.heading}>{t("about.aboutApp")}</Text>
       <Text style={styles.description}>
-        This app is designed to provide fast and reliable home services,
-        including plumbing, electrical work, cleaning, and more. We aim to make
-        it simple and convenient to book trusted professionals right from your
-        phone.
+        {t("about.appDescription")}
       </Text>
 
       <View style={styles.section}>
-        <Text style={styles.label}>App Version</Text>
-        <Text style={styles.value}>v1.0.0</Text>
+        <Text style={styles.label}>{t("about.appVersion")}</Text>
+        <Text style={styles.value}>{t("about.version")}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Developed by</Text>
-        <Text style={styles.value}>utecho</Text>
+        <Text style={styles.label}>{t("about.developedBy")}</Text>
+        <Text style={styles.value}>{t("about.developer")}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Support</Text>
-        <Text style={styles.value}>support@drill.com</Text>
+        <Text style={styles.label}>{t("about.support")}</Text>
+        <Text style={styles.value}>{t("about.supportEmail")}</Text>
       </View>
     </SafeAreaView>
   );

@@ -50,7 +50,7 @@ export default function SelectedImage({
       if (source === "camera") {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== "granted") {
-          Alert.alert("Permissions", "Camera permission is required.");
+          Alert.alert(t("alerts.permissions"), t("alerts.cameraPermissionRequired"));
           return;
         }
         result = await ImagePicker.launchCameraAsync({
@@ -61,7 +61,7 @@ export default function SelectedImage({
         const { status } =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== "granted") {
-          Alert.alert("Permissions", "Gallery permission is required.");
+          Alert.alert(t("alerts.permissions"), t("alerts.galleryPermissionRequired"));
           return;
         }
         result = await ImagePicker.launchImageLibraryAsync({
@@ -77,17 +77,17 @@ export default function SelectedImage({
       }
     } catch (error) {
       console.error("Image pick error:", error);
-      Alert.alert("Error", "Failed to pick image");
+      Alert.alert(t("alerts.error"), t("alerts.failedToPickImage"));
     }
   };
 
   const openImagePicker = () => {
     if (disabled) return;
 
-    Alert.alert("Select Option", "Choose an option:", [
-      { text: "Camera", onPress: () => pickImage("camera") },
-      { text: "Gallery", onPress: () => pickImage("gallery") },
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("alerts.selectOption"), t("alerts.chooseOption"), [
+      { text: t("alerts.camera"), onPress: () => pickImage("camera") },
+      { text: t("alerts.gallery"), onPress: () => pickImage("gallery") },
+      { text: t("cancel"), style: "cancel" },
     ]);
   };
 
@@ -116,10 +116,10 @@ export default function SelectedImage({
         }
         // Alert.alert("Success");
       } else {
-        throw new Error(response.message || "Upload failed");
+        throw new Error(response.message || t("alerts.uploadFailed"));
       }
     } catch (err: any) {
-      Alert.alert("Error", err.message || "Something went wrong");
+      Alert.alert(t("alerts.error"), err.message || t("alerts.somethingWentWrong"));
     }
   };
 
@@ -144,8 +144,8 @@ export default function SelectedImage({
         )}
         <Text style={[styles.text, disabled && styles.disabledText]}>
           {displayImage
-            ? "Image Selected"
-            : "Upload the picture here where you want this service."}
+            ? t("imageSelected")
+            : t("uploadPictureHere")}
         </Text>
       </TouchableOpacity>
     </>

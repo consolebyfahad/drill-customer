@@ -73,8 +73,8 @@ export default function SelectedLocation({
       } catch (error) {
         console.error("Error getting location:", error);
         Alert.alert(
-          "Location Error",
-          "Unable to retrieve your current location. Please select a location manually."
+          t("booking.locationError"),
+          t("booking.unableToRetrieveLocation")
         );
       } finally {
         setIsLoadingLocation(false);
@@ -155,7 +155,7 @@ export default function SelectedLocation({
         <Text style={styles.title}>{t("booking.location")}</Text>
         {!disabled && (
           <TouchableOpacity onPress={handleLocation}>
-            <Text style={styles.changeText}>Change</Text>
+            <Text style={styles.changeText}>{t("change")}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -169,8 +169,8 @@ export default function SelectedLocation({
         </View>
         <Text style={styles.address}>
           {isLoadingLocation
-            ? "Getting your current location..."
-            : address || "Select a location"}
+            ? t("gettingLocation")
+            : address || t("selectLocation")}
         </Text>
       </TouchableOpacity>
     </>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
 import { Colors } from "../constants/Colors";
@@ -41,6 +42,7 @@ export default function ServiceDetailsCard({
   order,
   onPress,
 }: ServiceDetailsCardProps) {
+  const { t } = useTranslation();
   // Function to format schedule date and time
   const formatScheduleDateTime = (dateString: string, timeString: string) => {
     try {
@@ -106,7 +108,7 @@ export default function ServiceDetailsCard({
         <View style={styles.orderInfo}>
           <View style={styles.orderHeader}>
             <Text style={styles.title}>
-              {order?.category?.name || "Service Order"}
+              {order?.category?.name || t("serviceOrder")}
             </Text>
             <View
               style={[
@@ -120,7 +122,7 @@ export default function ServiceDetailsCard({
             </View>
           </View>
           <Text style={styles.orderId}>
-            Order ID:{" "}
+            {t("orderId")}:{" "}
             <Text style={styles.orderIdValue}>
               {order.orderId || order.order_no}
             </Text>
@@ -142,14 +144,14 @@ export default function ServiceDetailsCard({
         order.schedule_time ? (
           <>
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Service Type</Text>
+              <Text style={styles.label}>{t("booking.serviceType")}</Text>
               <Text style={[styles.value, { color: Colors.primary }]}>
-                Scheduled
+                {t("booking.scheduled")}
               </Text>
             </View>
             <DashedSeprator />
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Scheduled For</Text>
+              <Text style={styles.label}>{t("booking.scheduledDate")}</Text>
               <Text style={styles.value}>
                 {formatScheduleDateTime(
                   order.schedule_date,
@@ -162,14 +164,14 @@ export default function ServiceDetailsCard({
         ) : (
           <>
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Service Type</Text>
+              <Text style={styles.label}>{t("booking.serviceType")}</Text>
               <Text style={[styles.value, { color: Colors.primary }]}>
-                Instant
+                {t("booking.instant")}
               </Text>
             </View>
             <DashedSeprator />
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Date & Time</Text>
+              <Text style={styles.label}>{t("date")} & Time</Text>
               <Text style={styles.value}>
                 {order.date || order.timestamp || "N/A"}
               </Text>
@@ -179,16 +181,16 @@ export default function ServiceDetailsCard({
         )}
 
         <View style={styles.detailsRow}>
-          <Text style={styles.label}>Provider</Text>
+          <Text style={styles.label}>{t("provider")}</Text>
           <Text style={styles.value}>
             {typeof order?.provider === "object"
               ? order?.provider?.name
-              : order?.provider || "Not assigned yet"}
+              : order?.provider || t("notAssigned")}
           </Text>
         </View>
         <DashedSeprator />
         <View style={styles.detailsRow}>
-          <Text style={styles.label}>Order Status</Text>
+          <Text style={styles.label}>{t("order.orderDetails")}</Text>
           <Text style={[styles.value, { color: statusStyle.color }]}>
             {order.status}
           </Text>
@@ -196,16 +198,16 @@ export default function ServiceDetailsCard({
         <DashedSeprator />
 
         <View style={styles.detailsRow}>
-          <Text style={styles.label}>Payment Status</Text>
+          <Text style={styles.label}>{t("paymentStatus")}</Text>
           <Text style={styles.paymentStatus}>
-            {order?.paymentStatus || order?.payment_status || "Pending"}
+            {order?.paymentStatus || order?.payment_status || t("pending")}
           </Text>
         </View>
         {order.status === "completed" && (
           <>
             <DashedSeprator />
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Rating</Text>
+              <Text style={styles.label}>{t("popup.rateExperience")}</Text>
               <View style={styles.ratingContainer}>
                 <Text style={styles.starIcon}>★</Text>
                 <Text style={styles.value}>{order.rating || "0"}</Text>
@@ -213,8 +215,8 @@ export default function ServiceDetailsCard({
             </View>
             <DashedSeprator />
             <View style={styles.detailsRow}>
-              <Text style={styles.label}>Tipped</Text>
-              <Text style={styles.tip}>SAR {order.tip || "0.00"}</Text>
+              <Text style={styles.label}>{t("popup.addTip")}</Text>
+              <Text style={styles.tip}>{t("wallet.sar")} {order.tip || "0.00"}</Text>
             </View>
           </>
         )}

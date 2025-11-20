@@ -1,6 +1,7 @@
 import Button from "@/components/button";
 import { useNavigation } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   ScrollView,
@@ -16,6 +17,7 @@ import { FONTS } from "~/constants/Fonts";
 
 export default function AddCard() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [saveInfo, setSaveInfo] = useState(false);
 
   return (
@@ -24,26 +26,26 @@ export default function AddCard() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
       >
-        <Header backBtn={true} title="Add Card" />
+        <Header backBtn={true} title={t("addCard")} />
         <Image
           source={require("@/assets/images/card.png")}
           style={styles.cardImage}
           resizeMode="contain"
         />
 
-        <Text style={styles.label}>Card holder name</Text>
-        <TextInput style={styles.input} placeholder="Card holder name" />
+        <Text style={styles.label}>{t("booking.cardHolderName")}</Text>
+        <TextInput style={styles.input} placeholder={t("booking.cardHolderName")} />
 
-        <Text style={styles.label}>Card number</Text>
+        <Text style={styles.label}>{t("booking.cardNumber")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Card number"
+          placeholder={t("booking.cardNumber")}
           keyboardType="numeric"
         />
 
         <View style={styles.rowBetween}>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Expired</Text>
+            <Text style={styles.label}>{t("booking.expired")}</Text>
             <TextInput
               style={styles.input}
               placeholder="MM/YY"
@@ -51,30 +53,30 @@ export default function AddCard() {
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>CVV</Text>
+            <Text style={styles.label}>{t("booking.cvv")}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Code"
+              placeholder={t("booking.code")}
               secureTextEntry
             />
           </View>
         </View>
 
         <View style={styles.toggleContainer}>
-          <Text style={styles.label}>Save my card details for next time.</Text>
+          <Text style={styles.label}>{t("booking.saveCardDetails")}</Text>
           <Switch value={saveInfo} onValueChange={setSaveInfo} />
         </View>
 
         {saveInfo && (
           <>
-            <Text style={styles.label}>Phone number</Text>
+            <Text style={styles.label}>{t("booking.phoneNumber")}</Text>
             <TextInput
               style={styles.input}
               placeholder="0123456789"
               keyboardType="phone-pad"
             />
 
-            <Text style={styles.label}>Email address</Text>
+            <Text style={styles.label}>{t("booking.emailAddress")}</Text>
             <TextInput
               style={styles.input}
               placeholder="example@email.com"
@@ -84,7 +86,7 @@ export default function AddCard() {
         )}
       </ScrollView>
       <View style={styles.footer}>
-        <Button title="Save" onPress={() => console.log("Card Saved")} />
+        <Button title={t("save")} onPress={() => console.log("Card Saved")} />
       </View>
     </SafeAreaView>
   );

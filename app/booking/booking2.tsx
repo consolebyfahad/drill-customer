@@ -36,6 +36,8 @@ export default function Booking2Screen() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
   console.log("booking2", params);
+  
+  // Payment methods - IDs are used for backend, names are translated for display
 
   // State for packages and selections
   const [packages, setPackages] = useState<Package[]>([]);
@@ -73,28 +75,29 @@ export default function Booking2Screen() {
       }
     } catch (error) {
       console.error("Error fetching plans:", error);
-      Alert.alert("Error", "Unable to fetch service packages");
+      Alert.alert(t("error"), t("booking.unableToFetchPackages"));
     }
   };
 
   const handleNext = () => {
     // Validate package and payment selection
     if (!selectedPackage) {
-      Alert.alert("Selection Required", "Please select a service package");
+      Alert.alert(t("booking.selectPackageRequired"), t("booking.pleaseSelectPackage"));
       return;
     }
 
     if (!selectedPayment) {
-      Alert.alert("Selection Required", "Please select a payment method");
+      Alert.alert(t("booking.selectPackageRequired"), t("booking.pleaseSelectPayment"));
       return;
     }
 
-    // Prepare payment method details
+    // Prepare payment method details - Use ID for backend, translated name for display
     const selectedPaymentMethod = paymentMethods.find(
       (method) => method.id === selectedPayment
     );
 
     // Navigate to confirm booking with all collected data
+    // IMPORTANT: Use payment method ID (visa, apple, wallet, cash) for backend, not translated name
     router.push({
       pathname: "/booking/confrimBooking",
       params: {
@@ -117,8 +120,9 @@ export default function Booking2Screen() {
         packageHours: selectedPackage.hours,
         packagePrice: selectedPackage.price,
 
+        // Use translated name for display, but ID for backend
         paymentMethod: selectedPaymentMethod?.name || "",
-        paymentMethodDetails: selectedPayment,
+        paymentMethodDetails: selectedPayment, // This is the ID (visa, apple, wallet, cash) - use this for backend
       },
     });
   };
@@ -131,7 +135,7 @@ export default function Booking2Screen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Header backBtn={true} title="Book Service" />
+          <Header backBtn={true} title={t("booking.bookService")} />
           <Stepper step={true} />
 
           {/* Select Package */}
@@ -149,7 +153,7 @@ export default function Booking2Screen() {
                 <View>
                   <Text style={styles.packageName}>{pkg.name}</Text>
                   <Text style={styles.packageDetails}>
-                    {pkg.hours} hours package | SAR {pkg.price}
+                    {pkg.hours} {t("booking.hoursPackage")} {pkg.price}
                   </Text>
                 </View>
                 <View style={styles.radioOuter}>
@@ -180,7 +184,7 @@ export default function Booking2Screen() {
               {t("booking.paymentmethod")}
             </Text>
             <TouchableOpacity onPress={handleAddCard}>
-              <Text style={styles.addCardText}>Add Card</Text>
+              <Text style={styles.addCardText}>{t("addCard")}</Text>
             </TouchableOpacity>
           </View>
 

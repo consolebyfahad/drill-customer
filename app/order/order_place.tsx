@@ -128,7 +128,7 @@ const OrderPlace: React.FC = () => {
           }
         } catch (error) {
           console.error("Initialization error:", error);
-          showToast("Failed to initialize order details", "error");
+          showToast(t("order.failedToInitialize"), "error");
         }
       };
       init();
@@ -154,12 +154,12 @@ const OrderPlace: React.FC = () => {
 
         setOrder(orderData);
       } else {
-        showToast("No order details found", "error");
+        showToast(t("order.noOrderDetailsFound"), "error");
         setOrder(null);
       }
     } catch (error) {
       console.error("Failed to fetch order details", error);
-      showToast("Failed to fetch order details", "error");
+      showToast(t("order.failedToFetchDetails"), "error");
       setOrder(null);
     } finally {
       setIsLoading(false);
@@ -180,38 +180,37 @@ const OrderPlace: React.FC = () => {
     let toastType = "info";
 
     if (!message) {
-      // Default messages based on status
+      // Default messages based on status - use English keys for backend comparison
       switch (status.toLowerCase()) {
         case "accepted":
-          message = "Your order has been accepted by a service provider!";
+          message = t("order.orderAccepted");
           toastType = "success";
           break;
         case "on_the_way":
-          message = "Your service provider is on the way!";
+          message = t("order.providerOnWay");
           toastType = "info";
           break;
         case "arrived":
-          message = "Service provider has arrived at your location.";
+          message = t("order.providerArrived");
           toastType = "success";
           // Show arrived popup instead of toast for arrived status
           setPopupType("arrived");
           return; // Don't show the toast for arrived status
         case "started":
-          message = "Your service has started.";
+          message = t("order.serviceStarted");
           toastType = "info";
           break;
         case "in_progress":
-          message = "Your service is now in progress.";
+          message = t("order.serviceInProgress");
           toastType = "info";
           break;
         case "completed":
-          message =
-            "Your service has been completed. Please review the service.";
+          message = t("order.serviceCompleted");
           toastType = "success";
           setPopupType("orderComplete");
           return; // Don't show the toast for completed status
         case "cancelled":
-          message = "Your order has been cancelled.";
+          message = t("order.orderCancelled");
           toastType = "warning";
           break;
         case "time_up":
@@ -219,7 +218,7 @@ const OrderPlace: React.FC = () => {
           setPopupType("time-up");
           return; // Don't show the toast for time-up status
         default:
-          message = `Your order status has been updated to: ${status}`;
+          message = `${t("order.orderStatusUpdated")} ${status}`;
           toastType = "info";
       }
     }
@@ -279,14 +278,14 @@ const OrderPlace: React.FC = () => {
       try {
         const response = await apiCall(formData);
         if (response && response.result === true) {
-          showToast("Order has been cancelled", "success");
+          showToast(t("order.orderCancelledSuccess"), "success");
           router.replace("/(tabs)");
         } else {
-          showToast("Failed to cancel order", "error");
+          showToast(t("order.failedToCancel"), "error");
         }
       } catch (error) {
         console.error("Error cancelling order:", error);
-        showToast("An error occurred while cancelling the order", "error");
+        showToast(t("order.errorCancelling"), "error");
       }
     }
   };
@@ -321,11 +320,11 @@ const OrderPlace: React.FC = () => {
           setPopupType(null); // Hide popup
           router.replace("/(tabs)"); // Navigate to tabs screen
         } else {
-          showToast("Failed to complete order", "error");
+          showToast(t("order.failedToComplete"), "error");
         }
       } catch (error) {
         console.error("Error completing order:", error);
-        showToast("An error occurred while completing the order", "error");
+        showToast(t("order.errorCompleting"), "error");
       }
     }
   };
@@ -336,7 +335,7 @@ const OrderPlace: React.FC = () => {
         <View style={styles.content}>
           <Header
             backBtn={true}
-            title="Loading..."
+            title={t("order.loading")}
             icon={true}
             support={true}
             backAddress={"/(tabs)"}
@@ -355,13 +354,13 @@ const OrderPlace: React.FC = () => {
         <View style={styles.content}>
           <Header
             backBtn={true}
-            title="Order Details"
+            title={t("order.orderDetails")}
             icon={true}
             support={true}
             backAddress={"/(tabs)"}
           />
           <View style={styles.loadingContainer}>
-            <Text>No order details available</Text>
+            <Text>{t("order.noOrderDetails")}</Text>
           </View>
         </View>
       </SafeAreaView>
@@ -373,7 +372,7 @@ const OrderPlace: React.FC = () => {
       <View style={styles.content}>
         <Header
           backBtn={true}
-          title={`Request #${order.order_no}`}
+          title={`${t("order.request")} #${order.order_no}`}
           icon={true}
           support={true}
           backAddress={"/(tabs)"}

@@ -3,6 +3,7 @@ import Message from "@/assets/svgs/Chat.svg";
 import Track from "@/assets/svgs/routing.svg";
 import { useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Image,
@@ -17,6 +18,7 @@ import Button from "./button";
 import DashedSeparator from "./dashed_seprator";
 
 export default function ProviderCard({ order }) {
+  const { t } = useTranslation();
   console.log("order==", order);
 
   // Get the current route name to check if we're on the track screen
@@ -27,7 +29,7 @@ export default function ProviderCard({ order }) {
       <View style={styles.providerContainer}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={Colors.primary} />
-          <Text style={styles.loadingText}>Loading provider details...</Text>
+          <Text style={styles.loadingText}>{t("loadingProviderDetails")}</Text>
         </View>
       </View>
     );
@@ -77,11 +79,11 @@ export default function ProviderCard({ order }) {
           style={styles.providerImage}
         />
         <View style={styles.providerInfo}>
-          <Text style={styles.providerName}>{provider.name || "Unknown"}</Text>
+          <Text style={styles.providerName}>{provider.name || t("unknown")}</Text>
           <Text style={styles.grayText}>{`⭐ ${provider.rating || 0} (${
             provider.reviewscount || 0
           })`}</Text>
-          <Text style={styles.grayText}>{` Provider`}</Text>
+          <Text style={styles.grayText}>{` ${t("provider")}`}</Text>
         </View>
       </View>
       <DashedSeparator />
@@ -90,7 +92,7 @@ export default function ProviderCard({ order }) {
           Icon={<Call />}
           fullWidth={false}
           width={"30%"}
-          title="Call"
+          title={t("call")}
           variant="secondary"
           onPress={handleCall}
         />
@@ -98,7 +100,7 @@ export default function ProviderCard({ order }) {
           Icon={<Message />}
           fullWidth={false}
           width={"30%"}
-          title="Chat"
+          title={t("chat")}
           variant="primary"
           onPress={handleChat}
         />
@@ -108,7 +110,7 @@ export default function ProviderCard({ order }) {
           Icon={<Track />}
           fullWidth={false}
           width={"30%"}
-          title="Track"
+          title={t("track")}
           variant="secondary"
           onPress={handleTrack}
         />

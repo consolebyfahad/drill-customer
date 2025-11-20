@@ -6,6 +6,7 @@ import Timeup from "@/assets/svgs/timeup.svg";
 import Tipup from "@/assets/svgs/tipup.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   StyleSheet,
@@ -43,6 +44,7 @@ export default function Popup({
   orderId,
   onCompleted,
 }: PopupProps) {
+  const { t } = useTranslation();
   const [tipAmount, setTipAmount] = useState("");
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
@@ -61,7 +63,7 @@ export default function Popup({
     const longitude = await AsyncStorage.getItem("longitude");
     try {
       if (!orderId) {
-        Alert.alert("Error", "Order information not found");
+        Alert.alert(t("error"), t("popup.orderInfoNotFound"));
         return;
       }
 
@@ -72,7 +74,7 @@ export default function Popup({
       formData.append("lat", latitude || "");
       formData.append("lng", longitude || "");
       formData.append("order_id", orderId);
-      formData.append("status", "started");
+      formData.append("status", "started"); // Use English key for backend
 
       console.log(formData);
       const response = await apiCall(formData);
@@ -80,18 +82,18 @@ export default function Popup({
         setShowPopup(null);
         // Alert.alert("Success", "Service has been started");
       } else {
-        Alert.alert("Error", "Failed to start service");
+        Alert.alert(t("error"), t("popup.failedToStartService"));
       }
     } catch (error) {
       console.error("Error starting service:", error);
-      Alert.alert("Error", "An error occurred while starting the service");
+      Alert.alert(t("error"), t("popup.errorStartingService"));
     }
   };
 
   const handleTipSubmit = async () => {
     try {
       if (!orderId) {
-        Alert.alert("Error", "Order information not found");
+        Alert.alert(t("error"), t("popup.orderInfoNotFound"));
         return;
       }
 
@@ -107,11 +109,11 @@ export default function Popup({
         // Show review popup after successful tip submission
         setShowPopup("review");
       } else {
-        Alert.alert("Error", "Failed to submit tip");
+        Alert.alert(t("error"), t("popup.failedToSubmitTip"));
       }
     } catch (error) {
       console.error("Error submitting tip:", error);
-      Alert.alert("Error", "An error occurred while submitting the tip");
+      Alert.alert(t("error"), t("popup.errorSubmittingTip"));
     }
   };
 
@@ -120,7 +122,7 @@ export default function Popup({
       const userId = await AsyncStorage.getItem("user_id");
 
       if (!userId || !orderId) {
-        Alert.alert("Error", "User or order information not found");
+        Alert.alert(t("error"), t("popup.userOrOrderNotFound"));
         return;
       }
 
@@ -129,9 +131,9 @@ export default function Popup({
       formData.append("table_name", "reviews");
       formData.append("order_id", orderId);
       formData.append("user_id", userId);
-      formData.append("rating", rating.toString());
-      formData.append("review", review);
-      formData.append("review_by", "user");
+      formData.append("rating", rating.toString()); // Rating is a number, safe to send
+      formData.append("review", review); // Review text - user input, can be in any language
+      formData.append("review_by", "user"); // Use English key for backend
 
       const response = await apiCall(formData);
 
@@ -139,11 +141,11 @@ export default function Popup({
         // Show order complete popup after review submission
         setShowPopup("orderComplete");
       } else {
-        Alert.alert("Error", "Failed to submit review");
+        Alert.alert(t("error"), t("popup.failedToSubmitReview"));
       }
     } catch (error) {
       console.error("Error submitting review:", error);
-      Alert.alert("Error", "An error occurred while submitting the review");
+      Alert.alert(t("error"), t("popup.errorSubmittingReview"));
     }
   };
 
@@ -160,7 +162,13 @@ export default function Popup({
     setShowPopup(null);
   };
 
-  const ratingText = ["Poor", "Fair", "Good", "Very Good", "Excellent"];
+  const ratingText = [
+    t("popup.poor"),
+    t("popup.fair"),
+    t("popup.good"),
+    t("popup.veryGood"),
+    t("popup.excellent"),
+  ];
 
   // Render arrived popup content
   if (type === "arrived") {
@@ -171,22 +179,21 @@ export default function Popup({
           <View style={styles.arrivedImageContainer}>
             <Arrived />
           </View>
-          <Text style={styles.title}>Service Provider Arrived!</Text>
+          <Text style={styles.title}>{t("popup.serviceProviderArrived")}</Text>
           <Text style={styles.description}>
-            If yes, please confirm. Otherwise, the order will automatically
-            start in 5 minutes.
+            {t("popup.arrivedDescription")}
           </Text>
         </View>
         <View style={styles.footerButtons}>
           <Button
-            title="Not Yet"
+            title={t("popup.notYet")}
             variant="secondary"
             fullWidth={false}
             width="34%"
             onPress={handleHide}
           />
           <Button
-            title="Arrived"
+            title={t("popup.arrived")}
             variant="primary"
             fullWidth={false}
             width="64%"
@@ -203,22 +210,21 @@ export default function Popup({
       <View style={styles.container}>
         <View style={styles.content}>
           <Timeup style={styles.image} />
-          <Text style={styles.title}>Time Up!</Text>
+          <Text style={styles.title}>{t("popup.timeUp")}</Text>
           <Text style={styles.description}>
-            Your bonus time has also been completed. If any work is still
-            pending, we will be moving you to a higher package.
+            {t("popup.timeUpDescription")}
           </Text>
         </View>
         <View style={styles.footerButtons}>
           <Button
-            title="Complete"
+            title={t("popup.complete")}
             variant="secondary"
             fullWidth={false}
             width="34%"
             onPress={handleComplete}
           />
           <Button
-            title="Move Higher"
+            title={t("popup.moveHigher")}
             variant="primary"
             fullWidth={false}
             width="64%"
@@ -235,22 +241,21 @@ export default function Popup({
         {type === "timeup" ? (
           <>
             <Timeup style={styles.image} />
-            <Text style={styles.title}>Time Up!</Text>
+            <Text style={styles.title}>{t("popup.timeUp")}</Text>
             <Text style={styles.description}>
-              Your bonus time has also been completed. If any work is still
-              pending, we will be moving you to a higher package.
+              {t("popup.timeUpDescription")}
             </Text>
           </>
         ) : type === "tipup" ? (
           <>
             <Tipup style={styles.image} />
-            <Text style={styles.title}>Add a Tip</Text>
+            <Text style={styles.title}>{t("popup.addTip")}</Text>
             <Text style={styles.description}>
-              Show appreciation for the service provider by adding a tip.
+              {t("popup.tipDescription")}
             </Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter tip amount"
+              placeholder={t("popup.enterTipAmount")}
               keyboardType="numeric"
               value={tipAmount}
               onChangeText={setTipAmount}
@@ -259,15 +264,15 @@ export default function Popup({
         ) : type === "orderComplete" ? (
           <>
             <OrderComplete style={styles.image} />
-            <Text style={styles.title}>Order Completed</Text>
+            <Text style={styles.title}>{t("popup.orderCompleted")}</Text>
             <Text style={styles.description}>
-              Thanks! for sharing your experience and valuable feedback.
+              {t("popup.orderCompletedDescription")}
             </Text>
           </>
         ) : type === "review" ? (
           <>
-            <Text style={styles.title}>Rate Your Experience</Text>
-            <Text style={styles.description}>How was your service?</Text>
+            <Text style={styles.title}>{t("popup.rateExperience")}</Text>
+            <Text style={styles.description}>{t("popup.howWasService")}</Text>
             <View style={styles.starsContainer}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => setRating(star)}>
@@ -283,12 +288,14 @@ export default function Popup({
               <>
                 <Text style={styles.ratingText}>{ratingText[rating - 1]}</Text>
                 <Text style={styles.description}>
-                  You gave {rating} star{rating > 1 ? "s" : ""} to the service
-                  provider.
+                  {t("popup.youGaveStars", { 
+                    count: rating.toString(),
+                    plural: rating > 1 ? "s" : ""
+                  })}
                 </Text>
                 <TextInput
                   style={styles.textarea}
-                  placeholder="Write a review..."
+                  placeholder={t("popup.writeReview")}
                   multiline
                   value={review}
                   onChangeText={setReview}
@@ -302,14 +309,14 @@ export default function Popup({
         {type === "timeup" ? (
           <>
             <Button
-              title="Complete"
+              title={t("popup.complete")}
               variant="secondary"
               fullWidth={false}
               width="34%"
               onPress={handleComplete}
             />
             <Button
-              title="Move Higher"
+              title={t("popup.moveHigher")}
               variant="primary"
               fullWidth={false}
               width="64%"
@@ -319,14 +326,14 @@ export default function Popup({
         ) : type === "tipup" ? (
           <>
             <Button
-              title="Skip"
+              title={t("skip")}
               variant="secondary"
               fullWidth={false}
               width="34%"
               onPress={() => setShowPopup("review")}
             />
             <Button
-              title="Continue"
+              title={t("continue")}
               variant="primary"
               fullWidth={false}
               width="64%"
@@ -335,7 +342,7 @@ export default function Popup({
           </>
         ) : type === "orderComplete" ? (
           <Button
-            title="Continue"
+            title={t("continue")}
             variant="primary"
             fullWidth={true}
             width="100%"
@@ -343,7 +350,7 @@ export default function Popup({
           />
         ) : type === "review" ? (
           <Button
-            title="Submit"
+            title={t("submit")}
             variant="primary"
             fullWidth={true}
             width="100%"

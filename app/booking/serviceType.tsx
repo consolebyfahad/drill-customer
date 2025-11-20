@@ -147,13 +147,13 @@ export default function ServiceTypeScreen() {
           contentContainerStyle={{ flexGrow: 1 }}
         >
           <View style={styles.content}>
-            <Header backBtn={true} title="Select Service Type" />
+            <Header backBtn={true} title={t("booking.selectServiceType")} />
 
             <Text style={styles.title}>
-              How would you like to book this service?
+              {t("booking.howToBook")}
             </Text>
             <Text style={styles.subtitle}>
-              Choose between instant service or schedule for later
+              {t("booking.chooseServiceType")}
             </Text>
 
             {/* Service Type Selection */}
@@ -164,9 +164,9 @@ export default function ServiceTypeScreen() {
                   onPress={() => setServiceType("instant")}
                 />
                 <View style={styles.optionContent}>
-                  <Text style={styles.optionTitle}>Instant Service</Text>
+                  <Text style={styles.optionTitle}>{t("booking.instantService")}</Text>
                   <Text style={styles.optionDescription}>
-                    Get service immediately when available
+                    {t("booking.instantServiceDesc")}
                   </Text>
                 </View>
               </View>
@@ -177,9 +177,9 @@ export default function ServiceTypeScreen() {
                   onPress={() => setServiceType("schedule")}
                 />
                 <View style={styles.optionContent}>
-                  <Text style={styles.optionTitle}>Schedule Service</Text>
+                  <Text style={styles.optionTitle}>{t("booking.scheduleService")}</Text>
                   <Text style={styles.optionDescription}>
-                    Choose your preferred date and time
+                    {t("booking.scheduleServiceDesc")}
                   </Text>
                 </View>
               </View>
@@ -188,11 +188,11 @@ export default function ServiceTypeScreen() {
             {/* Schedule Fields - Only show when schedule is selected */}
             {serviceType === "schedule" && (
               <View style={styles.scheduleSection}>
-                <Text style={styles.sectionTitle}>Schedule Details</Text>
+                <Text style={styles.sectionTitle}>{t("booking.scheduleDetails")}</Text>
 
                 {/* Date Selection */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Select Date</Text>
+                  <Text style={styles.fieldLabel}>{t("booking.selectDate")}</Text>
                   <View
                     style={styles.dateTimeField}
                     onTouchEnd={() => setShowDatePicker(true)}
@@ -205,7 +205,7 @@ export default function ServiceTypeScreen() {
 
                 {/* Time Selection */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Select Time</Text>
+                  <Text style={styles.fieldLabel}>{t("booking.selectTime")}</Text>
                   <View
                     style={styles.dateTimeField}
                     onTouchEnd={() => setShowTimePicker(true)}
@@ -218,7 +218,7 @@ export default function ServiceTypeScreen() {
 
                 {!isDateValid() && (
                   <Text style={styles.errorText}>
-                    Please select a future date
+                    {t("booking.selectFutureDate")}
                   </Text>
                 )}
               </View>
@@ -229,7 +229,7 @@ export default function ServiceTypeScreen() {
         {/* Continue Button */}
         <View style={styles.buttonContainer}>
           <Button
-            title="Continue"
+            title={t("booking.continue")}
             onPress={handleContinue}
             disabled={!canProceed()}
           />
@@ -245,12 +245,12 @@ export default function ServiceTypeScreen() {
             />
             <View style={styles.pickerContainer}>
               <View style={styles.pickerHeader}>
-                <Text style={styles.pickerTitle}>Select Date</Text>
+                <Text style={styles.pickerTitle}>{t("booking.selectDate")}</Text>
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={() => setShowDatePicker(false)}
                 >
-                  <Text style={styles.closeButtonText}>Done</Text>
+                  <Text style={styles.closeButtonText}>{t("confirm")}</Text>
                 </TouchableOpacity>
               </View>
               <View
@@ -281,12 +281,12 @@ export default function ServiceTypeScreen() {
             />
             <View style={styles.pickerContainer}>
               <View style={styles.pickerHeader}>
-                <Text style={styles.pickerTitle}>Select Time</Text>
+                <Text style={styles.pickerTitle}>{t("booking.selectTime")}</Text>
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={() => setShowTimePicker(false)}
                 >
-                  <Text style={styles.closeButtonText}>Done</Text>
+                  <Text style={styles.closeButtonText}>{t("confirm")}</Text>
                 </TouchableOpacity>
               </View>
               <View style={{ alignItems: "center", justifyContent: "center" }}>

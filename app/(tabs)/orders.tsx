@@ -86,7 +86,7 @@ export default function Orders() {
       }
     } catch (error) {
       console.error("Failed to fetch orders", error);
-      Alert.alert("Error", "Failed to load orders");
+      Alert.alert(t("error"), t("add.somethingWentWrong"));
     } finally {
       setIsLoading(false);
     }

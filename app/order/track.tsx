@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Animated,
@@ -42,6 +43,7 @@ type LocationStateType = {
 };
 
 export default function Track() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<string>("OnTheWay");
   const slideAnim = useRef(new Animated.Value(800)).current;
   const [location, setLocation] = useState<LocationStateType | null>(null);
@@ -201,7 +203,7 @@ export default function Track() {
     return (
       <View style={styles.fullScreenLoading}>
         <ActivityIndicator size="large" color={Colors.primary} />
-        <Text style={styles.loadingText}>Loading order details...</Text>
+        <Text style={styles.loadingText}>{t("order.loadingOrderDetails")}</Text>
       </View>
     );
   }
@@ -212,13 +214,13 @@ export default function Track() {
       {isLoading && !order ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
-          <Text style={styles.loadingText}>Getting location...</Text>
+          <Text style={styles.loadingText}>{t("order.gettingLocation")}</Text>
         </View>
       ) : errorMsg ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{errorMsg}</Text>
           <Button
-            title="Go Back"
+            title={t("goBack")}
             onPress={() => router.back()}
             variant="primary"
             paddingvertical={12}
@@ -264,7 +266,7 @@ export default function Track() {
       <View style={styles.header}>
         <Header
           backBtn={true}
-          title={"Track Customer"}
+          title={t("order.trackCustomer")}
           icon={true}
           support={true}
         />
@@ -280,7 +282,7 @@ export default function Track() {
         <View style={styles.contentHeader}>
           <Profile />
           <Text style={styles.title}>
-            You are estimated to arrive at the customers location in 13 minutes
+            {t("order.estimatedArrival")}
           </Text>
         </View>
         <View style={styles.content}>
@@ -288,8 +290,7 @@ export default function Track() {
           <View style={styles.statusContainer}>
             <View style={styles.statusItem}>
               <Accepted width={40} height={40} />
-              <Text style={styles.statusText}>Order</Text>
-              <Text style={styles.statusText2}>Accepted</Text>
+              <Text style={styles.statusText}>{t("order.orderAcceptedStatus")}</Text>
             </View>
             <View style={styles.line} />
             <View style={styles.statusItem}>
@@ -300,7 +301,7 @@ export default function Track() {
                   status === "OnTheWay" ? styles.activeStatusText : {},
                 ]}
               >
-                On the Way
+                {t("order.onTheWay")}
               </Text>
             </View>
             <View
@@ -317,7 +318,7 @@ export default function Track() {
                   status === "Arrived" ? styles.activeStatusText : {},
                 ]}
               >
-                Arrived
+                {t("order.arrived")}
               </Text>
             </View>
           </View>

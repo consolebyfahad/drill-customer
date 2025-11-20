@@ -46,10 +46,10 @@ export default function Add() {
 
           setCategories(mappedCategories);
         } else {
-          setError(response.message || "Failed to load categories.");
+          setError(response.message || t("add.failedToLoadCategories"));
         }
       } catch (err) {
-        setError("Something went wrong. Please try again.");
+        setError(t("add.somethingWentWrong"));
       } finally {
         setLoading(false);
       }

@@ -1,6 +1,7 @@
 import Edit from "@/assets/svgs/edit.svg";
 import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
 
@@ -21,6 +22,7 @@ export default function SelectedService({
   scheduleDate,
   scheduleTime,
 }: Props) {
+  const { t } = useTranslation();
   const currentDate = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",
@@ -37,7 +39,7 @@ export default function SelectedService({
       <View style={styles.textContainer}>
         <Text style={styles.title}>{category.name}</Text>
         <Text style={styles.date}>
-          Date:{" "}
+          {t("date")}:{" "}
           <Text style={styles.dateValue}>
             {serviceType === "schedule"
               ? (() => {

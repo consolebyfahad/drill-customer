@@ -41,13 +41,13 @@ export default function SelectedDescription({
       {disabled ? (
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>
-            {description || "No description provided"}
+            {description || t("noDescription")}
           </Text>
         </View>
       ) : (
         <TextInput
           style={styles.input}
-          placeholder="Enter description here..."
+          placeholder={t("enterDescription")}
           multiline
           value={description}
           onChangeText={handleChangeText}

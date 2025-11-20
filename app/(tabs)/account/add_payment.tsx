@@ -1,6 +1,7 @@
 import Header from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Animated,
   Dimensions,
@@ -35,6 +36,7 @@ const cardData = [
 ];
 
 export default function AddPayment() {
+  const { t } = useTranslation();
   const [scrollX] = useState(new Animated.Value(0));
   const [amount, setAmount] = useState(1500);
 
@@ -45,10 +47,10 @@ export default function AddPayment() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Header title="Add Payment" backBtn={true} />
+        <Header title={t("addPayment.title")} backBtn={true} />
 
         <Text style={styles.infoText}>
-          Your credit card has been successfully added
+          {t("addPayment.cardAddedSuccess")}
         </Text>
 
         {/* Credit Card Slider */}
@@ -94,7 +96,7 @@ export default function AddPayment() {
         </View>
 
         {/* Add Money Section */}
-        <Text style={styles.sectionTitle}>Add Money</Text>
+        <Text style={styles.sectionTitle}>{t("addPayment.addMoney")}</Text>
         <View style={styles.inputContainer}>
           <Ionicons name="wallet" size={24} color="gray" />
           <TextInput
@@ -114,7 +116,7 @@ export default function AddPayment() {
         </View>
 
         {/* Confirm Button */}
-        <Button title="Confrim" onPress={() => {}} />
+        <Button title={t("addPayment.confirm")} onPress={() => {}} />
       </ScrollView>
     </SafeAreaView>
   );

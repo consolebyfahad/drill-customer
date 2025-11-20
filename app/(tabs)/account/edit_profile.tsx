@@ -110,13 +110,13 @@ export default function EditProfile() {
           ? await ImagePicker.requestCameraPermissionsAsync()
           : await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      if (permissionStatus.status !== "granted") {
-        Alert.alert(
-          "Permission Denied",
-          "Camera or Gallery access is required."
-        );
-        return;
-      }
+            if (permissionStatus.status !== "granted") {
+              Alert.alert(
+                t("alerts.permissionDenied"),
+                t("alerts.cameraGalleryRequired")
+              );
+              return;
+            }
 
       result =
         source === "camera"
@@ -134,19 +134,19 @@ export default function EditProfile() {
         setSelectedImage(selectedUri);
         await handleImageUpdate(selectedUri);
       }
-    } catch (error) {
-      Alert.alert(
-        "Image Picker Error",
-        "Something went wrong while picking the image."
-      );
-    }
+          } catch (error) {
+            Alert.alert(
+              t("alerts.imagePickerError"),
+              t("alerts.imagePickerErrorDesc")
+            );
+          }
   };
 
   const handleImageUpdate = async (imageUri: string) => {
-    if (!userId) {
-      Alert.alert("Error", "User ID not found.");
-      return;
-    }
+        if (!userId) {
+          Alert.alert(t("alerts.error"), t("alerts.userNotFound"));
+          return;
+        }
 
     try {
       const uriParts = imageUri.split(".");
@@ -164,24 +164,24 @@ export default function EditProfile() {
       const response = await apiCall(formData);
 
       if (response.result && response.file_name) {
-        setUser((prevUser) => ({
-          ...prevUser,
-          image: response.file_name,
-        }));
-        Alert.alert("Success", "Profile image updated successfully!");
-      } else {
-        throw new Error(response.message || "Failed to upload image.");
-      }
-    } catch (err: any) {
-      Alert.alert("Upload Error", err.message || "Something went wrong.");
-    }
+              setUser((prevUser) => ({
+                ...prevUser,
+                image: response.file_name,
+              }));
+              Alert.alert(t("success"), t("booking.cardSaved"));
+            } else {
+              throw new Error(response.message || t("alerts.uploadFailed"));
+            }
+          } catch (err: any) {
+            Alert.alert(t("alerts.error"), err.message || t("alerts.somethingWentWrong"));
+          }
   };
 
   const openImagePicker = () => {
-    Alert.alert("Select Option", "Choose an option:", [
-      { text: "Camera", onPress: () => pickImage("camera") },
-      { text: "Gallery", onPress: () => pickImage("gallery") },
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("alerts.selectOption"), t("alerts.chooseOption"), [
+      { text: t("alerts.camera"), onPress: () => pickImage("camera") },
+      { text: t("alerts.gallery"), onPress: () => pickImage("gallery") },
+      { text: t("cancel"), style: "cancel" },
     ]);
   };
 
@@ -192,12 +192,12 @@ export default function EditProfile() {
   const handleUpdate = async () => {
     try {
       setError(null);
-      const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(user.dob);
+            const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(user.dob);
 
-      if (user.dob && !isValidDate) {
-        Alert.alert("Invalid Date", "DOB must be in YYYY-MM-DD format.");
-        return;
-      }
+            if (user.dob && !isValidDate) {
+              Alert.alert(t("alerts.invalidDate"), t("alerts.invalidDateFormat"));
+              return;
+            }
 
       if (!userId) throw new Error("User ID not found");
 
@@ -222,10 +222,10 @@ export default function EditProfile() {
         await AsyncStorage.setItem("user_name", user.name);
         router.push("/(tabs)/account");
       } else {
-        throw new Error(response.message || "Failed to update profile.");
+        throw new Error(response.message || t("alerts.failedToUpdateProfile"));
       }
     } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+      setError(err.message || t("alerts.somethingWentWrong"));
     }
   };
 

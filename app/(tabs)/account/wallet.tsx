@@ -5,6 +5,7 @@ import TransactionCard from "@/components/transaction_card";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dimensions,
   ScrollView,
@@ -19,6 +20,7 @@ import { FONTS } from "~/constants/Fonts";
 const { width } = Dimensions.get("window");
 
 const Wallet = () => {
+  const { t } = useTranslation();
   const [showTransactions, setShowTransactions] = useState(true);
 
   const transactionsData = [
@@ -70,16 +72,16 @@ const Wallet = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Header title="Wallet" backBtn={true} />
+        <Header title={t("wallet.title")} backBtn={true} />
 
         {/* <View style={styles.chartSection}>
           <View style={styles.rowCenter}>
             <Ionicons name="calendar-outline" size={20} color="gray" />
-            <Text style={styles.textSecondary}>This month</Text>
+            <Text style={styles.textSecondary}>{t("wallet.thisMonth")}</Text>
           </View>
           <View>
-            <Text style={styles.totalExpense}>SAR 1500</Text>
-            <Text style={styles.textGray}>Total Expense</Text>
+            <Text style={styles.totalExpense}>{t("wallet.sar")} 1500</Text>
+            <Text style={styles.textGray}>{t("wallet.totalExpense")}</Text>
           </View>
         </View>
 
@@ -102,11 +104,11 @@ const Wallet = () => {
 
         <View style={styles.balanceSection}>
           <View>
-            <Text style={styles.textSecondary}>Available Balance</Text>
-            <Text style={styles.availableBalance}>SAR 13,455.23</Text>
+            <Text style={styles.textSecondary}>{t("wallet.availableBalance")}</Text>
+            <Text style={styles.availableBalance}>{t("wallet.sar")} 13,455.23</Text>
           </View>
           <View style={{ width: "20%" }}>
-            <Button title="Add" onPress={handleAdd} variant="secondary" />
+            <Button title={t("wallet.add")} onPress={handleAdd} variant="secondary" />
           </View>
         </View>
 
@@ -116,7 +118,7 @@ const Wallet = () => {
           style={styles.transactionHeader}
           onPress={() => setShowTransactions(!showTransactions)}
         >
-          <Text style={styles.transactionTitle}>Transactions History</Text>
+          <Text style={styles.transactionTitle}>{t("wallet.transactionsHistory")}</Text>
           <Ionicons
             name={showTransactions ? "chevron-up" : "chevron-down"}
             size={20}

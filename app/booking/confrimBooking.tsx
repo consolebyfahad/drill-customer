@@ -70,15 +70,15 @@ export default function ConfirmBooking() {
       if (response.status === "success") {
         setDiscount(response.discount || 10);
         setIsPromoValid(true);
-        Alert.alert("Success", "Promo code applied successfully!");
+        Alert.alert(t("success"), t("booking.promoCodeApplied"));
       } else {
         setDiscount(0);
         setIsPromoValid(false);
-        Alert.alert("Error", "Invalid promo code");
+        Alert.alert(t("error"), t("booking.invalidPromoCode"));
       }
     } catch (error) {
       console.error("Promo verification error:", error);
-      Alert.alert("Error", "Failed to verify promo code");
+      Alert.alert(t("error"), t("booking.failedToVerifyPromo"));
     }
   };
 
@@ -97,7 +97,8 @@ export default function ConfirmBooking() {
       formData.append("images", params.selectedImage || "");
       formData.append("description", params.description || "");
       formData.append("package_id", params.packageId || "");
-      formData.append("payment_method", params.paymentMethod || "");
+      // IMPORTANT: Use payment method ID (paymentMethodDetails) for backend, not translated name
+      formData.append("payment_method", params.paymentMethodDetails || ""); // Use ID: visa, apple, wallet, cash
       formData.append("method_details", params.paymentMethodDetails || "");
       formData.append("promo_code", isPromoValid ? promoCode : "");
       formData.append("amount", totalAmount.toString());
@@ -115,13 +116,13 @@ export default function ConfirmBooking() {
         router.push("/booking/confrimedBooking");
       } else {
         Alert.alert(
-          "Booking Failed",
-          response.message || "Unable to process booking"
+          t("booking.bookingFailed"),
+          response.message || t("booking.unableToProcessBooking")
         );
       }
     } catch (error) {
       console.error("Booking error:", error);
-      Alert.alert("Error", "Failed to confirm booking");
+      Alert.alert(t("error"), t("booking.failedToConfirmBooking"));
     }
   };
 
@@ -164,14 +165,14 @@ export default function ConfirmBooking() {
           <Seprator />
 
           {/* Service Type and Schedule Info */}
-          <Text style={styles.sectionTitle}>Service Details</Text>
+          <Text style={styles.sectionTitle}>{t("booking.serviceDetails")}</Text>
           <View style={styles.serviceInfoContainer}>
             <View style={styles.serviceInfoRow}>
-              <Text style={styles.packageTitle}>Service Type:</Text>
+              <Text style={styles.packageTitle}>{t("booking.serviceType")}:</Text>
               <Text style={styles.serviceInfoValue}>
                 {params.service_type === "schedule"
-                  ? "Scheduled"
-                  : "⚡ Instant"}
+                  ? t("booking.scheduled")
+                  : `⚡ ${t("booking.instant")}`}
               </Text>
             </View>
             {params.service_type === "schedule" &&
@@ -179,7 +180,7 @@ export default function ConfirmBooking() {
               params.schedule_time && (
                 <>
                   <View style={styles.serviceInfoRow}>
-                    <Text style={styles.packageTitle}>Scheduled Date:</Text>
+                    <Text style={styles.packageTitle}>{t("booking.scheduledDate")}:</Text>
                     <Text style={styles.serviceInfoValue}>
                       {new Date(params.schedule_date).toLocaleDateString(
                         "en-US",
@@ -193,7 +194,7 @@ export default function ConfirmBooking() {
                     </Text>
                   </View>
                   <View style={styles.serviceInfoRow}>
-                    <Text style={styles.packageTitle}>Scheduled Time:</Text>
+                    <Text style={styles.packageTitle}>{t("booking.scheduledTime")}:</Text>
                     <Text style={styles.serviceInfoValue}>
                       {new Date(
                         `2000-01-01T${params.schedule_time}`
@@ -238,7 +239,7 @@ export default function ConfirmBooking() {
           <View style={styles.promoContainer}>
             <TextInput
               style={styles.promoInput}
-              placeholder="Enter promo code"
+              placeholder={t("booking.enterPromoCode")}
               value={promoCode}
               onChangeText={setPromoCode}
             />

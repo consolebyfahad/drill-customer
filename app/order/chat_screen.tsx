@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -108,6 +109,7 @@ interface Message {
 }
 
 export default function ChatScreen() {
+  const { t } = useTranslation();
   const toId = "";
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -247,10 +249,10 @@ export default function ChatScreen() {
         setUploadedFileName(response.file_name);
         return response.file_name;
       } else {
-        throw new Error(response.message || "Upload failed");
+        throw new Error(response.message || t("order.errorWithUpload"));
       }
     } catch (err: any) {
-      Alert.alert("Error", err.message || "Something went wrong with upload");
+      Alert.alert(t("error"), err.message || t("order.errorWithUpload"));
       return null;
     }
   };
@@ -302,7 +304,7 @@ export default function ChatScreen() {
       }
     } catch (error) {
       console.error("Failed to send message", error);
-      Alert.alert("Error", "Failed to send message. Please try again.");
+      Alert.alert(t("error"), t("order.failedToSend"));
     } finally {
       setIsLoading(false);
     }
@@ -312,12 +314,12 @@ export default function ChatScreen() {
     if (!userId) return;
 
     Alert.alert(
-      "Delete Message",
-      "Are you sure you want to delete this message?",
+      t("order.deleteMessage"),
+      t("order.deleteConfirm"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("order.deleteMessage"),
           style: "destructive",
           onPress: () => deleteMessage(messageId, userId),
         },
@@ -348,8 +350,8 @@ export default function ChatScreen() {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
-          "Permission needed",
-          "We need camera permissions to take pictures!"
+          t("order.permissionNeeded"),
+          t("order.cameraPermission")
         );
         return;
       }
@@ -363,8 +365,8 @@ export default function ChatScreen() {
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
-          "Permission needed",
-          "We need gallery permissions to access your photos!"
+          t("order.permissionNeeded"),
+          t("order.galleryPermission")
         );
         return;
       }
@@ -461,7 +463,7 @@ export default function ChatScreen() {
               ))
             : !isLoading && (
                 <View style={styles.noMessagesContainer}>
-                  <Text style={styles.noMessagesText}>No messages yet</Text>
+                  <Text style={styles.noMessagesText}>{t("order.noMessagesYet")}</Text>
                 </View>
               )}
         </ScrollView>
@@ -490,7 +492,7 @@ export default function ChatScreen() {
                 value={inputMessage}
                 onChangeText={(text) => setInputMessage(text)}
                 placeholder={
-                  attachment ? "Send with image..." : "Type a message..."
+                  attachment ? t("order.sendWithImage") : t("order.typeMessage")
                 }
                 multiline
                 onFocus={() => {
@@ -545,9 +547,9 @@ export default function ChatScreen() {
         >
           <View style={styles.modalContainer}>
             <View style={styles.emojiPickerHeader}>
-              <Text style={styles.emojiPickerTitle}>Select Emoji</Text>
+              <Text style={styles.emojiPickerTitle}>{t("order.selectEmoji")}</Text>
               <TouchableOpacity onPress={() => setIsEmojiPickerVisible(false)}>
-                <Text style={styles.closeButton}>Close</Text>
+                <Text style={styles.closeButton}>{t("order.close")}</Text>
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.emojiScrollView}>
@@ -582,21 +584,21 @@ export default function ChatScreen() {
                 style={styles.mediaOption}
                 onPress={() => pickImage("camera")}
               >
-                <Text style={styles.mediaOptionText}>Take Photo</Text>
+                <Text style={styles.mediaOptionText}>{t("order.takePhoto")}</Text>
               </TouchableOpacity>
               <View style={styles.mediaDivider} />
               <TouchableOpacity
                 style={styles.mediaOption}
                 onPress={() => pickImage("gallery")}
               >
-                <Text style={styles.mediaOptionText}>Choose from Gallery</Text>
+                <Text style={styles.mediaOptionText}>{t("order.chooseFromGallery")}</Text>
               </TouchableOpacity>
               <View style={styles.mediaDivider} />
               <TouchableOpacity
                 style={[styles.mediaOption, styles.cancelButton]}
                 onPress={() => setIsMediaPickerVisible(false)}
               >
-                <Text style={styles.cancelText}>Cancel</Text>
+                <Text style={styles.cancelText}>{t("cancel")}</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

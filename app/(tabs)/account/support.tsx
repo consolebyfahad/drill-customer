@@ -1,36 +1,39 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 const Support = () => {
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>Need Help?</Text>
+      <Header title={t("account.support")} backBtn={true} />
+      <Text style={styles.heading}>{t("support.needHelp")}</Text>
       <Text style={styles.subheading}>
-        If you have any questions or need assistance, feel free to reach out to
-        our support team.
+        {t("support.supportDescription")}
       </Text>
 
       <View style={styles.card}>
         <Ionicons name="mail-outline" size={24} color={Colors.primary} />
         <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>Email Support</Text>
-          <Text style={styles.cardText}>support@yourapp.com</Text>
+          <Text style={styles.cardTitle}>{t("support.emailSupport")}</Text>
+          <Text style={styles.cardText}>{t("support.supportEmail")}</Text>
         </View>
       </View>
 
       <View style={styles.card}>
         <Ionicons name="call-outline" size={24} color={Colors.primary} />
         <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>Call Us</Text>
-          <Text style={styles.cardText}>+1 (800) 123-4567</Text>
+          <Text style={styles.cardTitle}>{t("support.callUs")}</Text>
+          <Text style={styles.cardText}>{t("support.supportPhone")}</Text>
         </View>
       </View>
 
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Chat with Support</Text>
+        <Text style={styles.buttonText}>{t("support.chatWithSupport")}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

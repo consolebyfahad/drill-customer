@@ -63,8 +63,8 @@ export default function Packages() {
       }
     } catch (error) {
       console.error("Error fetching plans:", error);
-      setError("Unable to fetch service packages");
-      Alert.alert("Error", "Unable to fetch service packages");
+      setError(t("packages.unableToFetch"));
+      Alert.alert(t("error"), t("packages.unableToFetch"));
     } finally {
       setLoading(false);
     }
@@ -88,7 +88,7 @@ export default function Packages() {
           <View>
             <Text style={styles.packageName}>{pkg.name}</Text>
             <Text style={styles.packageDetails}>
-              {pkg.hours} hours package | SAR {pkg.price.toFixed(2)}
+              {pkg.hours} {t("booking.hoursPackage")} {pkg.price.toFixed(2)}
             </Text>
           </View>
           <View style={styles.radioOuter}>
@@ -114,7 +114,7 @@ export default function Packages() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Header title={t("packages")} icon={true} />
+        <Header title={t("packages.packages")} icon={true} />
 
         {loading ? (
           <View style={styles.loaderContainer}>
@@ -127,12 +127,14 @@ export default function Packages() {
               style={styles.retryButton}
               onPress={fetchAvailablePlans}
             >
-              <Text style={styles.retryButtonText}>Retry</Text>
+              <Text style={styles.retryButtonText}>{t("retry")}</Text>
             </TouchableOpacity>
           </View>
         ) : packages.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No packages available</Text>
+            <Text style={styles.emptyText}>
+              {t("packages.noPackagesAvailable")}
+            </Text>
           </View>
         ) : (
           <ScrollView>{packages.map(renderPackageCard)}</ScrollView>
