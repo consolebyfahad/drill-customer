@@ -73,7 +73,7 @@ export default function AddPayment() {
             >
               <Text style={styles.cardName}>{card.name}</Text>
               <Text style={styles.cardNumber}>{card.number}</Text>
-              <Text style={styles.cardBalance}>Balance: {card.balance}</Text>
+              <Text style={styles.cardBalance}>{t("addPayment.balance")}: {card.balance}</Text>
             </ImageBackground>
           ))}
         </ScrollView>

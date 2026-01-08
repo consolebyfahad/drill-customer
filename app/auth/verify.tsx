@@ -2,62 +2,23 @@ import Arrow from "@/assets/svgs/arrowLeft.svg";
 import Button from "@/components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { OtpInput } from "react-native-otp-entry";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
-type InputRef = TextInput | null;
 
 export default function Verify() {
-  const [code, setCode] = useState<string[]>(["", "", "", ""]);
+  const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const inputs = useRef<InputRef[]>([]);
   const { t } = useTranslation();
-  useEffect(() => {
-    setTimeout(() => {
-      inputs.current[0]?.focus();
-    }, 100);
-  }, []);
 
-  const handleChangeText = (text: string, index: number) => {
-    const trimmed = text.trim();
-    if (trimmed.length > 1) return;
-
-    const newCode = [...code];
-    newCode[index] = trimmed;
-    setCode(newCode);
-
+  const handleChangeText = (text: string) => {
+    setCode(text);
     if (error) setError("");
-
-    if (trimmed && index < inputs.current.length - 1) {
-      inputs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyPress = (
-    e: { nativeEvent: { key: string } },
-    index: number
-  ) => {
-    if (e.nativeEvent.key === "Backspace") {
-      const newCode = [...code];
-      if (!code[index] && index > 0) {
-        newCode[index - 1] = "";
-        setCode(newCode);
-        inputs.current[index - 1]?.focus();
-      } else {
-        newCode[index] = "";
-        setCode(newCode);
-      }
-    }
   };
 
   const handleVerify = async () => {
@@ -67,7 +28,7 @@ export default function Verify() {
       return;
     }
 
-    if (code.join("").length !== 4) {
+    if (code.length !== 4) {
       setError(t("verify.invalidCode"));
       return;
     }
@@ -75,7 +36,7 @@ export default function Verify() {
     try {
       const formData = new FormData();
       formData.append("type", "verify_otp");
-      formData.append("code", code.join(""));
+      formData.append("code", code);
       formData.append("user_id", userId);
       const response = await apiCall(formData);
 
@@ -108,25 +69,20 @@ export default function Verify() {
       <View
         style={[styles.otpContainer, error ? styles.otpContainerError : null]}
       >
-        <View style={styles.otpInputs}>
-          {code.map((digit, index) => (
-            <TextInput
-              key={index}
-              ref={(el) => {
-                inputs.current[index] = el;
-              }}
-              style={[styles.otpInput, error ? styles.otpInputError : null]}
-              keyboardType="numeric"
-              maxLength={1}
-              onChangeText={(text) => handleChangeText(text, index)}
-              onKeyPress={(e) => handleKeyPress(e, index)}
-              value={digit}
-              returnKeyType="next"
-              importantForAutofill="yes"
-              textContentType="oneTimeCode"
-            />
-          ))}
-        </View>
+        <OtpInput
+          numberOfDigits={4}
+          onTextChange={handleChangeText}
+          focusColor={Colors.primary}
+          theme={{
+            containerStyle: styles.otpInputs,
+            pinCodeContainerStyle: error
+              ? { ...styles.otpInput, ...styles.otpInputError }
+              : styles.otpInput,
+            pinCodeTextStyle: styles.otpInputText,
+            focusedPinCodeContainerStyle: styles.otpInputFocused,
+          }}
+          autoFocus
+        />
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <TouchableOpacity>
           <Text style={styles.resendText}>
@@ -188,6 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
     marginBottom: 18,
+    justifyContent: "center",
   },
   otpInput: {
     width: 42,
@@ -195,8 +152,15 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 1,
     borderColor: Colors.gray200,
-    textAlign: "center",
+    backgroundColor: Colors.white,
+  },
+  otpInputFocused: {
+    borderColor: Colors.primary,
+  },
+  otpInputText: {
     fontSize: 20,
+    fontFamily: FONTS.regular,
+    color: Colors.secondary,
   },
   otpInputError: {
     borderColor: "red",

@@ -151,6 +151,18 @@ export default function BookingScreen() {
   ]);
 
   const handleNext = () => {
+    // Ensure we have lat/lng - use state if params don't have it
+    const finalLat = latlng.latitude || params.latitude;
+    const finalLng = latlng.longitude || params.longitude;
+    
+    console.log("📤 Booking Screen - Passing to booking2:", {
+      id: serviceDetails.id,
+      location: selectedLocation,
+      latitude: finalLat,
+      longitude: finalLng,
+      service_type: serviceType,
+    });
+    
     router.push({
       pathname: "/booking/booking2",
       params: {
@@ -160,8 +172,8 @@ export default function BookingScreen() {
         location: selectedLocation,
         selectedImage,
         description,
-        latitude: params.latitude,
-        longitude: params.longitude,
+        latitude: finalLat,
+        longitude: finalLng,
         service_type: serviceType,
         schedule_date: scheduleDate,
         schedule_time: scheduleTime,

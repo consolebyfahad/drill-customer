@@ -24,23 +24,7 @@ import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
 import { apiCall } from "~/utils/api";
-type LocationStateType = {
-  coords: {
-    latitude: number;
-    longitude: number;
-    altitude: number | null;
-    accuracy: number | null;
-    altitudeAccuracy: number | null;
-    heading: number | null;
-    speed: number | null;
-  };
-  timestamp: number;
-  lat1: any;
-  lon1: any;
-  lat2: any;
-  lon2: any;
-  remove: any;
-};
+type LocationStateType = Location.LocationObject;
 
 export default function Track() {
   const { t } = useTranslation();
@@ -61,7 +45,94 @@ export default function Track() {
     [params.orderId]
   );
   console.log("orderId", orderId);
-  const locationSubscriptionRef = useRef(null);
+  const locationSubscriptionRef = useRef<Location.LocationSubscription | null>(
+    null
+  );
+  const GOOGLE_MAPS_API_KEY = "AIzaSyAQiilQ_i4LRPFyMhfLB5ZT3UGMTIxqL0Y";
+
+  // Decode Google polyline to coordinates
+  const decodePolyline = (
+    encoded: string
+  ): { latitude: number; longitude: number }[] => {
+    const poly = [];
+    let index = 0;
+    const len = encoded.length;
+    let lat = 0;
+    let lng = 0;
+
+    while (index < len) {
+      let b;
+      let shift = 0;
+      let result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlat = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlng = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
+      lng += dlng;
+
+      poly.push({
+        latitude: lat * 1e-5,
+        longitude: lng * 1e-5,
+      });
+    }
+    return poly;
+  };
+
+  // Fetch route from Google Directions API
+  const fetchRoute = async (
+    origin: { latitude: number; longitude: number },
+    destination: { latitude: number; longitude: number }
+  ) => {
+    try {
+      const originStr = `${origin.latitude},${origin.longitude}`;
+      const destinationStr = `${destination.latitude},${destination.longitude}`;
+
+      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${originStr}&destination=${destinationStr}&key=${GOOGLE_MAPS_API_KEY}`;
+
+      console.log("🗺️ Fetching route from Google Directions API...");
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.status === "OK" && data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+        const polyline = route.overview_polyline.points;
+        const decodedCoordinates = decodePolyline(polyline);
+
+        console.log("✅ Route fetched successfully:", {
+          points: decodedCoordinates.length,
+          distance: route.legs[0]?.distance?.text,
+          duration: route.legs[0]?.duration?.text,
+        });
+
+        return decodedCoordinates;
+      } else {
+        console.warn(
+          "⚠️ Google Directions API error:",
+          data.status,
+          data.error_message
+        );
+        // Fallback to straight line if API fails
+        return [origin, destination];
+      }
+    } catch (error) {
+      console.error("❌ Error fetching route:", error);
+      // Fallback to straight line on error
+      return [origin, destination];
+    }
+  };
 
   const getOrderDetails = useCallback(async () => {
     if (isOrderLoaded || !orderId) return;
@@ -93,13 +164,29 @@ export default function Track() {
 
   // Get the customer location from the order
   const customerLocation = useMemo(() => {
-    if (order?.user?.lat && order?.user?.lng) {
-      return {
-        latitude: parseFloat(order.user.lat),
-        longitude: parseFloat(order.user.lng),
-      };
+    // Try order.lat/lng first (customer's service location)
+    if (order?.lat && order?.lng) {
+      const lat = parseFloat(order.lat);
+      const lng = parseFloat(order.lng);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        console.log("📍 Track - Using order lat/lng:", { lat, lng });
+        return { latitude: lat, longitude: lng };
+      }
     }
-    return { latitude: 25.276987, longitude: 55.296249 };
+
+    // Fallback to order.user.lat/lng
+    if (order?.user?.lat && order?.user?.lng) {
+      const lat = parseFloat(order.user.lat);
+      const lng = parseFloat(order.user.lng);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        console.log("📍 Track - Using user lat/lng:", { lat, lng });
+        return { latitude: lat, longitude: lng };
+      }
+    }
+
+    // Last resort: Try to get from AsyncStorage
+    console.warn("⚠️ Track - No valid location in order data, using default");
+    return { latitude: 24.7136, longitude: 46.6753 }; // Riyadh, Saudi Arabia default
   }, [order]);
 
   useEffect(() => {
@@ -123,7 +210,7 @@ export default function Track() {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           if (isMounted) {
-            setErrorMsg("Permission to access location was denied");
+            setErrorMsg(t("order.permissionDenied"));
             setIsLoading(false);
           }
           return;
@@ -157,7 +244,7 @@ export default function Track() {
       } catch (error) {
         console.error("Error getting location:", error);
         if (isMounted) {
-          setErrorMsg("Failed to get your location");
+          setErrorMsg(t("order.failedToGetLocation"));
           setIsLoading(false);
         }
       }
@@ -181,21 +268,31 @@ export default function Track() {
         longitude: location.coords.longitude,
       };
 
-      // Create a simple straight-line route
-      setRouteCoordinates([startPoint, customerLocation]);
+      // Fetch actual route through roads from Google Directions API
+      const loadRoute = async () => {
+        try {
+          const routeCoords = await fetchRoute(startPoint, customerLocation);
+          setRouteCoordinates(routeCoords);
 
-      // Fit map to show both points
-      setTimeout(() => {
-        if (mapRef.current) {
-          mapRef.current.fitToCoordinates([startPoint, customerLocation], {
-            edgePadding: { top: 50, right: 50, bottom: 250, left: 50 },
-            animated: true,
-          });
+          // Fit map to show the entire route
+          setTimeout(() => {
+            if (mapRef.current && routeCoords.length > 0) {
+              mapRef.current.fitToCoordinates(routeCoords, {
+                edgePadding: { top: 50, right: 50, bottom: 250, left: 50 },
+                animated: true,
+              });
+            }
+          }, 500);
+        } catch (error) {
+          console.error("Error loading route:", error);
+          // Fallback to straight line
+          setRouteCoordinates([startPoint, customerLocation]);
+        } finally {
+          setIsLoading(false);
         }
-      }, 1000);
+      };
 
-      // Set loading to false since we have both locations
-      setIsLoading(false);
+      loadRoute();
     }
   }, [location, customerLocation]);
 
@@ -243,8 +340,8 @@ export default function Track() {
           {/* Customer marker */}
           <Marker
             coordinate={customerLocation}
-            title={order?.user?.name || "Customer"}
-            description={order?.user?.address || "Customer location"}
+            title={order?.user?.name || t("order.customer")}
+            description={order?.user?.address || t("order.customerLocation")}
           >
             <View style={styles.markerContainer}>
               <Ionicons name="person" size={20} color="#fff" />
@@ -281,16 +378,16 @@ export default function Track() {
       >
         <View style={styles.contentHeader}>
           <Profile />
-          <Text style={styles.title}>
-            {t("order.estimatedArrival")}
-          </Text>
+          <Text style={styles.title}>{t("order.estimatedArrival")}</Text>
         </View>
         <View style={styles.content}>
           {/* Status Tracking */}
           <View style={styles.statusContainer}>
             <View style={styles.statusItem}>
               <Accepted width={40} height={40} />
-              <Text style={styles.statusText}>{t("order.orderAcceptedStatus")}</Text>
+              <Text style={styles.statusText}>
+                {t("order.orderAcceptedStatus")}
+              </Text>
             </View>
             <View style={styles.line} />
             <View style={styles.statusItem}>
@@ -323,7 +420,7 @@ export default function Track() {
             </View>
           </View>
 
-          <ProviderCard order={order} />
+          {order && <ProviderCard order={order} />}
         </View>
       </Animated.View>
     </SafeAreaProvider>

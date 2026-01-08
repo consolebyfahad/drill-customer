@@ -1,6 +1,7 @@
 import Button from "@/components/button";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -34,10 +35,10 @@ export default function LocationScreen() {
     address: (params?.location as string) || "",
     latitude: params?.latitude
       ? parseFloat(params.latitude as string)
-      : 37.7749,
+      : undefined,
     longitude: params?.longitude
       ? parseFloat(params.longitude as string)
-      : -122.4194,
+      : undefined,
   });
 
   console.log("selectedLocation", selectedLocation);
@@ -136,9 +137,53 @@ export default function LocationScreen() {
         return;
       }
 
+      // Try to get from AsyncStorage first
+      try {
+        const storedLat = await AsyncStorage.getItem("latitude");
+        const storedLng = await AsyncStorage.getItem("longitude");
+        
+        if (storedLat && storedLng) {
+          const latitude = parseFloat(storedLat);
+          const longitude = parseFloat(storedLng);
+          
+          // Validate parsed values
+          if (isNaN(latitude) || isNaN(longitude)) {
+            console.warn("⚠️ Invalid stored location values, getting current location");
+          } else {
+            console.log("📍 Location Screen - Using stored location:", {
+              lat: latitude,
+              lng: longitude,
+            });
+            
+            setSelectedLocation({
+              latitude,
+              longitude,
+              address: "Fetching address...",
+            });
+            
+            fetchAddressFromCoords(latitude, longitude);
+            
+            mapRef.current?.animateToRegion({
+              latitude,
+              longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("❌ Error getting stored location:", error);
+      }
+
       // Otherwise get current location
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
+
+      console.log("📍 Location Screen - Using current location:", {
+        lat: latitude,
+        lng: longitude,
+      });
 
       setSelectedLocation({
         latitude,
@@ -194,7 +239,7 @@ export default function LocationScreen() {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (
       !selectedLocation.address ||
       !selectedLocation.latitude ||
@@ -204,12 +249,31 @@ export default function LocationScreen() {
       return;
     }
 
+    // Save customer location to AsyncStorage
+    try {
+      await AsyncStorage.setItem("latitude", selectedLocation.latitude.toString());
+      await AsyncStorage.setItem("longitude", selectedLocation.longitude.toString());
+      console.log("📍 Customer Location Saved:", {
+        address: selectedLocation.address,
+        latitude: selectedLocation.latitude.toString(),
+        longitude: selectedLocation.longitude.toString(),
+      });
+    } catch (error) {
+      console.error("❌ Error saving location to AsyncStorage:", error);
+    }
+
     const newParams = { ...params };
 
     // Update location data
     newParams.location = selectedLocation.address;
     newParams.latitude = selectedLocation.latitude.toString();
     newParams.longitude = selectedLocation.longitude.toString();
+    
+    console.log("📤 Location Screen - Passing to booking:", {
+      location: newParams.location,
+      latitude: newParams.latitude,
+      longitude: newParams.longitude,
+    });
 
     // Preserve schedule parameters if they exist
     if (params.service_type) {
@@ -284,8 +348,8 @@ export default function LocationScreen() {
             ref={mapRef}
             style={styles.map}
             initialRegion={{
-              latitude: selectedLocation.latitude || 37.7749,
-              longitude: selectedLocation.longitude || -122.4194,
+              latitude: selectedLocation.latitude || 24.7136, // Riyadh, Saudi Arabia default
+              longitude: selectedLocation.longitude || 46.6753,
               latitudeDelta: 0.01,
               longitudeDelta: 0.01,
             }}

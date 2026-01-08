@@ -13,17 +13,17 @@ type Notification = {
   dateTime: string;
 };
 
-const notifications: Notification[] = [
-  {
-    icon: <AccountIcon width={24} height={24} fill="#000" />,
-    title: "Account Created",
-    message: "Your account has been successfully created.",
-    dateTime: "05 Jan 2023 | 10:00 AM",
-  },
-];
-
 export default function NotificationScreen() {
   const { t } = useTranslation();
+  
+  const notifications: Notification[] = [
+    {
+      icon: <AccountIcon width={24} height={24} fill="#000" />,
+      title: t("notification.accountCreated"),
+      message: t("notification.accountCreatedMessage"),
+      dateTime: "05 Jan 2023 | 10:00 AM",
+    },
+  ];
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>

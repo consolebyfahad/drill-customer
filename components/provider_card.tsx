@@ -14,11 +14,17 @@ import {
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { OrderType } from "~/types/dataTypes";
 import Button from "./button";
 import DashedSeparator from "./dashed_seprator";
 
-export default function ProviderCard({ order }) {
+interface ProviderCardProps {
+  order: OrderType;
+}
+
+export default function ProviderCard({ order }: ProviderCardProps) {
   const { t } = useTranslation();
+  const imageURL = "https://7tracking.com/saudiservices/images/";
   console.log("order==", order);
 
   // Get the current route name to check if we're on the track screen
@@ -34,9 +40,9 @@ export default function ProviderCard({ order }) {
       </View>
     );
   }
-  const provider = order.provider || {};
+  const provider = order.provider || ({} as OrderType["provider"]);
   const handleCall = () => {
-    if (provider.phone) {
+    if (provider?.phone) {
       const phoneNumber = `tel:${provider.phone}`;
       Linking.openURL(phoneNumber);
     } else {
@@ -75,13 +81,19 @@ export default function ProviderCard({ order }) {
         }}
       >
         <Image
-          source={require("@/assets/images/user.png")}
+          source={
+            provider?.image
+              ? { uri: `${imageURL}${provider.image}` }
+              : require("@/assets/images/user.png")
+          }
           style={styles.providerImage}
         />
         <View style={styles.providerInfo}>
-          <Text style={styles.providerName}>{provider.name || t("unknown")}</Text>
-          <Text style={styles.grayText}>{`⭐ ${provider.rating || 0} (${
-            provider.reviewscount || 0
+          <Text style={styles.providerName}>
+            {provider?.name || t("unknown")}
+          </Text>
+          <Text style={styles.grayText}>{`⭐ ${provider?.rating || 0} (${
+            provider?.reviewscount || 0
           })`}</Text>
           <Text style={styles.grayText}>{` ${t("provider")}`}</Text>
         </View>

@@ -8,6 +8,7 @@ import ProfileFill from "@/assets/svgs/profileFill.svg";
 import Profile from "@/assets/svgs/profileIcon.svg";
 import { Colors } from "@/constants/Colors";
 import { Tabs, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
@@ -44,6 +45,7 @@ function CustomTabBarButton({ children }: CustomTabBarButtonProps) {
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -84,7 +86,7 @@ export default function TabLayout() {
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
-              Home
+              {t("tabs.home")}
             </Text>
           ),
         }}
@@ -106,7 +108,7 @@ export default function TabLayout() {
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
-              Packages
+              {t("tabs.packages")}
             </Text>
           ),
         }}
@@ -138,7 +140,7 @@ export default function TabLayout() {
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
-              Orders
+              {t("tabs.orders")}
             </Text>
           ),
         }}
@@ -160,7 +162,7 @@ export default function TabLayout() {
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
-              Account
+              {t("tabs.account")}
             </Text>
           ),
         }}

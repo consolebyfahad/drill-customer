@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     minHeight: 128,
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   descriptionText: {
     color: Colors.secondary,

@@ -48,7 +48,7 @@ export default function Popup({
   const [tipAmount, setTipAmount] = useState("");
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
-
+  console.log("type", type);
   const handleNext = () => {
     setShowPopup(null);
   };
@@ -211,9 +211,7 @@ export default function Popup({
         <View style={styles.content}>
           <Timeup style={styles.image} />
           <Text style={styles.title}>{t("popup.timeUp")}</Text>
-          <Text style={styles.description}>
-            {t("popup.timeUpDescription")}
-          </Text>
+          <Text style={styles.description}>{t("popup.timeUpDescription")}</Text>
         </View>
         <View style={styles.footerButtons}>
           <Button
@@ -250,9 +248,7 @@ export default function Popup({
           <>
             <Tipup style={styles.image} />
             <Text style={styles.title}>{t("popup.addTip")}</Text>
-            <Text style={styles.description}>
-              {t("popup.tipDescription")}
-            </Text>
+            <Text style={styles.description}>{t("popup.tipDescription")}</Text>
             <TextInput
               style={styles.input}
               placeholder={t("popup.enterTipAmount")}
@@ -288,9 +284,9 @@ export default function Popup({
               <>
                 <Text style={styles.ratingText}>{ratingText[rating - 1]}</Text>
                 <Text style={styles.description}>
-                  {t("popup.youGaveStars", { 
+                  {t("popup.youGaveStars", {
                     count: rating.toString(),
-                    plural: rating > 1 ? "s" : ""
+                    plural: rating > 1 ? "s" : "",
                   })}
                 </Text>
                 <TextInput

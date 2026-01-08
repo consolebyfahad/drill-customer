@@ -26,7 +26,7 @@ const Wallet = () => {
   const transactionsData = [
     {
       id: 1,
-      type: "Buying",
+      type: t("wallet.buying"),
       amount: 100,
       card: "***7999",
       positive: false,
@@ -34,7 +34,7 @@ const Wallet = () => {
     },
     {
       id: 2,
-      type: "Fund Added",
+      type: t("wallet.fundAdded"),
       amount: 500,
       positive: true,
       card: "***7999",
@@ -42,7 +42,7 @@ const Wallet = () => {
     },
     {
       id: 3,
-      type: "Fund Added",
+      type: t("wallet.fundAdded"),
       amount: 500,
       positive: true,
       card: "***7999",
@@ -50,7 +50,7 @@ const Wallet = () => {
     },
     {
       id: 4,
-      type: "Fund Added",
+      type: t("wallet.fundAdded"),
       amount: 500,
       positive: true,
       card: "***7999",

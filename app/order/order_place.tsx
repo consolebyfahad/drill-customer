@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import Header from "@/components/header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -19,6 +19,7 @@ import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
 import { apiCall } from "~/utils/api";
+import { calculateDistance } from "~/utils/distance";
 import {
   getFCMToken,
   requestFCMPermission,
@@ -59,6 +60,9 @@ const OrderPlace: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState<OrderType | null>(null);
+  const lastShownStatusRef = useRef<string | null>(null);
+  const proximityCheckIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const proximityPopupShownRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (popupType) {
@@ -98,7 +102,10 @@ const OrderPlace: React.FC = () => {
 
     initFCM();
     const unsubscribe = setupNotificationListeners(handleNotificationPress);
-    return () => unsubscribe(); // Clean up listeners
+    return () => {
+      unsubscribe(); // Clean up listeners
+      stopProximityCheck(); // Clean up proximity check
+    };
   }, [orderId]);
 
   useFocusEffect(
@@ -124,7 +131,15 @@ const OrderPlace: React.FC = () => {
           setUserId(userId);
 
           if (storedOrderId) {
-            getOrderDetails(storedOrderId);
+            // Parse order_id if it's stored as JSON string
+            const parsedOrderId = storedOrderId.startsWith('"')
+              ? JSON.parse(storedOrderId)
+              : storedOrderId;
+            console.log(
+              "📋 Customer - Initializing with order_id:",
+              parsedOrderId
+            );
+            getOrderDetails(parsedOrderId);
           }
         } catch (error) {
           console.error("Initialization error:", error);
@@ -132,6 +147,11 @@ const OrderPlace: React.FC = () => {
         }
       };
       init();
+
+      // Cleanup on unmount
+      return () => {
+        stopProximityCheck();
+      };
     }, [])
   );
 
@@ -145,14 +165,70 @@ const OrderPlace: React.FC = () => {
 
     try {
       const response = await apiCall(formData);
+      console.log("📦 Customer - Order Details Response:", {
+        order_id: id,
+        has_data: !!response?.data,
+        data_length: response?.data?.length || 0,
+      });
+
       if (response && response.data && response.data.length > 0) {
         const orderData = response.data[0];
 
+        console.log("📦 Customer - Order Data:", {
+          id: orderData.id,
+          status: orderData.status,
+          customer_lat: orderData.lat,
+          customer_lng: orderData.lng,
+          provider_lat: orderData.provider?.lat,
+          provider_lng: orderData.provider?.lng,
+          provider_id: orderData.provider?.id,
+        });
+
         if (order && order.status !== orderData.status) {
+          // Status changed - handle the change (ref will be set in showStatusNotification)
           handleOrderStatusChange(order.status, orderData.status);
+        } else if (!order && orderData.status) {
+          // First time loading order, don't trigger popups, but track the status
+          lastShownStatusRef.current = orderData.status;
+        } else if (order && order.status === orderData.status) {
+          // Status hasn't changed, ensure ref is set to prevent duplicate popups
+          if (lastShownStatusRef.current !== orderData.status) {
+            lastShownStatusRef.current = orderData.status;
+          }
         }
 
         setOrder(orderData);
+
+        // Start proximity check if provider is assigned and order is accepted/on_the_way
+        const hasProvider = orderData.provider && orderData.provider.id;
+        const hasProviderLocation =
+          orderData.provider?.lat && orderData.provider?.lng;
+        const hasCustomerLocation = orderData.lat && orderData.lng;
+        const isActiveStatus =
+          orderData.status === "accepted" || orderData.status === "on_the_way";
+
+        console.log("📍 Proximity Check Setup:", {
+          hasProvider,
+          hasProviderLocation,
+          hasCustomerLocation,
+          isActiveStatus,
+          provider: orderData.provider,
+          customer_lat: orderData.lat,
+          customer_lng: orderData.lng,
+        });
+
+        if (
+          hasProvider &&
+          hasProviderLocation &&
+          hasCustomerLocation &&
+          isActiveStatus
+        ) {
+          console.log("🔄 Starting proximity check for active order");
+          startProximityCheck(orderData);
+        } else {
+          console.log("🛑 Stopping proximity check - conditions not met");
+          stopProximityCheck();
+        }
       } else {
         showToast(t("order.noOrderDetailsFound"), "error");
         setOrder(null);
@@ -163,6 +239,167 @@ const OrderPlace: React.FC = () => {
       setOrder(null);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Check proximity between provider and customer
+  const checkProximity = async (orderData: OrderType) => {
+    try {
+      // Get customer location from order data
+      // Try different possible keys: lat/lng, user.lat/user.lng
+      let customerLat: number | null = null;
+      let customerLng: number | null = null;
+
+      if (orderData.lat && orderData.lng) {
+        customerLat = parseFloat(orderData.lat);
+        customerLng = parseFloat(orderData.lng);
+      } else if (orderData.user?.lat && orderData.user?.lng) {
+        customerLat = parseFloat(orderData.user.lat);
+        customerLng = parseFloat(orderData.user.lng);
+      }
+
+      // Get provider location from order data
+      // Try different possible keys: provider.lat/provider.lng
+      let providerLat: number | null = null;
+      let providerLng: number | null = null;
+
+      if (orderData.provider?.lat && orderData.provider?.lng) {
+        providerLat = parseFloat(orderData.provider.lat);
+        providerLng = parseFloat(orderData.provider.lng);
+      }
+
+      if (!customerLat || !customerLng) {
+        console.log(
+          "📍 Proximity Check - Customer location not available in order data"
+        );
+        console.log("📍 Order data keys:", Object.keys(orderData));
+        console.log("📍 Order lat/lng:", {
+          lat: orderData.lat,
+          lng: orderData.lng,
+        });
+        console.log("📍 Order user:", orderData.user);
+        return;
+      }
+
+      if (!providerLat || !providerLng) {
+        console.log(
+          "📍 Proximity Check - Provider location not available in order data"
+        );
+        console.log("📍 Provider data:", orderData.provider);
+        return;
+      }
+
+      if (
+        isNaN(customerLat) ||
+        isNaN(customerLng) ||
+        isNaN(providerLat) ||
+        isNaN(providerLng)
+      ) {
+        console.error("❌ Proximity Check - Invalid coordinates:", {
+          customerLat,
+          customerLng,
+          providerLat,
+          providerLng,
+          customerLatType: typeof customerLat,
+          providerLatType: typeof providerLat,
+        });
+        return;
+      }
+
+      const distance = calculateDistance(
+        customerLat,
+        customerLng,
+        providerLat,
+        providerLng
+      );
+
+      console.log("📍 Proximity Check Result:", {
+        distance: distance.toFixed(2),
+        unit: "meters",
+        withinRange: distance <= 300,
+        customer: { lat: customerLat, lng: customerLng },
+        provider: { lat: providerLat, lng: providerLng },
+        order_id: orderData.id,
+        order_status: orderData.status,
+      });
+
+      // If provider is within 300 meters and popup hasn't been shown
+      if (distance <= 300 && !proximityPopupShownRef.current) {
+        console.log("✅ Provider is within 300m! Showing popup...");
+        proximityPopupShownRef.current = true;
+        setPopupType("arrived");
+        showToast("Provider is nearby! They should arrive soon.", "success");
+      } else if (distance > 300 && proximityPopupShownRef.current) {
+        // Reset if provider moves away (optional - you might want to keep it shown)
+        console.log("📍 Provider moved away (>300m), but keeping popup shown");
+      }
+    } catch (error) {
+      console.error("❌ Error checking proximity:", error);
+    }
+  };
+
+  // Start proximity checking
+  const startProximityCheck = (orderData: OrderType) => {
+    // Clear any existing interval
+    stopProximityCheck();
+
+    // Reset popup shown flag
+    proximityPopupShownRef.current = false;
+
+    // Initial check
+    checkProximity(orderData);
+
+    // Check every 10 seconds - refresh order data first to get latest provider location
+    proximityCheckIntervalRef.current = setInterval(async () => {
+      if (orderId) {
+        // Refresh order details to get latest provider location
+        try {
+          const formData = new FormData();
+          formData.append("type", "get_data");
+          formData.append("table_name", "orders");
+          formData.append("id", orderId);
+
+          const response = await apiCall(formData);
+          if (response && response.data && response.data.length > 0) {
+            const latestOrderData = response.data[0];
+            setOrder(latestOrderData);
+
+            // Check proximity with latest data
+            checkProximity(latestOrderData);
+
+            console.log("🔄 Proximity Check - Refreshed order data:", {
+              order_id: orderId,
+              provider_lat: latestOrderData.provider?.lat,
+              provider_lng: latestOrderData.provider?.lng,
+            });
+          }
+        } catch (error) {
+          console.error(
+            "❌ Error refreshing order data for proximity check:",
+            error
+          );
+          // Still check with current order data if refresh fails
+          if (order) {
+            checkProximity(order);
+          }
+        }
+      } else if (order) {
+        // Fallback to current order data if no orderId
+        checkProximity(order);
+      }
+    }, 10000);
+
+    console.log(
+      "🔄 Started proximity checking (every 10 seconds with data refresh)"
+    );
+  };
+
+  // Stop proximity checking
+  const stopProximityCheck = () => {
+    if (proximityCheckIntervalRef.current) {
+      clearInterval(proximityCheckIntervalRef.current);
+      proximityCheckIntervalRef.current = null;
+      console.log("🛑 Stopped proximity checking");
     }
   };
 
@@ -194,7 +431,14 @@ const OrderPlace: React.FC = () => {
           message = t("order.providerArrived");
           toastType = "success";
           // Show arrived popup instead of toast for arrived status
-          setPopupType("arrived");
+          // Only show if we haven't already shown it for this status
+          if (
+            lastShownStatusRef.current !== "arrived" &&
+            popupType !== "arrived"
+          ) {
+            lastShownStatusRef.current = "arrived";
+            setPopupType("arrived");
+          }
           return; // Don't show the toast for arrived status
         case "started":
           message = t("order.serviceStarted");
@@ -207,7 +451,14 @@ const OrderPlace: React.FC = () => {
         case "completed":
           message = t("order.serviceCompleted");
           toastType = "success";
-          setPopupType("orderComplete");
+          // Only show if we haven't already shown it for this status
+          if (
+            lastShownStatusRef.current !== "completed" &&
+            popupType !== "orderComplete"
+          ) {
+            lastShownStatusRef.current = "completed";
+            setPopupType("orderComplete");
+          }
           return; // Don't show the toast for completed status
         case "cancelled":
           message = t("order.orderCancelled");
@@ -215,7 +466,14 @@ const OrderPlace: React.FC = () => {
           break;
         case "time_up":
           // Show time-up popup
-          setPopupType("time-up");
+          // Only show if we haven't already shown it for this status
+          if (
+            lastShownStatusRef.current !== "time_up" &&
+            popupType !== "time-up"
+          ) {
+            lastShownStatusRef.current = "time_up";
+            setPopupType("time-up");
+          }
           return; // Don't show the toast for time-up status
         default:
           message = `${t("order.orderStatusUpdated")} ${status}`;
@@ -328,7 +586,7 @@ const OrderPlace: React.FC = () => {
       }
     }
   };
-
+  console.log("showPopup", showPopup);
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -418,7 +676,25 @@ const OrderPlace: React.FC = () => {
 
       {activeTab === "Details" && (
         <View style={styles.footerButtons}>
-          {order?.status === "completed" ? null : order.status !== "started" ? (
+          {order?.status === "completed" ? null : order.status === "pending" ||
+            order.status === "on_the_way" ||
+            order.status === "arrived" ? (
+            <Button
+              title={t("cancel")}
+              variant="secondary"
+              fullWidth={true}
+              width="100%"
+              onPress={handleCancel}
+            />
+          ) : order.status === "started" ? (
+            <Button
+              title={t("paynow")}
+              variant="primary"
+              fullWidth={true}
+              width="100%"
+              onPress={handlePay}
+            />
+          ) : (
             <>
               <Button
                 title={t("cancel")}
@@ -435,14 +711,6 @@ const OrderPlace: React.FC = () => {
                 onPress={handlePay}
               />
             </>
-          ) : (
-            <Button
-              title={t("paynow")}
-              variant="primary"
-              fullWidth={true}
-              width="100%"
-              onPress={handlePay}
-            />
           )}
         </View>
       )}

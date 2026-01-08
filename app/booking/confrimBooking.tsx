@@ -85,14 +85,45 @@ export default function ConfirmBooking() {
   const handleConfirmBooking = async () => {
     try {
       const userId = await AsyncStorage.getItem("user_id");
+
+      // Get customer location - prioritize params, fallback to AsyncStorage
+      let customerLat = params.latitude;
+      let customerLng = params.longitude;
+
+      // If lat/lng not in params, get from AsyncStorage
+      if (!customerLat || !customerLng) {
+        const storedLat = await AsyncStorage.getItem("latitude");
+        const storedLng = await AsyncStorage.getItem("longitude");
+        customerLat = storedLat || "";
+        customerLng = storedLng || "";
+        console.log("📍 Using stored location from AsyncStorage:", {
+          lat: customerLat,
+          lng: customerLng,
+        });
+      } else {
+        console.log("📍 Using location from params:", {
+          lat: customerLat,
+          lng: customerLng,
+        });
+      }
+
+      // Validate location data
+      if (!customerLat || !customerLng) {
+        Alert.alert(
+          t("error"),
+          "Location is required. Please select a location."
+        );
+        return;
+      }
+
       const formData = new FormData();
       formData.append("type", "add_data");
       formData.append("table_name", "orders");
       formData.append("user_id", userId || "");
       formData.append("cat_id", params.id);
-      formData.append("address", params.location);
-      formData.append("lat", params.latitude || "");
-      formData.append("lng", params.longitude || "");
+      formData.append("address", params.location || "");
+      formData.append("lat", customerLat);
+      formData.append("lng", customerLng);
       formData.append("date", new Date().toISOString());
       formData.append("images", params.selectedImage || "");
       formData.append("description", params.description || "");
@@ -107,7 +138,18 @@ export default function ConfirmBooking() {
         formData.append("schedule_date", params.schedule_date || "");
         formData.append("schedule_time", params.schedule_time || "");
       }
-      console.log("formData", JSON.stringify(formData));
+
+      console.log("📤 Customer Booking - Sending order data:", {
+        user_id: userId,
+        cat_id: params.id,
+        address: params.location,
+        lat: customerLat,
+        lng: customerLng,
+        package_id: params.packageId,
+        payment_method: params.paymentMethodDetails,
+        amount: totalAmount.toString(),
+      });
+
       const response = await apiCall(formData);
 
       if (response.result) {
@@ -168,7 +210,9 @@ export default function ConfirmBooking() {
           <Text style={styles.sectionTitle}>{t("booking.serviceDetails")}</Text>
           <View style={styles.serviceInfoContainer}>
             <View style={styles.serviceInfoRow}>
-              <Text style={styles.packageTitle}>{t("booking.serviceType")}:</Text>
+              <Text style={styles.packageTitle}>
+                {t("booking.serviceType")}:
+              </Text>
               <Text style={styles.serviceInfoValue}>
                 {params.service_type === "schedule"
                   ? t("booking.scheduled")
@@ -180,7 +224,9 @@ export default function ConfirmBooking() {
               params.schedule_time && (
                 <>
                   <View style={styles.serviceInfoRow}>
-                    <Text style={styles.packageTitle}>{t("booking.scheduledDate")}:</Text>
+                    <Text style={styles.packageTitle}>
+                      {t("booking.scheduledDate")}:
+                    </Text>
                     <Text style={styles.serviceInfoValue}>
                       {new Date(params.schedule_date).toLocaleDateString(
                         "en-US",
@@ -194,7 +240,9 @@ export default function ConfirmBooking() {
                     </Text>
                   </View>
                   <View style={styles.serviceInfoRow}>
-                    <Text style={styles.packageTitle}>{t("booking.scheduledTime")}:</Text>
+                    <Text style={styles.packageTitle}>
+                      {t("booking.scheduledTime")}:
+                    </Text>
                     <Text style={styles.serviceInfoValue}>
                       {new Date(
                         `2000-01-01T${params.schedule_time}`

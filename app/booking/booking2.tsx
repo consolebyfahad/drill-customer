@@ -79,7 +79,7 @@ export default function Booking2Screen() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // Validate package and payment selection
     if (!selectedPackage) {
       Alert.alert(t("booking.selectPackageRequired"), t("booking.pleaseSelectPackage"));
@@ -91,10 +91,44 @@ export default function Booking2Screen() {
       return;
     }
 
+    // Validate location data
+    let finalLat = params.latitude;
+    let finalLng = params.longitude;
+    
+    // If lat/lng not in params, try to get from AsyncStorage
+    if (!finalLat || !finalLng) {
+      try {
+        const storedLat = await AsyncStorage.getItem("latitude");
+        const storedLng = await AsyncStorage.getItem("longitude");
+        finalLat = storedLat || "";
+        finalLng = storedLng || "";
+        console.log("📍 Booking2 - Using stored location:", { lat: finalLat, lng: finalLng });
+      } catch (error) {
+        console.error("❌ Error getting location from AsyncStorage:", error);
+      }
+    }
+    
+    if (!finalLat || !finalLng) {
+      Alert.alert(
+        t("error"),
+        "Location is required. Please go back and select a location."
+      );
+      return;
+    }
+
     // Prepare payment method details - Use ID for backend, translated name for display
     const selectedPaymentMethod = paymentMethods.find(
       (method) => method.id === selectedPayment
     );
+
+    console.log("📤 Booking2 - Passing to confirmBooking:", {
+      id: params.id,
+      location: params.location,
+      latitude: finalLat,
+      longitude: finalLng,
+      packageId: selectedPackage.id,
+      paymentMethod: selectedPayment,
+    });
 
     // Navigate to confirm booking with all collected data
     // IMPORTANT: Use payment method ID (visa, apple, wallet, cash) for backend, not translated name
@@ -108,8 +142,8 @@ export default function Booking2Screen() {
         location: params.location,
         selectedImage: params.selectedImage,
         description: params.description,
-        latitude: params.latitude,
-        longitude: params.longitude,
+        latitude: finalLat,
+        longitude: finalLng,
         service_type: params.service_type,
         schedule_date: params.schedule_date,
         schedule_time: params.schedule_time,

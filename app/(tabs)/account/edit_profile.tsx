@@ -271,28 +271,28 @@ export default function EditProfile() {
 
             <Inputfield
               label={t("account.fullname")}
-              placeholder="Enter your name"
+              placeholder={t("account.enterName")}
               IconComponent={<Profile />}
               value={user.name}
               onChangeText={(text) => handleInputChange("name", text)}
             />
             <Inputfield
               label={t("account.phonenumber")}
-              placeholder="Enter your phone"
+              placeholder={t("account.enterPhone")}
               IconComponent={<Phone />}
               value={user.phone}
               onChangeText={(text) => handleInputChange("phone", text)}
             />
             <Inputfield
               label={t("account.emailaddress")}
-              placeholder="Enter your email"
+              placeholder={t("account.enterEmail")}
               IconComponent={<Email />}
               value={user.email}
               onChangeText={(text) => handleInputChange("email", text)}
             />
             <Inputfield
               label={t("account.dob")}
-              placeholder="YYYY-MM-DD"
+              placeholder={t("account.dobFormat")}
               IconComponent={<DOB />}
               value={user.dob}
               onChangeText={(text) => handleInputChange("dob", text)}
@@ -300,7 +300,7 @@ export default function EditProfile() {
             />
             <Inputfield
               label={t("account.address")}
-              placeholder="Enter your address"
+              placeholder={t("account.enterAddress")}
               IconComponent={<Address />}
               value={user.address}
               onChangeText={(text) => handleInputChange("address", text)}
@@ -310,7 +310,7 @@ export default function EditProfile() {
               <View style={styles.flexItem}>
                 <Inputfield
                   label={t("account.city")}
-                  placeholder="Enter city"
+                  placeholder={t("account.enterCity")}
                   IconComponent={<City />}
                   value={user.city}
                   onChangeText={(text) => handleInputChange("city", text)}
@@ -319,7 +319,7 @@ export default function EditProfile() {
               <View style={styles.flexItem}>
                 <Inputfield
                   label={t("account.zipcode")}
-                  placeholder="Enter zip code"
+                  placeholder={t("account.enterZipCode")}
                   IconComponent={<Zip />}
                   value={user.zip}
                   maxLength={6}

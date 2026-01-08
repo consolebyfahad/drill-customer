@@ -1,11 +1,20 @@
 import ChatSupport from "@/assets/svgs/chatSupport.svg";
 import NotificationBell from "@/assets/svgs/Notification.svg";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { apiCall } from "~/utils/api";
 
 type HeaderProps = {
   userName?: string;
@@ -40,6 +49,52 @@ export default function Header({
       navigation.goBack();
     }
   };
+  const handleSupport = async () => {
+    try {
+      // Get orderId from AsyncStorage
+      const orderId = await AsyncStorage.getItem("order_id");
+
+      if (!orderId) {
+        Alert.alert(t("error") || "Error", t("header.noActiveOrder"));
+        return;
+      }
+
+      // Call API to update support_required
+      const formData = new FormData();
+      formData.append("type", "update_data");
+      formData.append("table_name", "orders");
+      formData.append("id", orderId);
+      formData.append("support_required", "1");
+
+      console.log("📞 Support requested - Updating order:", {
+        orderId,
+        support_required: "1",
+      });
+
+      const response = await apiCall(formData);
+
+      if (response && response.result) {
+        console.log("✅ Support request updated successfully");
+        // Navigate to order screen with Chat tab active
+        router.push({
+          pathname: "/order/order_place",
+          params: { tab: "Chat" },
+        });
+      } else {
+        console.error("❌ Failed to update support request:", response);
+        Alert.alert(
+          t("error") || "Error",
+          t("header.failedToSubmitSupport")
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error in handleSupport:", error);
+      Alert.alert(
+        t("error") || "Error",
+        t("header.errorOccurred")
+      );
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
@@ -66,7 +121,7 @@ export default function Header({
 
       {icon &&
         (support ? (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleSupport}>
             <ChatSupport />
           </TouchableOpacity>
         ) : (

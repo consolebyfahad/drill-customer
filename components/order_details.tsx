@@ -6,6 +6,7 @@ import { OrderType } from "~/types/dataTypes";
 import DashedSeparator from "./dashed_seprator";
 
 const OrderDetailsSection = ({ order }: OrderType) => {
+  console.log("order", order);
   const { t } = useTranslation();
   return (
     <View style={styles.orderDetails}>
@@ -205,7 +206,9 @@ const OrderDetailsSection = ({ order }: OrderType) => {
 
       <View style={styles.rowBetween}>
         <Text style={styles.grayText}>{t("paymentStatus")}:</Text>
-        <Text style={styles.grayText}>{order.payment_status || t("pending")}</Text>
+        <Text style={styles.grayText}>
+          {order.payment_status || t("pending")}
+        </Text>
       </View>
     </View>
   );

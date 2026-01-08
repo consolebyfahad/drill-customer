@@ -108,7 +108,7 @@ export default function Login() {
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push("/auth/privacy")}>
         <Text style={styles.privacyText}>{t("login.privacy")}</Text>
       </TouchableOpacity>
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   countryText: {
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.secondary,
     fontFamily: FONTS.regular,
   },

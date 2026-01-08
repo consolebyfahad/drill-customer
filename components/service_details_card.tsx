@@ -4,33 +4,9 @@ import { FONTS } from "~/constants/Fonts";
 import { Colors } from "../constants/Colors";
 import DashedSeprator from "./dashed_seprator";
 
-export type Order = {
-  id: string;
-  title?: string;
-  orderId?: string;
-  order_no?: string;
-  status: string;
-  amount?: string;
-  discount?: string;
-  date?: string;
-  timestamp?: string;
-  customer?: string;
-  provider?: any;
-  paymentStatus?: string;
-  payment_status?: string;
-  rating?: string;
-  tip?: string;
-  image?: any;
-  imageUrl?: string;
-  image_url?: string;
-  service_type?: string;
-  schedule_date?: string;
-  schedule_time?: string;
-  category?: {
-    name: string;
-    image: string;
-  };
-};
+import { OrderType } from "~/types/dataTypes";
+
+export type Order = OrderType;
 
 type ServiceDetailsCardProps = {
   order: Order;
@@ -91,7 +67,7 @@ export default function ServiceDetailsCard({
 
   // Get the status style for the current order
   const statusStyle = getStatusStyle(order.status);
-
+  console.log("order?.paymentStatus", order?.payment_status);
   return (
     <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.7}>
       {/* Order Top Section */}
@@ -188,19 +164,19 @@ export default function ServiceDetailsCard({
               : order?.provider || t("notAssigned")}
           </Text>
         </View>
-        <DashedSeprator />
+        {/* <DashedSeprator />
         <View style={styles.detailsRow}>
           <Text style={styles.label}>{t("order.orderDetails")}</Text>
           <Text style={[styles.value, { color: statusStyle.color }]}>
             {order.status}
           </Text>
-        </View>
+        </View> */}
         <DashedSeprator />
 
         <View style={styles.detailsRow}>
           <Text style={styles.label}>{t("paymentStatus")}</Text>
-          <Text style={styles.paymentStatus}>
-            {order?.paymentStatus || order?.payment_status || t("pending")}
+          <Text style={styles.paymentStatus} numberOfLines={1}>
+            {order?.paymentStatus || order?.payment_status}
           </Text>
         </View>
         {order.status === "completed" && (
@@ -216,7 +192,9 @@ export default function ServiceDetailsCard({
             <DashedSeprator />
             <View style={styles.detailsRow}>
               <Text style={styles.label}>{t("popup.addTip")}</Text>
-              <Text style={styles.tip}>{t("wallet.sar")} {order.tip || "0.00"}</Text>
+              <Text style={styles.tip}>
+                {t("wallet.sar")} {order.tip || "0.00"}
+              </Text>
             </View>
           </>
         )}
@@ -305,6 +283,7 @@ const styles = StyleSheet.create({
     color: Colors.secondary300,
     fontSize: 14,
     fontFamily: FONTS.regular,
+    flexShrink: 0,
   },
   value: {
     color: Colors.secondary,
@@ -316,6 +295,9 @@ const styles = StyleSheet.create({
     color: Colors.success,
     fontSize: 14,
     fontFamily: FONTS.bold,
+    flexShrink: 1,
+    textAlign: "right",
+    marginLeft: 8,
   },
   ratingContainer: {
     flexDirection: "row",

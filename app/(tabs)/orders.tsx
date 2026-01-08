@@ -109,7 +109,7 @@ export default function Orders() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Header title={t("orders")} icon={true} />
+        <Header title={t("tabs.orders")} icon={true} />
 
         {/* Dropdown Picker */}
         <View style={styles.dropdownContainer}>
@@ -124,7 +124,7 @@ export default function Orders() {
             textStyle={styles.dropdownText}
             dropDownContainerStyle={styles.dropdownList}
             listItemContainerStyle={styles.dropdownItem}
-            placeholder="Filter by status"
+            placeholder={t("orders.filterByStatus")}
             zIndex={3000}
             zIndexInverse={1000}
           />

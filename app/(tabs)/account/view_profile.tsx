@@ -131,14 +131,14 @@ export default function ViewProfile() {
 
         const transformedOrders = completedOrders.map((order: any) => ({
           ...order,
-          title: order.cat_name || "Service",
+          title: order.cat_name || t("account.service"),
           amount: order.order_price || "0",
           discount: order.discount || "0",
-          paymentStatus: order.payment_method || "Unknown",
+          paymentStatus: order.payment_method || t("unknown"),
           provider:
             order.to_id !== "0"
-              ? order.provider || "Assigned Provider"
-              : "Waiting for provider",
+              ? order.provider || t("account.assignedProvider")
+              : t("account.waitingForProvider"),
           image: require("@/assets/images/cleaning_service.png"),
         }));
 
@@ -251,7 +251,7 @@ export default function ViewProfile() {
             {user.balance}
           </Text>
           <Text style={styles.userEmail}>
-            {user.email ? user.email : "member@xyz.com"}
+            {user.email ? user.email : t("account.defaultEmail")}
           </Text>
 
           <View style={styles.locationContainer}>

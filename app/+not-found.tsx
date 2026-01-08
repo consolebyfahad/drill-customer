@@ -1,19 +1,21 @@
 import Button from "@/components/button";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
 
 export default function NotFoundScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
       <Ionicons name="alert-circle-outline" size={100} color="#FF3B30" />
       <Text style={styles.errorText}>404</Text>
-      <Text style={styles.messageText}>Oops! Page not found.</Text>
-      <Button title="Go Home" onPress={() => router.push("/")} />
+      <Text style={styles.messageText}>{t("notFound.message")}</Text>
+      <Button title={t("notFound.goHome")} onPress={() => router.push("/")} />
     </SafeAreaView>
   );
 }

@@ -1,18 +1,20 @@
 import CurrentLocation from "@/assets/svgs/GPS.svg";
 import LocationIcon from "@/assets/svgs/locationIcon.svg";
 import SearchIcon from "@/assets/svgs/searchIcon.svg";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 export default function Search() {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       {/* Search Input */}
       <View style={styles.inputContainer}>
         <LocationIcon />
         <TextInput
-          placeholder="All Services Available"
+          placeholder={t("search.allServicesAvailable")}
           placeholderTextColor="#707070"
           style={styles.input}
         />

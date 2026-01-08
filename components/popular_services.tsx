@@ -60,7 +60,7 @@ export default function PopularServices() {
               rating: apiService.rating || 0,
               reviews: apiService.reviews || 0,
               price: parseFloat(apiService.price) || 0,
-              provider: apiService.company_name || "Service Provider",
+              provider: apiService.company_name || t("popularServices.serviceProvider"),
               providerImage: apiService.banners
                 ? `${IMAGE_BASE_URL}${apiService.banners}`
                 : undefined,
@@ -69,7 +69,7 @@ export default function PopularServices() {
           setServices(transformedServices);
         }
       } catch (err) {
-        setError("Something went wrong. Please try again.");
+        setError(t("add.somethingWentWrong"));
         console.error("API Error:", err);
       } finally {
         setLoading(false);
@@ -113,7 +113,7 @@ export default function PopularServices() {
           ListEmptyComponent={
             !error && services.length === 0 ? (
               <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>No services available</Text>
+                <Text style={styles.emptyText}>{t("popularServices.noServicesAvailable")}</Text>
               </View>
             ) : null
           }

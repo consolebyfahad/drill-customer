@@ -149,6 +149,16 @@
     "city": "City",
     "zipcode": "Zip Code",
     "update": "Update",
+    "enterName": "Enter your name",
+    "enterPhone": "Enter your phone",
+    "enterEmail": "Enter your email",
+    "enterAddress": "Enter your address",
+    "enterCity": "Enter city",
+    "enterZipCode": "Enter zip code",
+    "dobFormat": "YYYY-MM-DD",
+    "service": "Service",
+    "assignedProvider": "Assigned Provider",
+    "waitingForProvider": "Waiting for provider",
     "logoutErrorTitle": "Logout Error",
     "logoutErrorMessage": "An error occurred during logout. Please try again."
   },
@@ -231,7 +241,7 @@
     "emailAddress": "Email address",
     "cardSaved": "Card Saved"
   },
-  "order": {
+    "order": {
     "loading": "Loading...",
     "orderDetails": "Order Details",
     "noOrderDetails": "No order details available",
@@ -259,6 +269,10 @@
     "onTheWay": "On the Way",
     "arrived": "Arrived",
     "gettingLocation": "Getting location...",
+    "customer": "Customer",
+    "customerLocation": "Customer location",
+    "permissionDenied": "Permission to access location was denied",
+    "failedToGetLocation": "Failed to get your location",
     "noMessagesYet": "No messages yet",
     "typeMessage": "Type a message...",
     "sendWithImage": "Send with image...",
@@ -317,20 +331,23 @@
     "failedToLoadCategories": "Failed to load categories.",
     "somethingWentWrong": "Something went wrong. Please try again."
   },
-  "wallet": {
+    "wallet": {
     "title": "Wallet",
     "availableBalance": "Available Balance",
     "add": "Add",
     "transactionsHistory": "Transactions History",
     "thisMonth": "This month",
     "totalExpense": "Total Expense",
-    "sar": "SAR"
+    "sar": "SAR",
+    "buying": "Buying",
+    "fundAdded": "Fund Added"
   },
   "addPayment": {
     "title": "Add Payment",
     "cardAddedSuccess": "Your credit card has been successfully added",
     "addMoney": "Add Money",
-    "confirm": "Confrim"
+    "confirm": "Confrim",
+    "balance": "Balance"
   },
   "support": {
     "needHelp": "Need Help?",
@@ -371,5 +388,60 @@
     "invalidDate": "Invalid Date",
     "invalidDateFormat": "DOB must be in YYYY-MM-DD format.",
     "failedToUpdateProfile": "Failed to update profile."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "introduction": "Introduction",
+    "introductionText": "Welcome to our home service application. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.",
+    "informationWeCollect": "Information We Collect",
+    "informationWeCollectText": "We collect information that you provide directly to us and information that is automatically collected when you use our services.",
+    "personalInformation": "Personal Information",
+    "personalInformationText": "We collect personal information such as your name, phone number, email address, date of birth, and address when you register for an account or use our services. We also collect payment information when you make transactions through our app.",
+    "usageInformation": "Usage Information",
+    "usageInformationText": "We collect information about how you use our app, including the services you book, your preferences, and interactions with service providers.",
+    "deviceInformation": "Device Information",
+    "deviceInformationText": "We automatically collect certain information about your device, including your device type, operating system, unique device identifiers, and mobile network information. We also collect location information when you use location-based features.",
+    "howWeUse": "How We Use Your Information",
+    "howWeUseText": "We use the information we collect to provide, maintain, and improve our services, process your bookings, communicate with you, send you notifications, personalize your experience, and ensure the security of our platform.",
+    "dataSharing": "Data Sharing and Disclosure",
+    "dataSharingText": "We may share your information with service providers who perform services on our behalf, such as payment processing and customer support. We may also share information when required by law or to protect our rights. We do not sell your personal information to third parties.",
+    "dataSecurity": "Data Security",
+    "dataSecurityText": "We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure.",
+    "yourRights": "Your Rights",
+    "yourRightsText": "You have the right to access, update, or delete your personal information at any time. You can also opt-out of certain communications from us. To exercise these rights, please contact us through the app or using the contact information provided below.",
+    "changes": "Changes to This Privacy Policy",
+    "changesText": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the 'Last Updated' date. You are advised to review this Privacy Policy periodically for any changes.",
+    "contactUs": "Contact Us",
+    "contactUsText": "If you have any questions about this Privacy Policy or our privacy practices, please contact us at support@drill.com or through the support section in the app.",
+    "lastUpdated": "Last Updated: January 2024"
+  },
+  "notFound": {
+    "message": "Oops! Page not found.",
+    "goHome": "Go Home"
+  },
+  "header": {
+    "noActiveOrder": "No active order found",
+    "failedToSubmitSupport": "Failed to submit support request. Please try again.",
+    "errorOccurred": "An error occurred. Please try again."
+  },
+  "orders": {
+    "filterByStatus": "Filter by status"
+  },
+  "notification": {
+    "accountCreated": "Account Created",
+    "accountCreatedMessage": "Your account has been successfully created."
+  },
+  "search": {
+    "allServicesAvailable": "All Services Available"
+  },
+  "popularServices": {
+    "serviceProvider": "Service Provider",
+    "noServicesAvailable": "No services available"
+  },
+  "tabs": {
+    "home": "Home",
+    "packages": "Packages",
+    "orders": "Orders",
+    "account": "Account"
   }
 }
