@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
-  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -101,11 +100,13 @@ const EMOJI_LIST = [
 interface Message {
   id: string;
   text: string;
-  sender: "user" | "provider";
+  sender: "user" | "provider" | "support_agent" | "system";
   timestamp: number;
   attachment?: string;
   msgType?: string;
   userId?: any;
+  senderName?: string;
+  senderImage?: string;
 }
 
 export default function ChatScreen() {
@@ -121,36 +122,14 @@ export default function ChatScreen() {
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [providerInfo, setProviderInfo] = useState<any>(null);
+  const [supportRequired, setSupportRequired] = useState<boolean>(false);
+  const [hasShownSupportMessage, setHasShownSupportMessage] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const scrollViewRef = React.useRef<ScrollView>(null);
-  const textInputRef = useRef<TextInput>(null);
-
-  // Keyboard event listeners
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      (e) => {
-        setKeyboardHeight(e.endCoordinates.height);
-        // Scroll to bottom when keyboard shows
-        setTimeout(() => {
-          scrollViewRef.current?.scrollToEnd({ animated: true });
-        }, 100);
-      }
-    );
-
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardHeight(0);
-      }
-    );
-
-    return () => {
-      keyboardDidShowListener?.remove();
-      keyboardDidHideListener?.remove();
-    };
-  }, []);
+  const isSendingRef = useRef<boolean>(false);
+  const IMAGE_BASE_URL = "https://7tracking.com/saudiservices/images/";
 
   useFocusEffect(
     useCallback(() => {
@@ -160,6 +139,7 @@ export default function ChatScreen() {
         setOrderId(storedOrderId);
         setUserId(userId);
         if (storedOrderId && userId) {
+          fetchOrderDetails(storedOrderId);
           fetchChatHistory(storedOrderId, userId);
 
           // Set up interval to fetch new messages every few seconds
@@ -169,6 +149,7 @@ export default function ChatScreen() {
 
           intervalRef.current = setInterval(() => {
             if (storedOrderId && userId) {
+              fetchOrderDetails(storedOrderId);
               fetchChatHistory(storedOrderId, userId, false); // Pass false to not show loading indicator
             }
           }, 10000);
@@ -185,6 +166,30 @@ export default function ChatScreen() {
       };
     }, [])
   );
+
+  const fetchOrderDetails = async (orderIdParam: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("type", "get_data");
+      formData.append("table_name", "orders");
+      formData.append("id", orderIdParam);
+
+      const response = await apiCall(formData);
+      if (response && response.data && response.data.length > 0) {
+        const orderData = response.data[0];
+        const isSupportRequired = orderData.support_required === "1" || orderData.support_required === 1;
+        
+        // If support was just requested (changed from false to true), show the message
+        if (isSupportRequired && !supportRequired) {
+          setHasShownSupportMessage(true);
+        }
+        
+        setSupportRequired(isSupportRequired);
+      }
+    } catch (error) {
+      console.error("Failed to fetch order details", error);
+    }
+  };
 
   const fetchChatHistory = async (
     orderIdParam: string,
@@ -203,17 +208,79 @@ export default function ChatScreen() {
 
     try {
       const response = await apiCall(formData);
+      console.log(response);
       if (response && response.chat) {
         const fromId = response.user.id;
-        const formattedMessages = response.chat.map((msg: any) => ({
-          id: msg.id,
-          text: msg.msg,
-          sender: msg.from_id === fromId ? "user" : "provider",
-          timestamp: Number(msg.datetime),
-          msgType: msg.msg_type === "file" ? "file" : "msg",
-        }));
+        
+        // Store user and provider info
+        if (response.user) {
+          setUserInfo(response.user);
+        }
+        if (response.provider) {
+          setProviderInfo(response.provider);
+        }
+        
+        const formattedMessages = response.chat.map((msg: any) => {
+          const isUser = msg.from_id === fromId;
+          // Check if message is from support agent (usually identified by user_type or role)
+          const isSupportAgent = msg.user_type === "support_agent" || 
+                                 msg.role === "support_agent" ||
+                                 msg.from_id !== fromId && msg.from_id !== response.provider?.id;
+          
+          let sender: "user" | "provider" | "support_agent" = "provider";
+          let senderInfo = response.provider;
+          
+          if (isUser) {
+            sender = "user";
+            senderInfo = response.user;
+          } else if (isSupportAgent || msg.sender_name?.toLowerCase().includes("support")) {
+            sender = "support_agent";
+            senderInfo = { name: "Support Agent", image: null };
+          }
+          
+          return {
+            id: msg.id,
+            text: msg.msg,
+            sender: sender,
+            timestamp: Number(msg.datetime),
+            msgType: msg.msg_type === "file" ? "file" : "msg",
+            senderName: senderInfo?.name || (isUser ? "You" : sender === "support_agent" ? "Support Agent" : "Provider"),
+            senderImage: senderInfo?.image || null,
+          };
+        });
 
-        setMessages(formattedMessages.reverse());
+        // Add support agent added system message if support is required
+        let finalMessages = formattedMessages.reverse();
+        if (supportRequired && hasShownSupportMessage) {
+          const supportMessageExists = finalMessages.some(
+            (msg: Message) => msg.sender === "system" && msg.text.includes("Support Agent Added")
+          );
+          
+          if (!supportMessageExists) {
+            // Find the position to insert the system message (after user messages requesting support)
+            const insertIndex = finalMessages.findIndex(
+              (msg: Message) => msg.sender === "user" && msg.timestamp > 0
+            );
+            
+            const systemMessage = {
+              id: `support-added-${Date.now()}`,
+              text: "Support Agent Added",
+              sender: "system" as const,
+              timestamp: Date.now(),
+              msgType: "msg" as const,
+              senderName: "",
+              senderImage: null,
+            };
+            
+            if (insertIndex >= 0) {
+              finalMessages.splice(insertIndex + 1, 0, systemMessage);
+            } else {
+              finalMessages = [systemMessage, ...finalMessages];
+            }
+          }
+        }
+
+        setMessages(finalMessages);
       } else {
         // Handle case where chat is undefined
         setMessages([]);
@@ -258,9 +325,16 @@ export default function ChatScreen() {
   };
 
   const sendMessage = async () => {
-    if (!orderId || (inputMessage.trim() === "" && !attachment)) return;
+    // Prevent multiple simultaneous sends
+    if (isSendingRef.current) {
+      console.log("Message already being sent, ignoring duplicate send");
+      return;
+    }
+
+    if (!orderId || !userId || (inputMessage.trim() === "" && !attachment)) return;
 
     try {
+      isSendingRef.current = true;
       setIsLoading(true);
 
       // If there's an attachment but no uploaded filename yet, upload it first
@@ -268,6 +342,7 @@ export default function ChatScreen() {
       if (attachment && !uploadedFileName) {
         filename = await uploadImageToServer(attachment);
         if (!filename) {
+          isSendingRef.current = false;
           setIsLoading(false);
           return; // Exit if upload failed
         }
@@ -307,6 +382,7 @@ export default function ChatScreen() {
       Alert.alert(t("error"), t("order.failedToSend"));
     } finally {
       setIsLoading(false);
+      isSendingRef.current = false;
     }
   };
 
@@ -343,7 +419,7 @@ export default function ChatScreen() {
     }
   };
 
-  const pickImage = async (source: "camera" | "gallery") => {
+  const pickImage = async (source: "camera" | "gallery" | "document") => {
     let result;
 
     if (source === "camera") {
@@ -405,11 +481,6 @@ export default function ChatScreen() {
   const onEmojiSelected = (emoji: string) => {
     setInputMessage((prevInput) => prevInput + emoji);
     setIsEmojiPickerVisible(false);
-
-    // Focus back to text input after emoji selection
-    setTimeout(() => {
-      textInputRef.current?.focus();
-    }, 100);
   };
 
   useEffect(() => {
@@ -419,75 +490,119 @@ export default function ChatScreen() {
   console.log(messages);
 
   return (
-    <View style={styles.chatContainer}>
-      <KeyboardAvoidingView
-        style={styles.keyboardContainer}
-        // behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-      >
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 18}
+    >
+      <View style={styles.chatContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
           onContentSizeChange={() =>
             scrollViewRef.current?.scrollToEnd({ animated: true })
           }
-          contentContainerStyle={[
-            styles.scrollViewContent,
-            { paddingBottom: Platform.OS === "android" ? keyboardHeight : 0 },
-          ]}
+          contentContainerStyle={styles.scrollViewContent}
           keyboardShouldPersistTaps="handled"
         >
           {messages && messages.length > 0
-            ? messages.map((message) => (
-                <TouchableOpacity
-                  onLongPress={() => confirmDeleteMessage(message.id)}
-                  key={message.id}
-                  style={
-                    message.sender === "user"
-                      ? styles.userMessage
-                      : styles.providerMessage
-                  }
-                >
-                  {message.msgType === "file" && (
-                    <Image
-                      source={{ uri: message.text }}
-                      style={styles.messageImage}
-                      resizeMode="cover"
-                    />
-                  )}
+            ? messages.map((message, index) => {
+                // Handle system messages (Support Agent Added)
+                if (message.sender === "system") {
+                  return (
+                    <View key={message.id} style={styles.systemMessageContainer}>
+                      <View style={styles.systemMessageLine} />
+                      <Text style={styles.systemMessageText}>{message.text}</Text>
+                      <View style={styles.systemMessageLine} />
+                    </View>
+                  );
+                }
 
-                  {message.msgType === "msg" && (
-                    <Text style={styles.messageText}>{message.text}</Text>
-                  )}
-                </TouchableOpacity>
-              ))
+                const showProfile = index === 0 || 
+                  messages[index - 1].sender !== message.sender;
+                
+                return (
+                  <View
+                    key={message.id}
+                    style={
+                      message.sender === "user"
+                        ? styles.userMessageContainer
+                        : message.sender === "support_agent"
+                        ? styles.supportAgentMessageContainer
+                        : styles.providerMessageContainer
+                    }
+                  >
+                    {(message.sender === "provider" || message.sender === "support_agent") && (
+                      <View style={styles.providerInfoContainer}>
+                        {showProfile && (
+                          <>
+                            {message.sender === "support_agent" ? (
+                              <View style={styles.supportAgentIcon}>
+                                <Text style={styles.supportAgentIconText}>🎧</Text>
+                              </View>
+                            ) : (
+                              <Image
+                                source={
+                                  message.senderImage
+                                    ? { uri: `${IMAGE_BASE_URL}${message.senderImage}` }
+                                    : require("@/assets/images/default-profile.png")
+                                }
+                                style={styles.profileImage}
+                                resizeMode="cover"
+                              />
+                            )}
+                            <Text style={styles.senderName}>
+                              {message.senderName}
+                            </Text>
+                          </>
+                        )}
+                        {!showProfile && (
+                          <View style={styles.profileImagePlaceholder} />
+                        )}
+                      </View>
+                    )}
+                    <TouchableOpacity
+                      onLongPress={() => confirmDeleteMessage(message.id)}
+                      style={
+                        message.sender === "user"
+                          ? styles.userMessage
+                          : message.sender === "support_agent"
+                          ? styles.supportAgentMessage
+                          : styles.providerMessage
+                      }
+                    >
+                      {message.msgType === "file" && (
+                        <Image
+                          source={{ uri: `${IMAGE_BASE_URL}${message.text}` }}
+                          style={styles.messageImage}
+                          resizeMode="cover"
+                        />
+                      )}
+
+                      {message.msgType === "msg" && (
+                        <Text style={styles.messageText}>{message.text}</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                );
+              })
             : !isLoading && (
                 <View style={styles.noMessagesContainer}>
-                  <Text style={styles.noMessagesText}>{t("order.noMessagesYet")}</Text>
+                  <Text style={styles.noMessagesText}>
+                    {t("order.noMessagesYet")}
+                  </Text>
                 </View>
               )}
         </ScrollView>
 
         {/* Chat input stays visible */}
-        <View
-          style={[
-            styles.chatInputWrapper,
-            Platform.OS === "android" &&
-              keyboardHeight > 0 && {
-                position: "absolute",
-                bottom: keyboardHeight,
-                left: 0,
-                right: 0,
-              },
-          ]}
-        >
+        <View>
           <View style={styles.chatInputContainer}>
             <TouchableOpacity onPress={openMediaPicker}>
               <Add />
             </TouchableOpacity>
             <View style={styles.inputFieldContainer}>
               <TextInput
-                ref={textInputRef}
                 style={styles.chatInput}
                 value={inputMessage}
                 onChangeText={(text) => setInputMessage(text)}
@@ -495,12 +610,6 @@ export default function ChatScreen() {
                   attachment ? t("order.sendWithImage") : t("order.typeMessage")
                 }
                 multiline
-                onFocus={() => {
-                  // Scroll to bottom when input is focused
-                  setTimeout(() => {
-                    scrollViewRef.current?.scrollToEnd({ animated: true });
-                  }, 100);
-                }}
               />
               {attachment && (
                 <View style={styles.inlineAttachmentContainer}>
@@ -526,10 +635,10 @@ export default function ChatScreen() {
             </View>
             <TouchableOpacity
               onPress={sendMessage}
-              disabled={inputMessage.trim() === "" && !attachment}
+              disabled={(inputMessage.trim() === "" && !attachment) || isLoading || isSendingRef.current}
               style={[
                 styles.sendButton,
-                inputMessage.trim() === "" && !attachment
+                (inputMessage.trim() === "" && !attachment) || isLoading || isSendingRef.current
                   ? styles.disabledSendButton
                   : {},
               ]}
@@ -603,43 +712,116 @@ export default function ChatScreen() {
             </View>
           </TouchableOpacity>
         </Modal>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   chatContainer: {
     flex: 1,
-    paddingTop: 16,
     backgroundColor: Colors.white,
   },
   scrollViewContent: {
-    flex: 1,
     paddingHorizontal: 16,
+    paddingTop: 16,
+    flexGrow: 1,
+    paddingBottom: 10,
   },
-  keyboardContainer: {
-    flex: 1,
-  },
-  userMessage: {
+  userMessageContainer: {
     alignSelf: "flex-end",
-    backgroundColor: Colors.success100,
-    padding: 12,
-    borderBottomEndRadius: 14,
-    borderStartStartRadius: 14,
-    borderBottomStartRadius: 14,
-    marginBottom: 16,
+    alignItems: "flex-end",
+    marginBottom: 12,
     maxWidth: "80%",
   },
-  providerMessage: {
+  providerMessageContainer: {
+    flexDirection: "column",
     alignSelf: "flex-start",
+    alignItems: "flex-start",
+    marginBottom: 12,
+    maxWidth: "80%",
+  },
+  supportAgentMessageContainer: {
+    flexDirection: "column",
+    alignSelf: "flex-start",
+    alignItems: "flex-start",
+    marginBottom: 12,
+    maxWidth: "80%",
+  },
+  systemMessageContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 16,
+    width: "100%",
+  },
+  systemMessageLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.gray,
+    marginHorizontal: 8,
+  },
+  systemMessageText: {
+    fontSize: 12,
+    fontFamily: FONTS.medium,
+    color: Colors.secondary300,
+  },
+  supportAgentIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.primary300,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  supportAgentIconText: {
+    fontSize: 20,
+  },
+  supportAgentMessage: {
     backgroundColor: Colors.gray100,
     padding: 12,
-    borderBottomEndRadius: 14,
-    borderStartEndRadius: 14,
-    borderBottomStartRadius: 14,
-    marginBottom: 16,
-    maxWidth: "80%",
+    borderRadius: 14,
+    borderBottomStartRadius: 4,
+    maxWidth: "100%",
+  },
+  providerInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+    gap: 8,
+    width: "100%",
+  },
+  profileImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.gray100,
+  },
+  profileImagePlaceholder: {
+    width: 36,
+    height: 36,
+  },
+  senderName: {
+    fontSize: 13,
+    fontFamily: FONTS.medium,
+    color: Colors.secondary,
+  },
+  userMessage: {
+    backgroundColor: Colors.success100,
+    padding: 12,
+    borderRadius: 14,
+    borderBottomEndRadius: 4,
+    maxWidth: "100%",
+  },
+  providerMessage: {
+    backgroundColor: Colors.gray100,
+    padding: 12,
+    borderRadius: 14,
+    borderBottomStartRadius: 4,
+    maxWidth: "100%",
   },
   messageText: {
     color: Colors.secondary,
@@ -652,17 +834,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
   },
-  chatInputWrapper: {
-    backgroundColor: Colors.white,
-  },
   chatInputContainer: {
     flexDirection: "row",
     width: "100%",
     alignItems: "center",
     padding: 8,
     paddingHorizontal: 16,
-    borderTopWidth: 1,
-    borderTopColor: Colors.gray100,
     backgroundColor: Colors.white,
   },
   inputFieldContainer: {

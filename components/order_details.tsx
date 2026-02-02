@@ -1,3 +1,4 @@
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
@@ -5,9 +6,110 @@ import { FONTS } from "~/constants/Fonts";
 import { OrderType } from "~/types/dataTypes";
 import DashedSeparator from "./dashed_seprator";
 
+// Helper function to format timestamp (time only, no date)
+const formatTimestamp = (timestamp: string): string => {
+  if (!timestamp) return "";
+  try {
+    // If timestamp is already formatted (e.g., "Jan 13, 2026 10:05 AM"), extract time
+    if (timestamp.includes(",") && timestamp.includes(":")) {
+      // Extract time portion from formatted string (e.g., "10:05 AM")
+      const timeMatch = timestamp.match(/(\d{1,2}:\d{2}\s*(?:AM|PM))/i);
+      if (timeMatch) {
+        return timeMatch[1];
+      }
+    }
+    // Parse datetime format: "2026-01-13 10:05:23"
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return timestamp;
+
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+
+    return `${hours}:${minutesStr} ${ampm}`;
+  } catch (error) {
+    return timestamp;
+  }
+};
+
+// Helper function to get timeline events from history
+const getTimelineEvents = (order: OrderType) => {
+  const events: Array<{ label: string; timestamp: string; status: string }> =
+    [];
+
+  if (!order.history || !Array.isArray(order.history)) {
+    return events;
+  }
+
+  // Track which statuses we've already added (to avoid duplicates)
+  const seenStatuses = new Set<string>();
+
+  // Sort history by datetime to process in chronological order
+  const sortedHistory = [...order.history].sort((a, b) => {
+    const dateA = new Date(a.datetime || a.timestamp || "").getTime();
+    const dateB = new Date(b.datetime || b.timestamp || "").getTime();
+    return dateA - dateB;
+  });
+
+  for (const entry of sortedHistory) {
+    const status = entry.status?.toLowerCase();
+    if (!status || seenStatuses.has(status)) continue;
+
+    let label = "";
+    switch (status) {
+      case "accepted":
+        label = "orderAccepted";
+        break;
+      case "arrived":
+        // Check if this is the first "arrived" entry (arrived at location)
+        if (!seenStatuses.has("arrived")) {
+          label = "arrivedAtLocation";
+        }
+        break;
+      case "started":
+        label = "workStarted";
+        break;
+      case "completed":
+        label = "orderCompleted";
+        break;
+      default:
+        continue;
+    }
+
+    if (label) {
+      const timestamp = formatTimestamp(
+        entry.datetime || entry.timestamp || ""
+      );
+      events.push({ label, timestamp, status });
+      seenStatuses.add(status);
+    }
+  }
+
+  return events;
+};
+
 const OrderDetailsSection = ({ order }: OrderType) => {
   console.log("order", order);
   const { t } = useTranslation();
+
+  // Parse final_images JSON
+  let finalImages: { itemImage?: string; recipeImage?: string } = {};
+  if (order.final_images) {
+    try {
+      finalImages =
+        typeof order.final_images === "string"
+          ? JSON.parse(order.final_images)
+          : order.final_images;
+    } catch (error) {
+      console.error("Error parsing final_images:", error);
+    }
+  }
+
+  // Get timeline events from history
+  const timelineEvents = getTimelineEvents(order);
   return (
     <View style={styles.orderDetails}>
       <View style={styles.rowBetween}>
@@ -38,6 +140,7 @@ const OrderDetailsSection = ({ order }: OrderType) => {
 
       <DashedSeparator />
 
+      {/* Order Placed - always show if created_at exists */}
       {order.created_at && (
         <>
           <View style={styles.rowBetween}>
@@ -48,67 +151,92 @@ const OrderDetailsSection = ({ order }: OrderType) => {
         </>
       )}
 
-      {order.timestamp && (
-        <>
+      {/* Timeline Events from History */}
+      {timelineEvents.map((event, index) => (
+        <React.Fragment key={`${event.status}-${index}`}>
           <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("orderAccepted")}:</Text>
-            <Text style={styles.grayText}>{order.timestamp}</Text>
+            <Text style={styles.grayText}>{t(event.label)}:</Text>
+            <Text style={styles.grayText}>{event.timestamp}</Text>
           </View>
           <DashedSeparator />
-        </>
-      )}
+        </React.Fragment>
+      ))}
 
-      {order.arrived_at_location && (
-        <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("arrivedAtLocation")}:</Text>
-            <Text style={styles.grayText}>{order.arrived_at_location}</Text>
-          </View>
-          <DashedSeparator />
-        </>
-      )}
+      {/* Arrival Confirm - show when customer confirms (status changes to "started" after "arrived") */}
+      {(() => {
+        const startedEvent = timelineEvents.find((e) => e.status === "started");
+        const arrivedEvent = timelineEvents.find((e) => e.status === "arrived");
+        if (startedEvent && arrivedEvent && order.history) {
+          // Find the "started" entry in history to get exact timestamp
+          const startedHistory = order.history.find(
+            (h: any) => h.status?.toLowerCase() === "started"
+          );
+          if (startedHistory) {
+            const confirmTimestamp = formatTimestamp(
+              startedHistory.datetime || startedHistory.timestamp || ""
+            );
+            return (
+              <>
+                <View style={styles.rowBetween}>
+                  <Text style={styles.grayText}>{t("arrivalConfirm")}:</Text>
+                  <Text style={styles.grayText}>{confirmTimestamp}</Text>
+                </View>
+                <DashedSeparator />
+              </>
+            );
+          }
+        }
+        return null;
+      })()}
 
-      {order.arrival_confirm && (
-        <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("arrivalConfirm")}:</Text>
-            <Text style={styles.grayText}>{order.arrival_confirm}</Text>
-          </View>
-          <DashedSeparator />
-        </>
-      )}
-
-      {order.work_started && (
-        <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("workStarted")}:</Text>
-            <Text style={styles.grayText}>{order.work_started}</Text>
-          </View>
-          <DashedSeparator />
-        </>
-      )}
-
-      {order.extra_added && (
+      {/* Extra Added - show if extra_detail exists */}
+      {order.extra_detail && (
         <>
           <View style={styles.rowBetween}>
             <Text style={styles.grayText}>{t("extraAdded")}:</Text>
-            <Text style={styles.grayText}>{order.extra_added}</Text>
+            <Text style={styles.grayText}>
+              {order.extra_amount ? `SAR ${order.extra_amount}` : ""}
+            </Text>
           </View>
+          {order.extra_detail && (
+            <Text style={[styles.grayText, { marginTop: 4, fontSize: 12 }]}>
+              {order.extra_detail}
+            </Text>
+          )}
           <DashedSeparator />
         </>
       )}
 
-      {order.final_images && (
+      {/* Item Image from final_images */}
+      {finalImages.itemImage && (
         <>
           <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("insulationSheet")}:</Text>
-            <Text style={styles.grayText}>{order.insulation_sheet}</Text>
+            <Text style={styles.grayText}>{t("itemImage")}:</Text>
+            <Image
+              source={{ uri: `${order.image_url}${finalImages.itemImage}` }}
+              style={styles.problemImage}
+            />
           </View>
           <DashedSeparator />
         </>
       )}
 
-      {order.item_image && (
+      {/* Bill/Recipe Image from final_images */}
+      {finalImages.recipeImage && (
+        <>
+          <View style={styles.rowBetween}>
+            <Text style={styles.grayText}>{t("billImage")}:</Text>
+            <Image
+              source={{ uri: `${order.image_url}${finalImages.recipeImage}` }}
+              style={styles.problemImage}
+            />
+          </View>
+          <DashedSeparator />
+        </>
+      )}
+
+      {/* Fallback: Show item_image and bill_image if they exist directly on order */}
+      {!finalImages.itemImage && order.item_image && (
         <>
           <View style={styles.rowBetween}>
             <Text style={styles.grayText}>{t("itemImage")}:</Text>
@@ -121,7 +249,7 @@ const OrderDetailsSection = ({ order }: OrderType) => {
         </>
       )}
 
-      {order.bill_image && (
+      {!finalImages.recipeImage && order.bill_image && (
         <>
           <View style={styles.rowBetween}>
             <Text style={styles.grayText}>{t("billImage")}:</Text>
@@ -134,65 +262,156 @@ const OrderDetailsSection = ({ order }: OrderType) => {
         </>
       )}
 
-      {order.paid_by && (
+      {/* Extra Paid By */}
+      {order.paid_by && order.paid_by !== "0" && (
         <>
           <View style={styles.rowBetween}>
             <Text style={styles.grayText}>{t("extraPaidBy")}:</Text>
-            <Text style={styles.grayText}>{order.paid_by}</Text>
+            <Text style={styles.grayText}>
+              {order.paid_by === order.user_id ? t("me") : t("provider")}
+            </Text>
           </View>
           <DashedSeparator />
         </>
       )}
 
-      {order.extra_accepted && (
+      {/* Extra Accepted - show if extra was added and paid */}
+      {order.extra_detail && order.paid_by && order.paid_by !== "0" && (
         <>
           <View style={styles.rowBetween}>
             <Text style={styles.grayText}>{t("extraAccepted")}:</Text>
-            <Text style={styles.grayText}>{order.extra_accepted}</Text>
+            <Text style={styles.grayText}>
+              {timelineEvents.find((e) => e.status === "started")?.timestamp ||
+                order.timestamp ||
+                ""}
+            </Text>
           </View>
           <DashedSeparator />
         </>
       )}
 
-      {order.job_time_finished && (
+      {/* Job Time Finished, Bonus Time, Order Completed - check history for these */}
+      {order.history && Array.isArray(order.history) && (
         <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("jobTimeFinished")}:</Text>
-            <Text style={styles.grayText}>{order.job_time_finished}</Text>
-          </View>
-          <DashedSeparator />
+          {order.history
+            .filter(
+              (h: any) =>
+                h.status === "job_time_finished" ||
+                h.status === "bonus_time_started" ||
+                h.status === "bonus_time_ended" ||
+                h.status === "completed"
+            )
+            .map((entry: any, index: number) => {
+              let label = "";
+              let statusKey = entry.status?.toLowerCase();
+
+              switch (statusKey) {
+                case "job_time_finished":
+                  label = "jobTimeFinished";
+                  break;
+                case "bonus_time_started":
+                  label = "bonusTimeStarted";
+                  break;
+                case "bonus_time_ended":
+                  label = "bonusTimeEnded";
+                  break;
+                case "completed":
+                  label = "orderCompleted";
+                  break;
+                default:
+                  return null;
+              }
+
+              if (!label) return null;
+
+              const timestamp = formatTimestamp(
+                entry.datetime || entry.timestamp || ""
+              );
+              const isCompleted = statusKey === "completed";
+
+              return (
+                <React.Fragment key={`${statusKey}-${index}`}>
+                  <View style={styles.rowBetween}>
+                    <Text
+                      style={[
+                        styles.grayText,
+                        isCompleted && styles.completedText,
+                      ]}
+                    >
+                      {t(label)}:
+                    </Text>
+                    <Text
+                      style={[
+                        styles.grayText,
+                        isCompleted && styles.completedText,
+                      ]}
+                    >
+                      {timestamp}
+                    </Text>
+                  </View>
+                  <DashedSeparator />
+                </React.Fragment>
+              );
+            })}
         </>
       )}
 
-      {order.bonus_time_started && (
-        <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("bonusTimeStarted")}:</Text>
-            <Text style={styles.grayText}>{order.bonus_time_started}</Text>
-          </View>
-          <DashedSeparator />
-        </>
-      )}
+      {/* Fallback: Show direct fields if history doesn't have them */}
+      {(!order.history ||
+        !Array.isArray(order.history) ||
+        !order.history.some((h: any) => h.status === "job_time_finished")) &&
+        order.job_time_finished && (
+          <>
+            <View style={styles.rowBetween}>
+              <Text style={styles.grayText}>{t("jobTimeFinished")}:</Text>
+              <Text style={styles.grayText}>{order.job_time_finished}</Text>
+            </View>
+            <DashedSeparator />
+          </>
+        )}
 
-      {order.bonus_time_ended && (
-        <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("bonusTimeEnded")}:</Text>
-            <Text style={styles.grayText}>{order.bonus_time_ended}</Text>
-          </View>
-          <DashedSeparator />
-        </>
-      )}
+      {(!order.history ||
+        !Array.isArray(order.history) ||
+        !order.history.some((h: any) => h.status === "bonus_time_started")) &&
+        order.bonus_time_started && (
+          <>
+            <View style={styles.rowBetween}>
+              <Text style={styles.grayText}>{t("bonusTimeStarted")}:</Text>
+              <Text style={styles.grayText}>{order.bonus_time_started}</Text>
+            </View>
+            <DashedSeparator />
+          </>
+        )}
 
-      {order.order_completed && (
-        <>
-          <View style={styles.rowBetween}>
-            <Text style={styles.grayText}>{t("orderCompleted")}:</Text>
-            <Text style={styles.grayText}>{order.order_completed}</Text>
-          </View>
-          <DashedSeparator />
-        </>
-      )}
+      {(!order.history ||
+        !Array.isArray(order.history) ||
+        !order.history.some((h: any) => h.status === "bonus_time_ended")) &&
+        order.bonus_time_ended && (
+          <>
+            <View style={styles.rowBetween}>
+              <Text style={styles.grayText}>{t("bonusTimeEnded")}:</Text>
+              <Text style={styles.grayText}>{order.bonus_time_ended}</Text>
+            </View>
+            <DashedSeparator />
+          </>
+        )}
+
+      {(!order.history ||
+        !Array.isArray(order.history) ||
+        !order.history.some((h: any) => h.status === "completed")) &&
+        order.order_completed && (
+          <>
+            <View style={styles.rowBetween}>
+              <Text style={[styles.grayText, styles.completedText]}>
+                {t("orderCompleted")}:
+              </Text>
+              <Text style={[styles.grayText, styles.completedText]}>
+                {order.order_completed}
+              </Text>
+            </View>
+            <DashedSeparator />
+          </>
+        )}
 
       {order.payment_method && (
         <>
@@ -233,6 +452,9 @@ const styles = StyleSheet.create({
   blueText: { fontFamily: FONTS.semiBold, color: Colors.secondary },
   grayText: {
     color: Colors.secondary,
+  },
+  completedText: {
+    color: Colors.success || "#4CAF50",
   },
   problemImage: {
     width: 64,

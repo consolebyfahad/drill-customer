@@ -89,12 +89,20 @@ const OrderPlace: React.FC = () => {
       if (data?.order_id) {
         // If the notification is about the current order
         if (orderId && data.order_id === orderId) {
+          // If status is "arrived", reset the ref to allow popup to show again
+          if (data.status === "arrived") {
+            console.log("🔄 Resetting arrived popup ref to allow showing again");
+            lastShownStatusRef.current = null;
+          }
+
           // Refresh order details
           getOrderDetails(data.order_id);
 
           // Display toast for status change
+          // If status is "arrived", force show the popup (even if shown before)
           if (data.status) {
-            showStatusNotification(data.status, data.message);
+            const forceShow = data.status === "arrived";
+            showStatusNotification(data.status, data.message, forceShow);
           }
         }
       }
@@ -192,7 +200,11 @@ const OrderPlace: React.FC = () => {
           lastShownStatusRef.current = orderData.status;
         } else if (order && order.status === orderData.status) {
           // Status hasn't changed, ensure ref is set to prevent duplicate popups
-          if (lastShownStatusRef.current !== orderData.status) {
+          // But if status is "arrived", don't set the ref so notification can trigger popup again
+          if (
+            lastShownStatusRef.current !== orderData.status &&
+            orderData.status !== "arrived"
+          ) {
             lastShownStatusRef.current = orderData.status;
           }
         }
@@ -412,7 +424,11 @@ const OrderPlace: React.FC = () => {
   };
 
   // Show notification for status changes
-  const showStatusNotification = (status: string, customMessage?: string) => {
+  const showStatusNotification = (
+    status: string,
+    customMessage?: string,
+    forceShow: boolean = false
+  ) => {
     let message = customMessage;
     let toastType = "info";
 
@@ -431,11 +447,14 @@ const OrderPlace: React.FC = () => {
           message = t("order.providerArrived");
           toastType = "success";
           // Show arrived popup instead of toast for arrived status
-          // Only show if we haven't already shown it for this status
+          // If forceShow is true (from notification), always show the popup
+          // Otherwise, only show if we haven't already shown it for this status
           if (
-            lastShownStatusRef.current !== "arrived" &&
-            popupType !== "arrived"
+            forceShow ||
+            (lastShownStatusRef.current !== "arrived" &&
+              popupType !== "arrived")
           ) {
+            console.log("🚨 Showing arrived popup - forceShow:", forceShow);
             lastShownStatusRef.current = "arrived";
             setPopupType("arrived");
           }

@@ -72,6 +72,7 @@
   "expressService": "خدمة سريعة",
   "unknown": "غير معروف",
   "provider": "مقدم الخدمة",
+  "me": "أنا",
   "call": "اتصال",
   "chat": "محادثة",
   "track": "تتبع",
@@ -313,7 +314,9 @@
     "orderCompletedDescription": "شكراً لمشاركة تجربتك وملاحظاتك القيمة.",
     "rateExperience": "قيم تجربتك",
     "howWasService": "كيف كانت خدمتك؟",
-    "youGaveStars": "لقد أعطيت {count} نجمة{plural} لمقدم الخدمة.",
+    "youGaveStars": "لقد أعطيت {{count}} {{stars}} لمقدم الخدمة.",
+    "star": "نجمة",
+    "stars": "نجوم",
     "writeReview": "اكتب مراجعة...",
     "poor": "ضعيف",
     "fair": "مقبول",
@@ -331,7 +334,7 @@
     "failedToLoadCategories": "فشل تحميل الفئات.",
     "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
   },
-    "wallet": {
+  "wallet": {
     "title": "المحفظة",
     "availableBalance": "الرصيد المتاح",
     "add": "إضافة",

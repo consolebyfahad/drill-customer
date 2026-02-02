@@ -72,6 +72,7 @@
   "expressService": "Express Service",
   "unknown": "Unknown",
   "provider": "Provider",
+  "me": "Me",
   "call": "Call",
   "chat": "Chat",
   "track": "Track",
@@ -241,7 +242,7 @@
     "emailAddress": "Email address",
     "cardSaved": "Card Saved"
   },
-    "order": {
+  "order": {
     "loading": "Loading...",
     "orderDetails": "Order Details",
     "noOrderDetails": "No order details available",
@@ -313,7 +314,9 @@
     "orderCompletedDescription": "Thanks! for sharing your experience and valuable feedback.",
     "rateExperience": "Rate Your Experience",
     "howWasService": "How was your service?",
-    "youGaveStars": "You gave {count} star{plural} to the service provider.",
+    "youGaveStars": "You gave {{count}} {{stars}} to the service provider.",
+    "star": "star",
+    "stars": "stars",
     "writeReview": "Write a review...",
     "poor": "Poor",
     "fair": "Fair",
@@ -331,7 +334,7 @@
     "failedToLoadCategories": "Failed to load categories.",
     "somethingWentWrong": "Something went wrong. Please try again."
   },
-    "wallet": {
+  "wallet": {
     "title": "Wallet",
     "availableBalance": "Available Balance",
     "add": "Add",

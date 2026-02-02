@@ -285,8 +285,8 @@ export default function Popup({
                 <Text style={styles.ratingText}>{ratingText[rating - 1]}</Text>
                 <Text style={styles.description}>
                   {t("popup.youGaveStars", {
-                    count: rating.toString(),
-                    plural: rating > 1 ? "s" : "",
+                    count: rating,
+                    stars: rating === 1 ? t("popup.star") : t("popup.stars"),
                   })}
                 </Text>
                 <TextInput
