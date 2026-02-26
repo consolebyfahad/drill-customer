@@ -16,11 +16,13 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import i18n from "i18next";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
+  Linking,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -28,7 +30,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { contentContainerStyle } from "~/constants/Layout";
 import { FONTS } from "~/constants/Fonts";
+import { APP_STORE_ID } from "~/config";
 import { apiCall } from "~/utils/api";
 
 type User = {
@@ -50,6 +54,7 @@ type User = {
   status: string;
   timestamp: string;
   user_type: string;
+  online_status?: string;
 };
 
 export default function Account() {
@@ -75,17 +80,23 @@ export default function Account() {
     timestamp: "",
     user_type: "",
   });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      fetchUserProfile();
+      const init = async () => {
+        const userId = await AsyncStorage.getItem("user_id");
+        setIsLoggedIn(!!userId);
+        if (userId) fetchUserProfile();
+      };
+      init();
     }, [])
   );
 
   const fetchUserProfile = async () => {
     try {
       const userId = await AsyncStorage.getItem("user_id");
-      if (!userId) throw new Error("User ID not found");
+      if (!userId) return;
 
       const formData = new FormData();
       formData.append("type", "profile");
@@ -110,9 +121,16 @@ export default function Account() {
       case "card":
         router.push("/account/card_list");
         break;
-      case "rateUs":
-        // Add rate us logic here
+      case "rateUs": {
+        const storeUrl =
+          Platform.OS === "ios"
+            ? APP_STORE_ID
+              ? `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`
+              : null
+            : "market://details?id=sa.com.drill.app";
+        if (storeUrl) Linking.openURL(storeUrl).catch(() => {});
         break;
+      }
       case "aboutApp":
         router.push("/account/about");
         break;
@@ -167,7 +185,7 @@ export default function Account() {
     router.push("/account/edit_profile");
   };
 
-  const iconMap: { [key: string]: JSX.Element } = {
+  const iconMap: Record<string, React.ReactNode> = {
     Account: <AccountStatus />,
     Wallet: <Wallet />,
     Card: <Card />,
@@ -233,11 +251,36 @@ export default function Account() {
     },
   ];
 
+  // Sign-in required for account-based feature (Guideline 5.1.1)
+  if (isLoggedIn === false) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          style={[styles.scrollView, contentContainerStyle]}
+          contentContainerStyle={styles.signInPromptContent}
+        >
+          <Header title={t("account.title")} homeScreen={false} />
+          <View style={styles.signInPromptContainer}>
+            <Text style={styles.signInPromptText}>
+              {t("account.signInToView")}
+            </Text>
+            <TouchableOpacity
+              style={styles.signInButton}
+              onPress={() => router.push("/welcome")}
+            >
+              <Text style={styles.signInButtonText}>{t("login.signIn")}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   const isValidImage = user.image && /\.(jpg|jpeg|png|webp)$/i.test(user.image);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
-        style={styles.scrollView}
+        style={[styles.scrollView, contentContainerStyle]}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
@@ -407,5 +450,33 @@ const styles = StyleSheet.create({
   itemRightText: {
     fontSize: 14,
     fontFamily: FONTS.medium,
+  },
+  signInPromptContent: {
+    flex: 1,
+    padding: 16,
+  },
+  signInPromptContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  signInPromptText: {
+    fontSize: 16,
+    color: Colors.secondary100,
+    textAlign: "center",
+    marginBottom: 24,
+    fontFamily: FONTS.medium,
+  },
+  signInButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  signInButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
   },
 });

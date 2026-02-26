@@ -1,26 +1,31 @@
 import Button from "@/components/button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 export default function Welcome() {
-  console.log("Welcome component rendering");
-  const { t, ready, i18n } = useTranslation();
+  const { t, ready } = useTranslation();
+
   const handleGetStarted = () => {
     router.push("/auth/login");
   };
 
-  console.log("i18n ready:", ready, "language:", i18n.language);
+  // Demo sign-in for App Review: no phone/OTP required (Guideline 2.1)
+  const handleDemoSignIn = async () => {
+    await AsyncStorage.setItem("user_id", "demo");
+    await AsyncStorage.setItem("user_name", "Demo User");
+    router.replace("/(tabs)");
+  };
 
-  // Show loading state while i18n is initializing
   if (!ready) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading...</Text>
+          <Text style={styles.loadingText}>{t("loading")}</Text>
         </View>
       </SafeAreaView>
     );
@@ -40,7 +45,12 @@ export default function Welcome() {
           <Text style={styles.description}>{t("intro")}</Text>
         </View>
       </View>
-      <Button title={t("getStarted")} onPress={handleGetStarted} />
+      <View style={styles.buttonContainer}>
+        <Button title={t("getStarted")} onPress={handleGetStarted} />
+        <TouchableOpacity style={styles.demoButton} onPress={handleDemoSignIn}>
+          <Text style={styles.demoButtonText}>{t("demoSignIn")}</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -89,6 +99,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.secondary100,
     paddingHorizontal: 20,
+    fontFamily: FONTS.medium,
+  },
+  buttonContainer: {
+    gap: 12,
+  },
+  demoButton: {
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  demoButtonText: {
+    fontSize: 14,
+    color: Colors.primary,
     fontFamily: FONTS.medium,
   },
 });

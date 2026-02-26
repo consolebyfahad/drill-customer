@@ -3,6 +3,7 @@
   "tagline": "تطبيق الخدمات المنزلية",
   "intro": "تطبيق للعثور بسهولة على فني الخدمات المنزلية.",
   "getStarted": "ابدأ الآن",
+  "demoSignIn": "تجربة العرض التوضيحي (بدون تسجيل)",
   "continue": "متابعة",
   "defaultGreeting": "عزيزي العضو",
   "notifications": "الإشعارات",
@@ -81,13 +82,15 @@
     "title": "مرحباً",
     "subtitle": "أدخل رقم هاتفك\nللبدء.",
     "phonePlaceholder": "رقم الهاتف",
-    "privacy": "الخصوصية والاتفاقيات",
-    "invalidPhone": "يرجى إدخال رقم هاتف صحيح."
+    "privacy": "سياسة الخصوصية والشروط",
+    "dataConsent": "بالمتابعة، فإنك توافق على سياسة الخصوصية وتسمح بجمع رقم هاتفك وموقعك كما هو موضح فيها.",
+    "invalidPhone": "يرجى إدخال رقم هاتف صحيح.",
+    "signIn": "تسجيل الدخول"
   },
   "verify": {
     "headerTitle": "التحقق من الرمز",
     "title": "أدخل رمزك المكون من 4 أرقام",
-    "subtitle": "يرجى التحقق من بريدك الإلكتروني وإدخال الرمز المكون من 4 أرقام.",
+    "subtitle": "يرجى التحقق من هاتفك وإدخال الرمز المكون من 4 أرقام الذي أرسلناه.",
     "resendPrefix": "لم تستلم الرمز؟",
     "resendLink": "إعادة إرسال",
     "button": "تحقق",
@@ -124,6 +127,7 @@
   },
   "account": {
     "title": "الحساب",
+    "signInToView": "سجّل الدخول للوصول إلى حسابك.",
     "viewProfile": "عرض الملف الشخصي",
     "editProfile": "تعديل الملف الشخصي",
     "defaultName": "عضو عزيز",
@@ -358,8 +362,8 @@
     "emailSupport": "دعم البريد الإلكتروني",
     "callUs": "اتصل بنا",
     "chatWithSupport": "الدردشة مع الدعم",
-    "supportEmail": "support@yourapp.com",
-    "supportPhone": "+1 (800) 123-4567"
+    "supportEmail": "support@drill.com",
+    "supportPhone": "متاح في قسم الدعم"
   },
   "about": {
     "aboutApp": "حول هذا التطبيق",
@@ -428,7 +432,8 @@
     "errorOccurred": "حدث خطأ. يرجى المحاولة مرة أخرى."
   },
   "orders": {
-    "filterByStatus": "تصفية حسب الحالة"
+    "filterByStatus": "تصفية حسب الحالة",
+    "signInToView": "سجّل الدخول لعرض طلباتك."
   },
   "notification": {
     "accountCreated": "تم إنشاء الحساب",

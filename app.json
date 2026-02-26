@@ -14,7 +14,9 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need your location to show your position on the map.",
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       },
       "entitlements": {
         "aps-environment": "production"
@@ -53,7 +55,8 @@
           }
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true
@@ -62,7 +65,8 @@
       "router": {},
       "eas": {
         "projectId": "86d059c4-8392-4ecd-be2b-6235602b4155"
-      }
+      },
+      "privacyPolicyUrl": "https://7tracking.com/privacy"
     },
     "owner": "fahadurrehman"
   }

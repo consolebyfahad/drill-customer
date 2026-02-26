@@ -2,6 +2,8 @@ import Flag from "@/assets/svgs/saudiarabia.svg";
 import Button from "@/components/button";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from "expo-web-browser";
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -34,6 +36,22 @@ export default function Login() {
   const [error, setError] = useState<string>("");
   const modalRef = useRef<any>(null);
   const { t } = useTranslation();
+
+  const privacyPolicyUrl =
+    (Constants.expoConfig?.extra as { privacyPolicyUrl?: string })
+      ?.privacyPolicyUrl ?? "";
+
+  const openPrivacy = async () => {
+    if (privacyPolicyUrl) {
+      try {
+        await WebBrowser.openBrowserAsync(privacyPolicyUrl);
+      } catch {
+        router.push("/auth/privacy");
+      }
+    } else {
+      router.push("/auth/privacy");
+    }
+  };
 
   const handleContinue = async () => {
     const cleanedNumber = phoneNumber.replace(/\D/g, "");
@@ -108,7 +126,9 @@ export default function Login() {
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TouchableOpacity onPress={() => router.push("/auth/privacy")}>
+      <Text style={styles.dataConsentText}>{t("login.dataConsent")}</Text>
+
+      <TouchableOpacity onPress={openPrivacy}>
         <Text style={styles.privacyText}>{t("login.privacy")}</Text>
       </TouchableOpacity>
 
@@ -162,11 +182,19 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 18,
   },
+  dataConsentText: {
+    textAlign: "center",
+    fontSize: 12,
+    fontFamily: FONTS.regular,
+    color: Colors.secondary100,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
   privacyText: {
     textAlign: "center",
     fontSize: 14,
     fontFamily: FONTS.bold,
-    color: Colors.secondary,
+    color: Colors.primary,
     marginBottom: 24,
   },
   inputContainerError: {

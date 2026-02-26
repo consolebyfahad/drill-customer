@@ -5,24 +5,11 @@ import { Image, StyleSheet, View } from "react-native";
 
 export default function Splash() {
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const userId = await AsyncStorage.getItem("user_id");
-        console.log("userId", userId);
-        setTimeout(() => {
-          if (userId) {
-            router.replace("/(tabs)");
-          } else {
-            router.replace("/welcome");
-          }
-        }, 2000);
-      } catch (error) {
-        console.error("Error checking user data:", error);
-        router.replace("/welcome");
-      }
+    // Allow browsing without login (Guideline 5.1.1): always go to Home first.
+    const goToApp = () => {
+      setTimeout(() => router.replace("/(tabs)"), 2000);
     };
-
-    checkUser();
+    goToApp();
   }, []);
 
   return (

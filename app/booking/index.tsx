@@ -6,6 +6,7 @@ import SelectedLocation from "@/components/selected_location";
 import SelectedService from "@/components/selected_service";
 import Seprator from "@/components/seprator";
 import Stepper from "@/components/stepper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -59,6 +60,15 @@ export default function BookingScreen() {
   const [description, setDescription] = useState<string>(
     (params.description as string) || ""
   );
+
+  // Require sign-in for booking (Guideline 5.1.1)
+  useEffect(() => {
+    const checkAuth = async () => {
+      const userId = await AsyncStorage.getItem("user_id");
+      if (!userId) router.replace("/welcome");
+    };
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     // Check if category details are passed from location screen

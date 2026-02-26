@@ -3,6 +3,7 @@
   "tagline": "The Home Service App",
   "intro": " Application for easily finding a Home Serviceman.",
   "getStarted": "Get Started",
+  "demoSignIn": "Try demo (no sign-in)",
   "continue": "Continue",
   "defaultGreeting": "Dear Member",
   "cancel": "Cancel",
@@ -81,13 +82,15 @@
     "title": "Welcome",
     "subtitle": "Enter your phone \nnumber to get started.",
     "phonePlaceholder": "Phone number",
-    "privacy": "Privacy & Agreements",
-    "invalidPhone": "Please enter a valid phone number."
+    "privacy": "Privacy Policy & Terms",
+    "dataConsent": "By continuing, you agree to our Privacy Policy and consent to the collection of your phone number and location as described therein.",
+    "invalidPhone": "Please enter a valid phone number.",
+    "signIn": "Sign In"
   },
   "verify": {
     "headerTitle": "OTP Verification",
     "title": "Enter Your 4 digit \nCode",
-    "subtitle": "Please check your email and enter the 4-digit code.",
+    "subtitle": "Please check your phone for the 4-digit code we sent you.",
     "resendPrefix": "Didn't receive the code?",
     "resendLink": "Resend",
     "button": "Verify",
@@ -124,6 +127,7 @@
   },
   "account": {
     "title": "Account",
+    "signInToView": "Sign in to access your account.",
     "viewProfile": "View Profile",
     "editProfile": "Edit Profile",
     "defaultName": "Dear Member",
@@ -358,8 +362,8 @@
     "emailSupport": "Email Support",
     "callUs": "Call Us",
     "chatWithSupport": "Chat with Support",
-    "supportEmail": "support@yourapp.com",
-    "supportPhone": "+1 (800) 123-4567"
+    "supportEmail": "support@drill.com",
+    "supportPhone": "Available in Support section"
   },
   "about": {
     "aboutApp": "About This App",
@@ -428,7 +432,8 @@
     "errorOccurred": "An error occurred. Please try again."
   },
   "orders": {
-    "filterByStatus": "Filter by status"
+    "filterByStatus": "Filter by status",
+    "signInToView": "Sign in to view your orders."
   },
   "notification": {
     "accountCreated": "Account Created",

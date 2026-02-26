@@ -6,10 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BackHandler, ScrollView, StyleSheet } from "react-native";
+import { BackHandler, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PopularServices from "~/components/popular_services";
 import { Colors } from "~/constants/Colors";
+import { contentContainerStyle } from "~/constants/Layout";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -39,17 +40,19 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <Header userName={userName ?? t("defaultGreeting")} homeScreen icon />
-        <Banner />
-        <Search />
-        <Categories />
-        <PopularServices />
-      </ScrollView>
+      <View style={[styles.wrapper, contentContainerStyle]}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <Header userName={userName ?? t("defaultGreeting")} homeScreen icon />
+          <Banner />
+          <Search />
+          <Categories />
+          <PopularServices />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -59,6 +62,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 16,
     backgroundColor: Colors.white,
+  },
+  wrapper: {
+    flex: 1,
   },
   scrollView: {
     flex: 1,

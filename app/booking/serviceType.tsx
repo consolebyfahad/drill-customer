@@ -2,8 +2,9 @@ import Button from "@/components/button";
 import Header from "@/components/header";
 import SimpleRadioButton from "@/components/simple_radio_button";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   KeyboardAvoidingView,
@@ -21,6 +22,15 @@ import { FONTS } from "~/constants/Fonts";
 export default function ServiceTypeScreen() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
+
+  // Require sign-in for booking (Guideline 5.1.1: registration only for account-based features)
+  useEffect(() => {
+    const checkAuth = async () => {
+      const userId = await AsyncStorage.getItem("user_id");
+      if (!userId) router.replace("/welcome");
+    };
+    checkAuth();
+  }, []);
 
   const [serviceType, setServiceType] = useState<"instant" | "schedule">(
     "instant"

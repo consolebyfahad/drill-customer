@@ -11,10 +11,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { contentContainerStyle } from "~/constants/Layout";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
@@ -50,6 +52,7 @@ export default function Orders() {
   const { t } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   // Dropdown state
   const [open, setOpen] = useState(false);
@@ -61,14 +64,18 @@ export default function Orders() {
   ]);
 
   useEffect(() => {
-    fetchOrders();
+    const init = async () => {
+      const userId = await AsyncStorage.getItem("user_id");
+      setIsLoggedIn(!!userId);
+      if (userId) fetchOrders();
+    };
+    init();
   }, []);
 
   const fetchOrders = async () => {
-    setIsLoading(true);
     const userId = await AsyncStorage.getItem("user_id");
-
-    if (!userId) throw new Error("User ID not found");
+    if (!userId) return;
+    setIsLoading(true);
     console.log(userId);
 
     const formData = new FormData();
@@ -106,9 +113,31 @@ export default function Orders() {
           (order) => order.status.toLowerCase() === filterStatus.toLowerCase()
         );
 
+  // Sign-in required for account-based feature (Guideline 5.1.1)
+  if (isLoggedIn === false) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={[styles.innerContainer, contentContainerStyle]}>
+          <Header title={t("tabs.orders")} icon={true} />
+          <View style={styles.signInPromptContainer}>
+            <Text style={styles.signInPromptText}>
+              {t("orders.signInToView")}
+            </Text>
+            <TouchableOpacity
+              style={styles.signInButton}
+              onPress={() => router.push("/welcome")}
+            >
+              <Text style={styles.signInButtonText}>{t("login.signIn")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
+      <View style={[styles.innerContainer, contentContainerStyle]}>
         <Header title={t("tabs.orders")} icon={true} />
 
         {/* Dropdown Picker */}
@@ -214,5 +243,29 @@ const styles = StyleSheet.create({
     paddingTop: 80,
     alignItems: "center",
     justifyContent: "center",
+  },
+  signInPromptContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  signInPromptText: {
+    fontSize: 16,
+    color: Colors.secondary100,
+    textAlign: "center",
+    marginBottom: 24,
+    fontFamily: FONTS.medium,
+  },
+  signInButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  signInButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
   },
 });
