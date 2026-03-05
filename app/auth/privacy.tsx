@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { PRIVACY_POLICY_URL } from "~/config";
 
 export default function Privacy() {
   const { t } = useTranslation();
@@ -53,6 +54,14 @@ export default function Privacy() {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>{t("privacy.lastUpdated")}</Text>
+          {PRIVACY_POLICY_URL ? (
+            <TouchableOpacity
+              onPress={() => Linking.openURL(PRIVACY_POLICY_URL!)}
+              style={styles.viewOnlineLink}
+            >
+              <Text style={styles.viewOnlineText}>{t("privacy.viewOnline")}</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -104,5 +113,15 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     color: Colors.secondary300,
     textAlign: "center",
+  },
+  viewOnlineLink: {
+    marginTop: 12,
+  },
+  viewOnlineText: {
+    fontSize: 14,
+    fontFamily: FONTS.semiBold,
+    color: Colors.primary,
+    textAlign: "center",
+    textDecorationLine: "underline",
   },
 });

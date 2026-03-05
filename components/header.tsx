@@ -66,15 +66,9 @@ export default function Header({
       formData.append("id", orderId);
       formData.append("support_required", "1");
 
-      console.log("📞 Support requested - Updating order:", {
-        orderId,
-        support_required: "1",
-      });
-
       const response = await apiCall(formData);
 
       if (response && response.result) {
-        console.log("✅ Support request updated successfully");
         // Navigate to order screen with Chat tab active
         router.push({
           pathname: "/order/order_place",
@@ -99,7 +93,12 @@ export default function Header({
     <View style={styles.container}>
       <View style={styles.leftSection}>
         {backBtn === true && (
-          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleGoBack}
+            accessibilityRole="button"
+            accessibilityLabel={t("header.back") || "Go back"}
+          >
             <AntDesign name="left" size={24} color={Colors.secondary} />
           </TouchableOpacity>
         )}
@@ -110,6 +109,7 @@ export default function Header({
             <Image
               source={require("@/assets/images/logo.png")}
               style={styles.userImage}
+              accessibilityLabel={t("welcome") || "App logo"}
             />
             <View>
               <Text style={styles.welcomeText}>{t("welcome")}</Text>
@@ -121,13 +121,20 @@ export default function Header({
 
       {icon &&
         (support ? (
-          <TouchableOpacity onPress={handleSupport}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={handleSupport}
+            accessibilityRole="button"
+            accessibilityLabel={t("header.chatSupport") || "Chat with support"}
+          >
             <ChatSupport />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={handleNotification}
             style={styles.notificationButton}
+            onPress={handleNotification}
+            accessibilityRole="button"
+            accessibilityLabel={t("notifications") || "Notifications"}
           >
             <NotificationBell />
           </TouchableOpacity>
@@ -148,13 +155,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   backButton: {
-    width: 40,
-    height: 40,
+    minWidth: 44,
+    minHeight: 44,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.gray100,
-    borderRadius: 50,
+    borderRadius: 22,
     marginRight: 10,
+  },
+  iconButton: {
+    minWidth: 44,
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 22,
@@ -182,8 +197,12 @@ const styles = StyleSheet.create({
     color: Colors.secondary100,
   },
   notificationButton: {
+    minWidth: 44,
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.gray100,
-    padding: 12,
-    borderRadius: 50,
+    padding: 10,
+    borderRadius: 22,
   },
 });

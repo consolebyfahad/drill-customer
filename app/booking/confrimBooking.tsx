@@ -48,7 +48,6 @@ type BookingParams = {
 export default function ConfirmBooking() {
   const { t } = useTranslation();
   const params = useLocalSearchParams() as BookingParams;
-  console.log("confrim bookingparams", params);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isPromoValid, setIsPromoValid] = useState(false);
@@ -96,15 +95,6 @@ export default function ConfirmBooking() {
         const storedLng = await AsyncStorage.getItem("longitude");
         customerLat = storedLat || "";
         customerLng = storedLng || "";
-        console.log("📍 Using stored location from AsyncStorage:", {
-          lat: customerLat,
-          lng: customerLng,
-        });
-      } else {
-        console.log("📍 Using location from params:", {
-          lat: customerLat,
-          lng: customerLng,
-        });
       }
 
       // Validate location data
@@ -139,21 +129,9 @@ export default function ConfirmBooking() {
         formData.append("schedule_time", params.schedule_time || "");
       }
 
-      console.log("📤 Customer Booking - Sending order data:", {
-        user_id: userId,
-        cat_id: params.id,
-        address: params.location,
-        lat: customerLat,
-        lng: customerLng,
-        package_id: params.packageId,
-        payment_method: params.paymentMethodDetails,
-        amount: totalAmount.toString(),
-      });
-
       const response = await apiCall(formData);
 
       if (response.result) {
-        console.log("Booking Order response==>", response);
         await AsyncStorage.setItem("order_id", JSON.stringify(response.id));
         router.push("/booking/confrimedBooking");
       } else {

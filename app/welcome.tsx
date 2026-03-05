@@ -1,19 +1,16 @@
 import Button from "@/components/button";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
 export default function Welcome() {
-  console.log("Welcome component rendering");
-  const { t, ready, i18n } = useTranslation();
+  const { t, ready } = useTranslation();
   const handleGetStarted = () => {
     router.push("/auth/login");
   };
-
-  console.log("i18n ready:", ready, "language:", i18n.language);
 
   // Show loading state while i18n is initializing
   if (!ready) {
@@ -40,7 +37,17 @@ export default function Welcome() {
           <Text style={styles.description}>{t("intro")}</Text>
         </View>
       </View>
-      <Button title={t("getStarted")} onPress={handleGetStarted} />
+      <View style={styles.footer}>
+        <Button title={t("getStarted")} onPress={handleGetStarted} />
+        <TouchableOpacity
+          onPress={() => router.push("/auth/privacy")}
+          style={styles.privacyLinkWrap}
+          accessibilityRole="link"
+          accessibilityLabel={t("privacy.title")}
+        >
+          <Text style={styles.privacyLink}>{t("privacy.title")}</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -90,5 +97,19 @@ const styles = StyleSheet.create({
     color: Colors.secondary100,
     paddingHorizontal: 20,
     fontFamily: FONTS.medium,
+  },
+  footer: {
+    alignItems: "center",
+  },
+  privacyLinkWrap: {
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  privacyLink: {
+    fontSize: 14,
+    fontFamily: FONTS.medium,
+    color: Colors.primary,
+    textDecorationLine: "underline",
   },
 });

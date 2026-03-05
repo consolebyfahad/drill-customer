@@ -24,7 +24,6 @@ export default function BookingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
-  console.log("params", params);
   const [serviceDetails, setServiceDetails] = useState({
     id: params.id as string,
     name: params.name as string,
@@ -111,57 +110,10 @@ export default function BookingScreen() {
     params.description,
   ]);
 
-  // Effect to log and verify state preservation
-  useEffect(() => {
-    console.log("Booking Screen State:", {
-      serviceDetails,
-      selectedLocation,
-      selectedImage,
-      description,
-      latlng,
-      serviceType,
-      scheduleDate,
-      scheduleTime,
-    });
-
-    // Debug date parsing
-    if (scheduleDate) {
-      console.log("Date parsing debug:", {
-        scheduleDateString: scheduleDate,
-        parsedDate: new Date(scheduleDate),
-        parsedDateString: new Date(scheduleDate).toString(),
-        parsedDateISO: new Date(scheduleDate).toISOString(),
-        localDateString: new Date(scheduleDate).toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-      });
-    }
-  }, [
-    serviceDetails,
-    selectedLocation,
-    selectedImage,
-    description,
-    latlng,
-    serviceType,
-    scheduleDate,
-    scheduleTime,
-  ]);
-
   const handleNext = () => {
     // Ensure we have lat/lng - use state if params don't have it
     const finalLat = latlng.latitude || params.latitude;
     const finalLng = latlng.longitude || params.longitude;
-    
-    console.log("📤 Booking Screen - Passing to booking2:", {
-      id: serviceDetails.id,
-      location: selectedLocation,
-      latitude: finalLat,
-      longitude: finalLng,
-      service_type: serviceType,
-    });
     
     router.push({
       pathname: "/booking/booking2",

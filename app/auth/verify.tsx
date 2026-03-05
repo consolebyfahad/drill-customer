@@ -2,7 +2,7 @@ import Arrow from "@/assets/svgs/arrowLeft.svg";
 import Button from "@/components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { OtpInput } from "react-native-otp-entry";
@@ -11,10 +11,38 @@ import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
+const RESEND_COOLDOWN_SEC = 60;
+
 export default function Verify() {
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [resendCooldown, setResendCooldown] = useState(0);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
+  const handleResend = useCallback(async () => {
+    if (resendCooldown > 0) return;
+    const userId = await AsyncStorage.getItem("user_id");
+    if (!userId) {
+      setError(t("verify.userNotFound"));
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("type", "resend_otp");
+      formData.append("user_id", userId);
+      await apiCall(formData);
+      setResendCooldown(RESEND_COOLDOWN_SEC);
+      setError("");
+    } catch {
+      setError(t("verify.errorFallback"));
+    }
+  }, [resendCooldown, t]);
 
   const handleChangeText = (text: string) => {
     setCode(text);
@@ -84,10 +112,16 @@ export default function Verify() {
           autoFocus
         />
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleResend}
+          disabled={resendCooldown > 0}
+          style={resendCooldown > 0 ? styles.resendDisabled : undefined}
+        >
           <Text style={styles.resendText}>
             {t("verify.resendPrefix")}{" "}
-            <Text style={styles.resendLink}>{t("verify.resendLink")}</Text>
+            <Text style={[styles.resendLink, resendCooldown > 0 && styles.resendLinkDisabled]}>
+              {resendCooldown > 0 ? t("verify.resendIn", { count: resendCooldown }) : t("verify.resendLink")}
+            </Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -181,5 +215,11 @@ const styles = StyleSheet.create({
   resendLink: {
     color: Colors.primary,
     fontFamily: FONTS.medium,
+  },
+  resendLinkDisabled: {
+    color: Colors.gray300,
+  },
+  resendDisabled: {
+    opacity: 0.7,
   },
 });

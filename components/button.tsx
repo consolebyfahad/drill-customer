@@ -66,10 +66,13 @@ export default function Button({
       ]}
       onPress={handlePress}
       disabled={loading || disabled}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      accessibilityState={{ disabled: loading || disabled }}
     >
       {loading ? (
         <ActivityIndicator
-          color={textColor || (variant === "primary" ? "#fff" : "#000")}
+          color={textColor || (variant === "primary" ? Colors.white : Colors.secondary)}
         />
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
@@ -92,9 +95,11 @@ export default function Button({
 
 const styles = StyleSheet.create({
   button: {
+    minHeight: 44,
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: "center",
+    justifyContent: "center",
   },
   fullWidth: {
     width: "100%",
@@ -111,10 +116,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   textPrimary: {
-    color: "#FFFFFF",
+    color: Colors.white,
   },
   textSecondary: {
-    color: "#333333",
+    color: Colors.secondary,
   },
   disabledButton: {
     backgroundColor: Colors.secondary200,

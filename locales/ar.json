@@ -38,6 +38,7 @@
   "retry": "إعادة المحاولة",
   "goBack": "العودة",
   "addCard": "إضافة بطاقة",
+  "cardSavedSuccess": "تم حفظ البطاقة بنجاح.",
   "noDescription": "لم يتم تقديم وصف",
   "enterDescription": "أدخل الوصف هنا...",
   "imageSelected": "تم اختيار الصورة",
@@ -81,7 +82,9 @@
     "title": "مرحباً",
     "subtitle": "أدخل رقم هاتفك\nللبدء.",
     "phonePlaceholder": "رقم الهاتف",
-    "privacy": "الخصوصية والاتفاقيات",
+    "privacy": "سياسة الخصوصية",
+    "consentPrefix": "بالمتابعة، فإنك توافق على",
+    "consentSuffix": ".",
     "invalidPhone": "يرجى إدخال رقم هاتف صحيح."
   },
   "verify": {
@@ -90,6 +93,7 @@
     "subtitle": "يرجى التحقق من بريدك الإلكتروني وإدخال الرمز المكون من 4 أرقام.",
     "resendPrefix": "لم تستلم الرمز؟",
     "resendLink": "إعادة إرسال",
+    "resendIn": "إعادة الإرسال خلال {{count}} ث",
     "button": "تحقق",
     "userNotFound": "المستخدم غير موجود. يرجى المحاولة مرة أخرى.",
     "invalidCode": "يرجى إدخال رمز صحيح مكون من 4 أرقام.",
@@ -105,6 +109,8 @@
     "headerTitle": "السماح بالوصول للموقع",
     "title": "الوصول للموقع",
     "subtitle": "اسمح لنا بالوصول إلى موقعك لتقديم خدمات أفضل بالقرب منك.",
+    "dataDisclosure": "نجمع ونستخدم موقعك لعرض الخدمات القريبة منك وإتمام الحجوزات. بالموافقة فإنك توافق على هذا الاستخدام.",
+    "privacyPolicy": "سياسة الخصوصية",
     "allowAccess": "السماح بالوصول",
     "loading": "جارٍ التحميل...",
     "doIt": "موافق",
@@ -139,6 +145,7 @@
     "card": "البطاقة",
     "rateUs": "قيّمنا",
     "aboutApp": "عن التطبيق",
+    "privacyPolicy": "سياسة الخصوصية",
     "language": "اللغة",
     "support": "الدعم",
     "logout": "تسجيل الخروج",
@@ -350,7 +357,8 @@
     "cardAddedSuccess": "تمت إضافة بطاقة الائتمان الخاصة بك بنجاح",
     "addMoney": "إضافة أموال",
     "confirm": "تأكيد",
-    "balance": "الرصيد"
+    "balance": "الرصيد",
+    "fundAddedSuccess": "تمت إضافة المبلغ إلى المحفظة بنجاح."
   },
   "support": {
     "needHelp": "تحتاج مساعدة؟",
@@ -358,8 +366,11 @@
     "emailSupport": "دعم البريد الإلكتروني",
     "callUs": "اتصل بنا",
     "chatWithSupport": "الدردشة مع الدعم",
-    "supportEmail": "support@yourapp.com",
-    "supportPhone": "+1 (800) 123-4567"
+    "supportEmail": "support@drill.com",
+    "supportPhone": "+966 500 000 000",
+    "emailError": "تعذر فتح تطبيق البريد.",
+    "callError": "تعذر فتح تطبيق الهاتف.",
+    "chatSubject": "طلب دعم من تطبيق Drill"
   },
   "about": {
     "aboutApp": "حول هذا التطبيق",
@@ -416,13 +427,16 @@
     "changesText": "قد نحدث سياسة الخصوصية هذه من وقت لآخر. سنخطرك بأي تغييرات عن طريق نشر سياسة الخصوصية الجديدة على هذه الصفحة وتحديث تاريخ 'آخر تحديث'. يُنصح بمراجعة سياسة الخصوصية هذه بشكل دوري لأي تغييرات.",
     "contactUs": "اتصل بنا",
     "contactUsText": "إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه أو ممارسات الخصوصية لدينا، يرجى الاتصال بنا على support@drill.com أو من خلال قسم الدعم في التطبيق.",
-    "lastUpdated": "آخر تحديث: يناير 2024"
+    "lastUpdated": "آخر تحديث: يناير 2024",
+    "viewOnline": "عرض سياسة الخصوصية عبر الإنترنت"
   },
   "notFound": {
     "message": "عذراً! الصفحة غير موجودة.",
     "goHome": "العودة للرئيسية"
   },
   "header": {
+    "back": "رجوع",
+    "chatSupport": "الدردشة مع الدعم",
     "noActiveOrder": "لم يتم العثور على طلب نشط",
     "failedToSubmitSupport": "فشل إرسال طلب الدعم. يرجى المحاولة مرة أخرى.",
     "errorOccurred": "حدث خطأ. يرجى المحاولة مرة أخرى."
@@ -432,10 +446,14 @@
   },
   "notification": {
     "accountCreated": "تم إنشاء الحساب",
-    "accountCreatedMessage": "تم إنشاء حسابك بنجاح."
+    "accountCreatedMessage": "تم إنشاء حسابك بنجاح.",
+    "noNotifications": "لا توجد إشعارات بعد",
+    "noNotificationsMessage": "ستظهر إشعاراتك هنا عندما تتوفر."
   },
   "search": {
-    "allServicesAvailable": "جميع الخدمات متاحة"
+    "allServicesAvailable": "جميع الخدمات متاحة",
+    "browseServices": "تصفح الخدمات",
+    "searchServices": "بحث الخدمات"
   },
   "popularServices": {
     "serviceProvider": "مقدم الخدمة",

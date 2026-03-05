@@ -1,5 +1,5 @@
 import Button from "@/components/button";
-import { useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -13,12 +13,18 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
+import { useToast } from "~/components/ToastProvider";
 import { FONTS } from "~/constants/Fonts";
 
 export default function AddCard() {
-  const navigation = useNavigation();
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [saveInfo, setSaveInfo] = useState(false);
+
+  const handleSave = () => {
+    showToast(t("cardSavedSuccess") || t("success"), "success");
+    router.back();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -86,7 +92,7 @@ export default function AddCard() {
         )}
       </ScrollView>
       <View style={styles.footer}>
-        <Button title={t("save")} onPress={() => console.log("Card Saved")} />
+        <Button title={t("save")} onPress={handleSave} />
       </View>
     </SafeAreaView>
   );

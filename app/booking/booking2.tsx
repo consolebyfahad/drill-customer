@@ -6,6 +6,7 @@ import Button from "@/components/button";
 import Header from "@/components/header";
 import Seprator from "@/components/seprator";
 import Stepper from "@/components/stepper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -35,8 +36,7 @@ interface Package {
 export default function Booking2Screen() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
-  console.log("booking2", params);
-  
+
   // Payment methods - IDs are used for backend, names are translated for display
 
   // State for packages and selections
@@ -82,19 +82,25 @@ export default function Booking2Screen() {
   const handleNext = async () => {
     // Validate package and payment selection
     if (!selectedPackage) {
-      Alert.alert(t("booking.selectPackageRequired"), t("booking.pleaseSelectPackage"));
+      Alert.alert(
+        t("booking.selectPackageRequired"),
+        t("booking.pleaseSelectPackage"),
+      );
       return;
     }
 
     if (!selectedPayment) {
-      Alert.alert(t("booking.selectPackageRequired"), t("booking.pleaseSelectPayment"));
+      Alert.alert(
+        t("booking.selectPackageRequired"),
+        t("booking.pleaseSelectPayment"),
+      );
       return;
     }
 
     // Validate location data
     let finalLat = params.latitude;
     let finalLng = params.longitude;
-    
+
     // If lat/lng not in params, try to get from AsyncStorage
     if (!finalLat || !finalLng) {
       try {
@@ -102,33 +108,23 @@ export default function Booking2Screen() {
         const storedLng = await AsyncStorage.getItem("longitude");
         finalLat = storedLat || "";
         finalLng = storedLng || "";
-        console.log("📍 Booking2 - Using stored location:", { lat: finalLat, lng: finalLng });
       } catch (error) {
         console.error("❌ Error getting location from AsyncStorage:", error);
       }
     }
-    
+
     if (!finalLat || !finalLng) {
       Alert.alert(
         t("error"),
-        "Location is required. Please go back and select a location."
+        "Location is required. Please go back and select a location.",
       );
       return;
     }
 
     // Prepare payment method details - Use ID for backend, translated name for display
     const selectedPaymentMethod = paymentMethods.find(
-      (method) => method.id === selectedPayment
+      (method) => method.id === selectedPayment,
     );
-
-    console.log("📤 Booking2 - Passing to confirmBooking:", {
-      id: params.id,
-      location: params.location,
-      latitude: finalLat,
-      longitude: finalLng,
-      packageId: selectedPackage.id,
-      paymentMethod: selectedPayment,
-    });
 
     // Navigate to confirm booking with all collected data
     // IMPORTANT: Use payment method ID (visa, apple, wallet, cash) for backend, not translated name

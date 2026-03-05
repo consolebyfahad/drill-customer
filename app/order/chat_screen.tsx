@@ -208,7 +208,6 @@ export default function ChatScreen() {
 
     try {
       const response = await apiCall(formData);
-      console.log(response);
       if (response && response.chat) {
         const fromId = response.user.id;
         
@@ -327,7 +326,6 @@ export default function ChatScreen() {
   const sendMessage = async () => {
     // Prevent multiple simultaneous sends
     if (isSendingRef.current) {
-      console.log("Message already being sent, ignoring duplicate send");
       return;
     }
 
@@ -487,7 +485,6 @@ export default function ChatScreen() {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
-  console.log(messages);
 
   return (
     <KeyboardAvoidingView

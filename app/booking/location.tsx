@@ -24,7 +24,6 @@ export default function LocationScreen() {
   const params = useLocalSearchParams();
   const { t } = useTranslation();
   const mapRef = useRef(null);
-  console.log(params);
   const [manualLocation, setManualLocation] = useState(false);
   const [searchingAddress, setSearchingAddress] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
@@ -41,7 +40,6 @@ export default function LocationScreen() {
       : undefined,
   });
 
-  console.log("selectedLocation", selectedLocation);
   const fetchAddressFromCoords = async (
     latitude: number,
     longitude: number
@@ -108,7 +106,6 @@ export default function LocationScreen() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
         return;
       }
 
@@ -147,14 +144,7 @@ export default function LocationScreen() {
           const longitude = parseFloat(storedLng);
           
           // Validate parsed values
-          if (isNaN(latitude) || isNaN(longitude)) {
-            console.warn("⚠️ Invalid stored location values, getting current location");
-          } else {
-            console.log("📍 Location Screen - Using stored location:", {
-              lat: latitude,
-              lng: longitude,
-            });
-            
+          if (!isNaN(latitude) && !isNaN(longitude)) {
             setSelectedLocation({
               latitude,
               longitude,
@@ -173,17 +163,12 @@ export default function LocationScreen() {
           }
         }
       } catch (error) {
-        console.error("❌ Error getting stored location:", error);
+        console.error("Error getting stored location:", error);
       }
 
       // Otherwise get current location
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-
-      console.log("📍 Location Screen - Using current location:", {
-        lat: latitude,
-        lng: longitude,
-      });
 
       setSelectedLocation({
         latitude,
@@ -253,11 +238,6 @@ export default function LocationScreen() {
     try {
       await AsyncStorage.setItem("latitude", selectedLocation.latitude.toString());
       await AsyncStorage.setItem("longitude", selectedLocation.longitude.toString());
-      console.log("📍 Customer Location Saved:", {
-        address: selectedLocation.address,
-        latitude: selectedLocation.latitude.toString(),
-        longitude: selectedLocation.longitude.toString(),
-      });
     } catch (error) {
       console.error("❌ Error saving location to AsyncStorage:", error);
     }
@@ -268,12 +248,6 @@ export default function LocationScreen() {
     newParams.location = selectedLocation.address;
     newParams.latitude = selectedLocation.latitude.toString();
     newParams.longitude = selectedLocation.longitude.toString();
-    
-    console.log("📤 Location Screen - Passing to booking:", {
-      location: newParams.location,
-      latitude: newParams.latitude,
-      longitude: newParams.longitude,
-    });
 
     // Preserve schedule parameters if they exist
     if (params.service_type) {
@@ -422,9 +396,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 24,
   },
-  backButton: { backgroundColor: "#E5E7EB", padding: 8, borderRadius: 50 },
-  headerText: { fontSize: 24, fontFamily: FONTS.semiBold, color: "#374151" },
-  iconButton: { padding: 8 },
+  backButton: {
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.gray100,
+    padding: 10,
+    borderRadius: 22,
+  },
+  headerText: { fontSize: 24, fontFamily: FONTS.semiBold, color: Colors.secondary },
+  iconButton: {
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
   mapContainer: {
     borderRadius: 16,
     overflow: "hidden",
@@ -444,9 +432,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 100,
     right: 20,
-    backgroundColor: "white",
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.white,
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 22,
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -454,15 +446,15 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
   },
   addressContainer: {
-    backgroundColor: "#F3F4F6",
+    backgroundColor: Colors.secondary200,
     padding: 16,
     borderRadius: 10,
     marginTop: 16,
   },
   addressTitle: { fontSize: 18, fontFamily: FONTS.medium },
-  addressText: { color: "#6B7280", marginTop: 4 },
+  addressText: { color: Colors.secondary300, marginTop: 4 },
   coordsText: {
-    color: "#6B7280",
+    color: Colors.secondary300,
     marginTop: 4,
     fontSize: 12,
     fontStyle: "italic",
@@ -471,7 +463,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.white,
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
@@ -487,7 +479,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   searchButtonText: {
-    color: "white",
+    color: Colors.white,
     fontFamily: FONTS.semiBold,
   },
   buttonContainer: { padding: 16, gap: 8 },

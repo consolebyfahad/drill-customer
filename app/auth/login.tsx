@@ -49,7 +49,6 @@ export default function Login() {
       formData.append("type", "register_phone");
       formData.append("phone", `${countryCode.value}${cleanedNumber}`);
       formData.append("user_type", "user");
-      console.log(formData);
       const response = await apiCall(formData);
       if (response.result) {
         await AsyncStorage.setItem("user_id", response.user_id);
@@ -108,9 +107,16 @@ export default function Login() {
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TouchableOpacity onPress={() => router.push("/auth/privacy")}>
-        <Text style={styles.privacyText}>{t("login.privacy")}</Text>
-      </TouchableOpacity>
+      <Text style={styles.consentText}>
+        {t("login.consentPrefix")}{" "}
+        <Text
+          style={styles.privacyLink}
+          onPress={() => router.push("/auth/privacy")}
+        >
+          {t("login.privacy")}
+        </Text>
+        {t("login.consentSuffix")}
+      </Text>
 
       <Button title={t("continue")} onPress={handleContinue} />
     </SafeAreaView>
@@ -162,12 +168,18 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 18,
   },
-  privacyText: {
+  consentText: {
     textAlign: "center",
     fontSize: 14,
-    fontFamily: FONTS.bold,
-    color: Colors.secondary,
+    fontFamily: FONTS.regular,
+    color: Colors.secondary100,
     marginBottom: 24,
+    paddingHorizontal: 8,
+  },
+  privacyLink: {
+    fontFamily: FONTS.semiBold,
+    color: Colors.primary,
+    textDecorationLine: "underline",
   },
   inputContainerError: {
     borderColor: "red",

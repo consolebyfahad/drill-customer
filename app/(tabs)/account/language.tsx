@@ -1,8 +1,10 @@
+import * as Updates from "expo-updates";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
+import { saveLanguagePreference } from "~/utils/config";
 
 interface Language {
   code: string;
@@ -41,7 +43,11 @@ const Language: React.FC = () => {
     }
 
     try {
-      await i18n.changeLanguage(languageCode);
+      await saveLanguagePreference(languageCode);
+      // RTL layout change requires reload to take effect (App Store 4.0 Design)
+      if (Platform.OS !== "web" && Updates.reloadAsync) {
+        await Updates.reloadAsync();
+      }
     } catch (error) {
       console.error("Failed to change language:", error);
       Alert.alert(

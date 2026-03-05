@@ -69,7 +69,6 @@ export default function Orders() {
     const userId = await AsyncStorage.getItem("user_id");
 
     if (!userId) throw new Error("User ID not found");
-    console.log(userId);
 
     const formData = new FormData();
     formData.append("type", "get_data");

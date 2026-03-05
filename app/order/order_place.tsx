@@ -76,22 +76,16 @@ const OrderPlace: React.FC = () => {
     const initFCM = async () => {
       try {
         await requestFCMPermission();
-        const token = await getFCMToken();
-        console.log("📲 User FCM Token:", token);
+        await getFCMToken();
       } catch (error) {
         console.error("Error initializing FCM:", error);
       }
     };
 
     const handleNotificationPress = async (data: NotificationData) => {
-      console.log("🚨 Customer notification received:", data);
-
       if (data?.order_id) {
-        // If the notification is about the current order
         if (orderId && data.order_id === orderId) {
-          // If status is "arrived", reset the ref to allow popup to show again
           if (data.status === "arrived") {
-            console.log("🔄 Resetting arrived popup ref to allow showing again");
             lastShownStatusRef.current = null;
           }
 
@@ -126,27 +120,15 @@ const OrderPlace: React.FC = () => {
           const result = await AsyncStorage.multiGet(keys);
 
           // Convert to object format
-          const data = {};
-          result.forEach(([key, value]) => {
-            data[key] = value;
-          });
-
-          console.log("All AsyncStorage data:", data);
           const storedOrderId = await AsyncStorage.getItem("order_id");
           const userId = await AsyncStorage.getItem("user_id");
-          console.log("order_id", storedOrderId);
           setOrderId(storedOrderId);
           setUserId(userId);
 
           if (storedOrderId) {
-            // Parse order_id if it's stored as JSON string
             const parsedOrderId = storedOrderId.startsWith('"')
               ? JSON.parse(storedOrderId)
               : storedOrderId;
-            console.log(
-              "📋 Customer - Initializing with order_id:",
-              parsedOrderId
-            );
             getOrderDetails(parsedOrderId);
           }
         } catch (error) {
@@ -173,24 +155,9 @@ const OrderPlace: React.FC = () => {
 
     try {
       const response = await apiCall(formData);
-      console.log("📦 Customer - Order Details Response:", {
-        order_id: id,
-        has_data: !!response?.data,
-        data_length: response?.data?.length || 0,
-      });
 
       if (response && response.data && response.data.length > 0) {
         const orderData = response.data[0];
-
-        console.log("📦 Customer - Order Data:", {
-          id: orderData.id,
-          status: orderData.status,
-          customer_lat: orderData.lat,
-          customer_lng: orderData.lng,
-          provider_lat: orderData.provider?.lat,
-          provider_lng: orderData.provider?.lng,
-          provider_id: orderData.provider?.id,
-        });
 
         if (order && order.status !== orderData.status) {
           // Status changed - handle the change (ref will be set in showStatusNotification)
@@ -219,26 +186,14 @@ const OrderPlace: React.FC = () => {
         const isActiveStatus =
           orderData.status === "accepted" || orderData.status === "on_the_way";
 
-        console.log("📍 Proximity Check Setup:", {
-          hasProvider,
-          hasProviderLocation,
-          hasCustomerLocation,
-          isActiveStatus,
-          provider: orderData.provider,
-          customer_lat: orderData.lat,
-          customer_lng: orderData.lng,
-        });
-
         if (
           hasProvider &&
           hasProviderLocation &&
           hasCustomerLocation &&
           isActiveStatus
         ) {
-          console.log("🔄 Starting proximity check for active order");
           startProximityCheck(orderData);
         } else {
-          console.log("🛑 Stopping proximity check - conditions not met");
           stopProximityCheck();
         }
       } else {
@@ -280,26 +235,9 @@ const OrderPlace: React.FC = () => {
         providerLng = parseFloat(orderData.provider.lng);
       }
 
-      if (!customerLat || !customerLng) {
-        console.log(
-          "📍 Proximity Check - Customer location not available in order data"
-        );
-        console.log("📍 Order data keys:", Object.keys(orderData));
-        console.log("📍 Order lat/lng:", {
-          lat: orderData.lat,
-          lng: orderData.lng,
-        });
-        console.log("📍 Order user:", orderData.user);
-        return;
-      }
+      if (!customerLat || !customerLng) return;
 
-      if (!providerLat || !providerLng) {
-        console.log(
-          "📍 Proximity Check - Provider location not available in order data"
-        );
-        console.log("📍 Provider data:", orderData.provider);
-        return;
-      }
+      if (!providerLat || !providerLng) return;
 
       if (
         isNaN(customerLat) ||
@@ -325,25 +263,10 @@ const OrderPlace: React.FC = () => {
         providerLng
       );
 
-      console.log("📍 Proximity Check Result:", {
-        distance: distance.toFixed(2),
-        unit: "meters",
-        withinRange: distance <= 300,
-        customer: { lat: customerLat, lng: customerLng },
-        provider: { lat: providerLat, lng: providerLng },
-        order_id: orderData.id,
-        order_status: orderData.status,
-      });
-
-      // If provider is within 300 meters and popup hasn't been shown
       if (distance <= 300 && !proximityPopupShownRef.current) {
-        console.log("✅ Provider is within 300m! Showing popup...");
         proximityPopupShownRef.current = true;
         setPopupType("arrived");
         showToast("Provider is nearby! They should arrive soon.", "success");
-      } else if (distance > 300 && proximityPopupShownRef.current) {
-        // Reset if provider moves away (optional - you might want to keep it shown)
-        console.log("📍 Provider moved away (>300m), but keeping popup shown");
       }
     } catch (error) {
       console.error("❌ Error checking proximity:", error);
@@ -376,14 +299,7 @@ const OrderPlace: React.FC = () => {
             const latestOrderData = response.data[0];
             setOrder(latestOrderData);
 
-            // Check proximity with latest data
             checkProximity(latestOrderData);
-
-            console.log("🔄 Proximity Check - Refreshed order data:", {
-              order_id: orderId,
-              provider_lat: latestOrderData.provider?.lat,
-              provider_lng: latestOrderData.provider?.lng,
-            });
           }
         } catch (error) {
           console.error(
@@ -400,10 +316,6 @@ const OrderPlace: React.FC = () => {
         checkProximity(order);
       }
     }, 10000);
-
-    console.log(
-      "🔄 Started proximity checking (every 10 seconds with data refresh)"
-    );
   };
 
   // Stop proximity checking
@@ -411,15 +323,11 @@ const OrderPlace: React.FC = () => {
     if (proximityCheckIntervalRef.current) {
       clearInterval(proximityCheckIntervalRef.current);
       proximityCheckIntervalRef.current = null;
-      console.log("🛑 Stopped proximity checking");
     }
   };
 
   // Handle order status changes
-  const handleOrderStatusChange = (oldStatus: string, newStatus: string) => {
-    console.log(`Order status changed from ${oldStatus} to ${newStatus}`);
-
-    // Show appropriate notification based on the new status
+  const handleOrderStatusChange = (_oldStatus: string, newStatus: string) => {
     showStatusNotification(newStatus);
   };
 
@@ -454,7 +362,6 @@ const OrderPlace: React.FC = () => {
             (lastShownStatusRef.current !== "arrived" &&
               popupType !== "arrived")
           ) {
-            console.log("🚨 Showing arrived popup - forceShow:", forceShow);
             lastShownStatusRef.current = "arrived";
             setPopupType("arrived");
           }
@@ -605,7 +512,6 @@ const OrderPlace: React.FC = () => {
       }
     }
   };
-  console.log("showPopup", showPopup);
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>

@@ -2,6 +2,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { I18nManager } from "react-native";
 import { I18nextProvider } from "react-i18next";
 import { ToastProvider } from "../components/ToastProvider";
 import i18n from "../utils/config";
@@ -20,7 +21,13 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded]);
-  console.log("fontsLoaded", fontsLoaded);
+
+  // Enable RTL so layout can match Arabic when user selects it (App Store 4.0 Design)
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    I18nManager.allowRTL(true);
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) return null;
 
   return (

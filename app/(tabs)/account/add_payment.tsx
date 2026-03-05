@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "~/components/button";
+import { useToast } from "~/components/ToastProvider";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 
@@ -37,12 +39,18 @@ const cardData = [
 
 export default function AddPayment() {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [scrollX] = useState(new Animated.Value(0));
   const [amount, setAmount] = useState(1500);
 
   const handleIncrease = () => setAmount((prev) => prev + 100);
   const handleDecrease = () =>
     setAmount((prev) => (prev > 100 ? prev - 100 : prev));
+
+  const handleConfirm = () => {
+    showToast(t("addPayment.fundAddedSuccess") || t("success"), "success");
+    router.back();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,7 +124,7 @@ export default function AddPayment() {
         </View>
 
         {/* Confirm Button */}
-        <Button title={t("addPayment.confirm")} onPress={() => {}} />
+        <Button title={t("addPayment.confirm")} onPress={handleConfirm} />
       </ScrollView>
     </SafeAreaView>
   );

@@ -114,7 +114,6 @@ export default function ViewProfile() {
     const userId = await AsyncStorage.getItem("user_id");
 
     if (!userId) throw new Error("User ID not found");
-    console.log(userId);
 
     const formData = new FormData();
     formData.append("type", "get_data");
@@ -159,7 +158,6 @@ export default function ViewProfile() {
       const userId = await AsyncStorage.getItem("user_id");
 
       if (!userId) throw new Error("User ID not found");
-      console.log(userId);
       const formData = new FormData();
       formData.append("type", "profile");
       formData.append("user_id", userId);

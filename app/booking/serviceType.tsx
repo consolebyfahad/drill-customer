@@ -114,14 +114,6 @@ export default function ServiceTypeScreen() {
       const seconds = String(selectedTime.getSeconds()).padStart(2, "0");
       navigationParams.schedule_time = `${hours}:${minutes}:${seconds}`;
 
-      // Debug logging
-      console.log("Date conversion debug:", {
-        originalDate: selectedDate,
-        originalDateString: selectedDate.toString(),
-        originalDateISO: selectedDate.toISOString(),
-        localDate: `${year}-${month}-${day}`,
-        localTime: `${hours}:${minutes}:${seconds}`,
-      });
     }
 
     router.push({

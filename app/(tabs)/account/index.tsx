@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import i18n from "i18next";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -50,6 +50,7 @@ type User = {
   status: string;
   timestamp: string;
   user_type: string;
+  online_status?: string;
 };
 
 export default function Account() {
@@ -79,7 +80,7 @@ export default function Account() {
   useFocusEffect(
     useCallback(() => {
       fetchUserProfile();
-    }, [])
+    }, []),
   );
 
   const fetchUserProfile = async () => {
@@ -107,14 +108,17 @@ export default function Account() {
       case "wallet":
         router.push("/account/wallet");
         break;
-      case "card":
-        router.push("/account/card_list");
-        break;
+      // case "card":
+      //   router.push("/account/card_list");
+      //   break;
       case "rateUs":
-        // Add rate us logic here
+        // Rate Us: use expo-store-review when available, or remove from menu
         break;
       case "aboutApp":
         router.push("/account/about");
+        break;
+      case "privacyPolicy":
+        router.push("/auth/privacy");
         break;
       case "language":
         router.push("/account/language");
@@ -150,12 +154,12 @@ export default function Account() {
               console.error("Error during logout:", error);
               Alert.alert(
                 t("account.logoutErrorTitle"),
-                t("account.logoutErrorMessage")
+                t("account.logoutErrorMessage"),
               );
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -167,17 +171,19 @@ export default function Account() {
     router.push("/account/edit_profile");
   };
 
-  const iconMap: { [key: string]: JSX.Element } = {
+  const iconMap: Record<string, React.ReactNode> = {
     Account: <AccountStatus />,
     Wallet: <Wallet />,
     Card: <Card />,
     "Rate Us": <Rating />,
     "About App": <About />,
+    "Privacy Policy": (
+      <Ionicons name="document-text-outline" size={22} color={Colors.secondary} />
+    ),
     Language: <Language />,
     Support: <Support />,
     Logout: <Logout />,
   };
-  console.log(t("language"));
   const menuItems = [
     {
       icon: "Account",
@@ -193,23 +199,29 @@ export default function Account() {
       title: t("account.wallet"),
       extraRight: "chevron-forward",
     },
-    {
-      icon: "Card",
-      key: "card",
-      title: t("account.card"),
-      right: "5",
-      extraRight: "chevron-forward",
-    },
-    {
-      icon: "Rate Us",
-      key: "rateUs",
-      title: t("account.rateUs"),
-      extraRight: "chevron-forward",
-    },
+    // {
+    //   icon: "Card",
+    //   key: "card",
+    //   title: t("account.card"),
+    //   right: "5",
+    //   extraRight: "chevron-forward",
+    // },
+    // {
+    //   icon: "Rate Us",
+    //   key: "rateUs",
+    //   title: t("account.rateUs"),
+    //   extraRight: "chevron-forward",
+    // },
     {
       icon: "About App",
       key: "aboutApp",
       title: t("account.aboutApp"),
+      extraRight: "chevron-forward",
+    },
+    {
+      icon: "Privacy Policy",
+      key: "privacyPolicy",
+      title: t("account.privacyPolicy"),
       extraRight: "chevron-forward",
     },
     {
@@ -250,9 +262,7 @@ export default function Account() {
               source={isValidImage ? { uri: user.image } : defaultProfile}
               style={styles.image}
               resizeMode="cover"
-              onError={({ nativeEvent }) => {
-                console.warn("Image failed to load", nativeEvent.error);
-              }}
+              onError={() => {}}
             />
 
             {user.status === "1" && <Verify style={styles.verifiedIcon} />}
@@ -264,7 +274,7 @@ export default function Account() {
             {user.name ? user.name : t("account.defaultName")}
           </Text>
           <Text style={styles.userEmail}>
-            {user.email ? user.email : "member@xyz.com"}
+            {user.email ? user.email : t("account.defaultEmail")}
           </Text>
         </View>
 

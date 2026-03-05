@@ -59,7 +59,6 @@ export default function AccessLocation() {
       try {
         const userId = await AsyncStorage.getItem("user_id");
         if (!userId) {
-          console.warn("User ID not found in AsyncStorage");
           return;
         }
         const permissionGranted = await requestFCMPermission();
@@ -74,12 +73,9 @@ export default function AccessLocation() {
           formData.append("deviceModel", deviceInfo.model);
           try {
             const response = await apiCall(formData);
-            console.log("FCM registration response:", response);
           } catch (error) {
             console.error("FCM registration failed:", error);
           }
-        } else {
-          console.log("FCM permission not granted");
         }
       } catch (error) {
         console.error("Error setting up notifications:", error);
@@ -87,7 +83,6 @@ export default function AccessLocation() {
     };
 
     const handleNotificationPress = (data: any) => {
-      console.log("🔔 Notification Pressed:", data);
     };
 
     setupNotifications();
@@ -113,7 +108,6 @@ export default function AccessLocation() {
         return;
       }
       const location = await Location.getCurrentPositionAsync({});
-      console.log(location.coords);
       const { latitude, longitude } = location.coords;
 
       await AsyncStorage.setItem("latitude", String(latitude));
@@ -150,6 +144,15 @@ export default function AccessLocation() {
           <Text style={styles.title}>{t("accessLocation.title")}</Text>
           <Text style={styles.subtitle}>{t("accessLocation.subtitle")}</Text>
         </View>
+        <Text style={styles.disclosure}>
+          {t("accessLocation.dataDisclosure")}{" "}
+          <Text
+            style={styles.privacyLink}
+            onPress={() => router.push("/auth/privacy")}
+          >
+            {t("accessLocation.privacyPolicy")}
+          </Text>
+        </Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -220,8 +223,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     color: Colors.secondary,
-    marginBottom: 32,
+    marginBottom: 16,
     fontFamily: FONTS.medium,
+  },
+  disclosure: {
+    fontSize: 13,
+    textAlign: "center",
+    color: Colors.secondary300,
+    paddingHorizontal: 16,
+    fontFamily: FONTS.regular,
+  },
+  privacyLink: {
+    color: Colors.primary,
+    fontFamily: FONTS.semiBold,
+    textDecorationLine: "underline",
   },
   buttonContainer: {
     width: "100%",

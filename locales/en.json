@@ -38,6 +38,7 @@
   "retry": "Retry",
   "goBack": "Go Back",
   "addCard": "Add Card",
+  "cardSavedSuccess": "Card saved successfully.",
   "noDescription": "No description provided",
   "enterDescription": "Enter description here...",
   "imageSelected": "Image Selected",
@@ -81,7 +82,9 @@
     "title": "Welcome",
     "subtitle": "Enter your phone \nnumber to get started.",
     "phonePlaceholder": "Phone number",
-    "privacy": "Privacy & Agreements",
+    "privacy": "Privacy Policy",
+    "consentPrefix": "By continuing, you agree to our",
+    "consentSuffix": ".",
     "invalidPhone": "Please enter a valid phone number."
   },
   "verify": {
@@ -90,6 +93,7 @@
     "subtitle": "Please check your email and enter the 4-digit code.",
     "resendPrefix": "Didn't receive the code?",
     "resendLink": "Resend",
+    "resendIn": "Resend in {{count}}s",
     "button": "Verify",
     "userNotFound": "User not found. Please try logging in again.",
     "invalidCode": "Please enter a valid 4-digit code.",
@@ -105,6 +109,8 @@
     "headerTitle": "Allow Location Access",
     "title": "Access Location",
     "subtitle": "Allow us to access your location to provide better services near you.",
+    "dataDisclosure": "We collect and use your location to show services near you and to complete bookings. By allowing access you agree to this use.",
+    "privacyPolicy": "Privacy Policy",
     "allowAccess": "Allow Access",
     "loading": "Loading...",
     "doIt": "Do it",
@@ -139,6 +145,7 @@
     "card": "Card",
     "rateUs": "Rate Us",
     "aboutApp": "About App",
+    "privacyPolicy": "Privacy Policy",
     "language": "Language",
     "support": "Support",
     "logout": "Logout",
@@ -349,8 +356,9 @@
     "title": "Add Payment",
     "cardAddedSuccess": "Your credit card has been successfully added",
     "addMoney": "Add Money",
-    "confirm": "Confrim",
-    "balance": "Balance"
+    "confirm": "Confirm",
+    "balance": "Balance",
+    "fundAddedSuccess": "Amount added to wallet successfully."
   },
   "support": {
     "needHelp": "Need Help?",
@@ -358,8 +366,11 @@
     "emailSupport": "Email Support",
     "callUs": "Call Us",
     "chatWithSupport": "Chat with Support",
-    "supportEmail": "support@yourapp.com",
-    "supportPhone": "+1 (800) 123-4567"
+    "supportEmail": "support@drill.com",
+    "supportPhone": "+966 500 000 000",
+    "emailError": "Could not open email app.",
+    "callError": "Could not open phone app.",
+    "chatSubject": "Support request from Drill app"
   },
   "about": {
     "aboutApp": "About This App",
@@ -416,13 +427,16 @@
     "changesText": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the 'Last Updated' date. You are advised to review this Privacy Policy periodically for any changes.",
     "contactUs": "Contact Us",
     "contactUsText": "If you have any questions about this Privacy Policy or our privacy practices, please contact us at support@drill.com or through the support section in the app.",
-    "lastUpdated": "Last Updated: January 2024"
+    "lastUpdated": "Last Updated: January 2024",
+    "viewOnline": "View Privacy Policy online"
   },
   "notFound": {
     "message": "Oops! Page not found.",
     "goHome": "Go Home"
   },
   "header": {
+    "back": "Go back",
+    "chatSupport": "Chat with support",
     "noActiveOrder": "No active order found",
     "failedToSubmitSupport": "Failed to submit support request. Please try again.",
     "errorOccurred": "An error occurred. Please try again."
@@ -432,10 +446,14 @@
   },
   "notification": {
     "accountCreated": "Account Created",
-    "accountCreatedMessage": "Your account has been successfully created."
+    "accountCreatedMessage": "Your account has been successfully created.",
+    "noNotifications": "No notifications yet",
+    "noNotificationsMessage": "When you have notifications, they will appear here."
   },
   "search": {
-    "allServicesAvailable": "All Services Available"
+    "allServicesAvailable": "All Services Available",
+    "browseServices": "Browse services",
+    "searchServices": "Search services"
   },
   "popularServices": {
     "serviceProvider": "Service Provider",

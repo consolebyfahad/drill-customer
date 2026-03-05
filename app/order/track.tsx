@@ -44,7 +44,6 @@ export default function Track() {
     () => params.orderId?.toString() || "",
     [params.orderId]
   );
-  console.log("orderId", orderId);
   const locationSubscriptionRef = useRef<Location.LocationSubscription | null>(
     null
   );
@@ -101,8 +100,6 @@ export default function Track() {
 
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${originStr}&destination=${destinationStr}&key=${GOOGLE_MAPS_API_KEY}`;
 
-      console.log("🗺️ Fetching route from Google Directions API...");
-
       const response = await fetch(url);
       const data = await response.json();
 
@@ -110,21 +107,8 @@ export default function Track() {
         const route = data.routes[0];
         const polyline = route.overview_polyline.points;
         const decodedCoordinates = decodePolyline(polyline);
-
-        console.log("✅ Route fetched successfully:", {
-          points: decodedCoordinates.length,
-          distance: route.legs[0]?.distance?.text,
-          duration: route.legs[0]?.duration?.text,
-        });
-
         return decodedCoordinates;
       } else {
-        console.warn(
-          "⚠️ Google Directions API error:",
-          data.status,
-          data.error_message
-        );
-        // Fallback to straight line if API fails
         return [origin, destination];
       }
     } catch (error) {
@@ -150,7 +134,6 @@ export default function Track() {
         setOrder(orderData);
         setStatus(orderData?.status);
       } else {
-        console.log("No order details found");
         setOrder(null);
       }
     } catch (error) {
@@ -169,24 +152,19 @@ export default function Track() {
       const lat = parseFloat(order.lat);
       const lng = parseFloat(order.lng);
       if (!isNaN(lat) && !isNaN(lng)) {
-        console.log("📍 Track - Using order lat/lng:", { lat, lng });
         return { latitude: lat, longitude: lng };
       }
     }
 
-    // Fallback to order.user.lat/lng
     if (order?.user?.lat && order?.user?.lng) {
       const lat = parseFloat(order.user.lat);
       const lng = parseFloat(order.user.lng);
       if (!isNaN(lat) && !isNaN(lng)) {
-        console.log("📍 Track - Using user lat/lng:", { lat, lng });
         return { latitude: lat, longitude: lng };
       }
     }
 
-    // Last resort: Try to get from AsyncStorage
-    console.warn("⚠️ Track - No valid location in order data, using default");
-    return { latitude: 24.7136, longitude: 46.6753 }; // Riyadh, Saudi Arabia default
+    return { latitude: 24.7136, longitude: 46.6753 }; // Riyadh default
   }, [order]);
 
   useEffect(() => {
@@ -304,7 +282,6 @@ export default function Track() {
       </View>
     );
   }
-  console.log("oredr+", order);
   return (
     <SafeAreaProvider style={styles.container}>
       {/* Map View */}

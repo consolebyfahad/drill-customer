@@ -3,8 +3,10 @@ import Header from "@/components/header";
 import NotificationCard from "@/components/notification_card";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
 
 type Notification = {
   icon: React.ReactNode;
@@ -15,29 +17,32 @@ type Notification = {
 
 export default function NotificationScreen() {
   const { t } = useTranslation();
-  
-  const notifications: Notification[] = [
-    {
-      icon: <AccountIcon width={24} height={24} fill="#000" />,
-      title: t("notification.accountCreated"),
-      message: t("notification.accountCreatedMessage"),
-      dateTime: "05 Jan 2023 | 10:00 AM",
-    },
-  ];
+
+  // Notifications would be loaded from API in production; empty state for completeness
+  const notifications: Notification[] = [];
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Header backBtn={true} title={t("notifications")} />
         <View style={styles.notificationList}>
-          {notifications.map((notification, index) => (
-            <NotificationCard
-              key={index}
-              icon={notification.icon}
-              title={notification.title}
-              message={notification.message}
-              dateTime={notification.dateTime}
-            />
-          ))}
+          {notifications.length === 0 ? (
+            <View style={styles.emptyState}>
+              <AccountIcon width={64} height={64} fill={Colors.gray300} />
+              <Text style={styles.emptyTitle}>{t("notification.noNotifications")}</Text>
+              <Text style={styles.emptySubtitle}>{t("notification.noNotificationsMessage")}</Text>
+            </View>
+          ) : (
+            notifications.map((notification, index) => (
+              <NotificationCard
+                key={index}
+                icon={notification.icon}
+                title={notification.title}
+                message={notification.message}
+                dateTime={notification.dateTime}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -47,7 +52,7 @@ export default function NotificationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -55,5 +60,26 @@ const styles = StyleSheet.create({
   },
   notificationList: {
     marginTop: 12,
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 48,
+    paddingHorizontal: 24,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontFamily: FONTS.semiBold,
+    color: Colors.secondary,
+    marginTop: 16,
+    textAlign: "center",
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    fontFamily: FONTS.regular,
+    color: Colors.secondary300,
+    marginTop: 8,
+    textAlign: "center",
   },
 });
