@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import ServiceDetailsCard from "@/components/service_details_card";
+import Button from "@/components/button";
 import { Colors } from "@/constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "~/contexts/AuthContext";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
@@ -48,6 +50,7 @@ export type Order = {
 
 export default function Orders() {
   const { t } = useTranslation();
+  const { isLoggedIn } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,14 +64,13 @@ export default function Orders() {
   ]);
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (isLoggedIn) fetchOrders();
+  }, [isLoggedIn]);
 
   const fetchOrders = async () => {
-    setIsLoading(true);
     const userId = await AsyncStorage.getItem("user_id");
-
-    if (!userId) throw new Error("User ID not found");
+    if (!userId) return;
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("type", "get_data");
@@ -104,6 +106,23 @@ export default function Orders() {
       : orders.filter(
           (order) => order.status.toLowerCase() === filterStatus.toLowerCase()
         );
+
+  if (!isLoggedIn) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.innerContainer}>
+          <Header title={t("tabs.orders")} icon={true} />
+          <View style={styles.guestContainer}>
+            <Text style={styles.guestText}>{t("orders.loginRequired")}</Text>
+            <Button
+              title={t("orders.loginButton")}
+              onPress={() => router.push("/auth/login")}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -213,5 +232,19 @@ const styles = StyleSheet.create({
     paddingTop: 80,
     alignItems: "center",
     justifyContent: "center",
+  },
+  guestContainer: {
+    flex: 1,
+    paddingTop: 80,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  guestText: {
+    fontSize: 16,
+    fontFamily: FONTS.medium,
+    color: Colors.secondary,
+    textAlign: "center",
+    marginBottom: 24,
   },
 });

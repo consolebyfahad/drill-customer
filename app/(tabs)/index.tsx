@@ -9,15 +9,18 @@ import { useTranslation } from "react-i18next";
 import { BackHandler, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PopularServices from "~/components/popular_services";
+import { useAuth } from "~/contexts/AuthContext";
 import { Colors } from "~/constants/Colors";
 
 export default function Home() {
   const { t } = useTranslation();
+  const { isLoggedIn } = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
       const getUserName = async () => {
+        if (!isLoggedIn) return;
         try {
           const storedUserName = await AsyncStorage.getItem("user_name");
           setUserName(storedUserName);
@@ -34,8 +37,10 @@ export default function Home() {
         onBackPress
       );
       return () => subscription.remove();
-    }, [])
+    }, [isLoggedIn])
   );
+
+  const headerTitle = isLoggedIn && userName ? userName : t("defaultGreeting");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,7 +49,7 @@ export default function Home() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Header userName={userName ?? t("defaultGreeting")} homeScreen icon />
+        <Header userName={headerTitle} homeScreen icon />
         <Banner />
         <Search />
         <Categories />

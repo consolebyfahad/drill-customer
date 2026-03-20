@@ -9,9 +9,10 @@
     "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "sa.com.drill.app",
+      "supportsTablet": false,
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "We need your location to show your position on the map.",
+        "NSLocationWhenInUseUsageDescription": "Your location is used to show your position on the map when you choose a service address and to send that address to the service provider for your booking. For example, when you book a home service, we use your location to display and confirm the address on the map and to share it with the provider so they can reach you.",
         "UIBackgroundModes": [
           "remote-notification"
         ]

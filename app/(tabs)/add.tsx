@@ -1,3 +1,4 @@
+import { useAuth } from "~/contexts/AuthContext";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +23,7 @@ type Category = {
 
 export default function Add() {
   const { t } = useTranslation();
+  const { isLoggedIn, setPendingBooking } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +60,17 @@ export default function Add() {
     getCategories();
   }, []);
 
-  const handleBooking = (category: Category) => {
+  const handleBooking = async (category: Category) => {
+    if (!isLoggedIn) {
+      await setPendingBooking({
+        entry: "booking",
+        id: category.id,
+        name: category.name,
+        image: category.image,
+      });
+      router.push("/auth/login");
+      return;
+    }
     router.push({
       pathname: "/booking",
       params: { id: category.id, name: category.name, image: category.image },

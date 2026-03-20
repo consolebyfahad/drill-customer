@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "~/contexts/AuthContext";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
@@ -28,9 +29,7 @@ import {
 export default function AccessLocation() {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const handleBrowse = () => {
-    router.push("/(tabs)");
-  };
+  const { setUser, getPendingBooking, clearPendingBooking } = useAuth();
 
   const getDeviceInfo = async () => {
     try {
@@ -113,7 +112,26 @@ export default function AccessLocation() {
       await AsyncStorage.setItem("latitude", String(latitude));
       await AsyncStorage.setItem("longitude", String(longitude));
 
-      router.push("/(tabs)");
+      const userId = await AsyncStorage.getItem("user_id");
+      if (userId) await setUser(userId);
+
+      const pending = await getPendingBooking();
+      if (pending) {
+        await clearPendingBooking();
+        if (pending.entry === "serviceType") {
+          router.replace({
+            pathname: "/booking/serviceType",
+            params: { id: pending.id, name: pending.name, image: pending.image },
+          });
+        } else {
+          router.replace({
+            pathname: "/booking",
+            params: { id: pending.id, name: pending.name, image: pending.image },
+          });
+        }
+      } else {
+        router.replace("/(tabs)");
+      }
     } catch (error) {
       console.error("Error fetching location:", error);
       Alert.alert(t("accessLocation.error"), t("accessLocation.errorMessage"));
@@ -156,24 +174,15 @@ export default function AccessLocation() {
       </View>
 
       <View style={styles.buttonContainer}>
-        {/* Allow Location Button */}
         <Button
           title={
             loading
               ? t("accessLocation.loading")
-              : t("accessLocation.allowAccess")
+              : t("continue")
           }
           onPress={handleLocation}
           disabled={loading}
         />
-
-        {/* "Do it Later" Option */}
-        <View style={styles.laterContainer}>
-          <Text>{t("accessLocation.doIt")}</Text>
-          <TouchableOpacity onPress={handleBrowse}>
-            <Text style={styles.laterText}> {t("accessLocation.later")}</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -241,14 +250,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: "100%",
     alignItems: "center",
-  },
-  laterContainer: {
-    flexDirection: "row",
-    padding: 16,
-  },
-  laterText: {
-    color: Colors.primary,
-    fontFamily: FONTS.medium,
-    marginLeft: 4,
   },
 });

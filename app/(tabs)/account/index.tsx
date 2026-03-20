@@ -28,6 +28,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "~/contexts/AuthContext";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
 
@@ -56,7 +57,8 @@ type User = {
 export default function Account() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [user, setUser] = useState<User>({
+  const { isLoggedIn, logout: authLogout } = useAuth();
+  const [user, setUserState] = useState<User>({
     id: "",
     name: "",
     email: "",
@@ -79,14 +81,14 @@ export default function Account() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchUserProfile();
-    }, []),
+      if (isLoggedIn) fetchUserProfile();
+    }, [isLoggedIn]),
   );
 
   const fetchUserProfile = async () => {
     try {
       const userId = await AsyncStorage.getItem("user_id");
-      if (!userId) throw new Error("User ID not found");
+      if (!userId) return;
 
       const formData = new FormData();
       formData.append("type", "profile");
@@ -96,7 +98,7 @@ export default function Account() {
 
       if (response.profile || response.user) {
         const profileData = response.profile || response.user;
-        setUser(profileData);
+        setUserState(profileData);
       }
     } catch (err) {
       console.error("Failed to fetch profile:", err);
@@ -148,7 +150,7 @@ export default function Account() {
           style: "destructive",
           onPress: async () => {
             try {
-              await AsyncStorage.clear();
+              await authLogout();
               router.replace("/welcome");
             } catch (error) {
               console.error("Error during logout:", error);
@@ -244,6 +246,27 @@ export default function Account() {
       extraRight: "chevron-forward",
     },
   ];
+
+  if (!isLoggedIn) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.guestScrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <Header title={t("account.title")} homeScreen={false} />
+          <View style={styles.guestContainer}>
+            <Text style={styles.guestText}>{t("accountGuest.loginRequired")}</Text>
+            <Button
+              title={t("accountGuest.loginButton")}
+              onPress={() => router.push("/auth/login")}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   const isValidImage = user.image && /\.(jpg|jpeg|png|webp)$/i.test(user.image);
   return (
@@ -347,6 +370,24 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     paddingBottom: 100,
+  },
+  guestScrollContent: {
+    paddingBottom: 100,
+    flexGrow: 1,
+  },
+  guestContainer: {
+    flex: 1,
+    paddingTop: 80,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  guestText: {
+    fontSize: 16,
+    fontFamily: FONTS.medium,
+    color: Colors.secondary,
+    textAlign: "center",
+    marginBottom: 24,
   },
   profileContainer: {
     alignItems: "flex-start",

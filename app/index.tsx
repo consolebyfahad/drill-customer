@@ -1,27 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
+/**
+ * Splash: always go to main app so users can browse without logging in.
+ * Login is only required for account-based actions (booking, orders, account).
+ */
 export default function Splash() {
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const userId = await AsyncStorage.getItem("user_id");
-        setTimeout(() => {
-          if (userId) {
-            router.replace("/(tabs)");
-          } else {
-            router.replace("/welcome");
-          }
-        }, 2000);
-      } catch (error) {
-        console.error("Error checking user data:", error);
-        router.replace("/welcome");
-      }
-    };
-
-    checkUser();
+    const t = setTimeout(() => {
+      router.replace("/(tabs)");
+    }, 2000);
+    return () => clearTimeout(t);
   }, []);
 
   return (

@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import ModalSelector from "react-native-modal-selector";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "~/contexts/AuthContext";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
 import { apiCall } from "~/utils/api";
@@ -28,12 +29,15 @@ const countryCodes: CountryCode[] = [
   { key: 1, label: "Kingdom Saudi Arabia (+966)", value: "+966" },
 ];
 
+const PENDING_BOOKING_KEY = "pending_booking";
+
 export default function Login() {
   const [countryCode, setCountryCode] = useState<CountryCode>(countryCodes[0]);
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [error, setError] = useState<string>("");
   const modalRef = useRef<any>(null);
   const { t } = useTranslation();
+  const { setUser } = useAuth();
 
   const handleContinue = async () => {
     const cleanedNumber = phoneNumber.replace(/\D/g, "");
@@ -44,7 +48,10 @@ export default function Login() {
     }
     setError("");
     try {
+      const pendingBooking = await AsyncStorage.getItem(PENDING_BOOKING_KEY);
       await AsyncStorage.clear();
+      if (pendingBooking) await AsyncStorage.setItem(PENDING_BOOKING_KEY, pendingBooking);
+
       const formData = new FormData();
       formData.append("type", "register_phone");
       formData.append("phone", `${countryCode.value}${cleanedNumber}`);
@@ -53,6 +60,7 @@ export default function Login() {
       if (response.result) {
         await AsyncStorage.setItem("user_id", response.user_id);
         await AsyncStorage.setItem("user_type", response.user_type);
+        await setUser(response.user_id);
         router.push("/auth/verify");
       } else {
         setError(response.message || "Login failed.");

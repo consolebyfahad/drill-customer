@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { I18nManager } from "react-native";
 import { I18nextProvider } from "react-i18next";
+import { AuthProvider } from "../contexts/AuthContext";
 import { ToastProvider } from "../components/ToastProvider";
 import i18n from "../utils/config";
 
@@ -32,9 +33,11 @@ export default function RootLayout() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ToastProvider>
-        <Stack screenOptions={{ headerShown: false }} />
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </ToastProvider>
+      </AuthProvider>
     </I18nextProvider>
   );
 }

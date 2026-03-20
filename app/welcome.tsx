@@ -8,7 +8,12 @@ import { FONTS } from "~/constants/Fonts";
 
 export default function Welcome() {
   const { t, ready } = useTranslation();
-  const handleGetStarted = () => {
+
+  const handleBrowse = () => {
+    router.replace("/(tabs)");
+  };
+
+  const handleLogin = () => {
     router.push("/auth/login");
   };
 
@@ -38,7 +43,15 @@ export default function Welcome() {
         </View>
       </View>
       <View style={styles.footer}>
-        <Button title={t("getStarted")} onPress={handleGetStarted} />
+        <Button title={t("welcomeScreen.browse")} onPress={handleBrowse} />
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={handleLogin}
+          accessibilityRole="button"
+          accessibilityLabel={t("login.title")}
+        >
+          <Text style={styles.loginButtonText}>{t("welcomeScreen.login")}</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => router.push("/auth/privacy")}
           style={styles.privacyLinkWrap}
@@ -111,5 +124,15 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     color: Colors.primary,
     textDecorationLine: "underline",
+  },
+  loginButton: {
+    marginTop: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  loginButtonText: {
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
+    color: Colors.primary,
   },
 });

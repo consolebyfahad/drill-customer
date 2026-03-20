@@ -24,6 +24,7 @@
     "components",
     "sections",
     "constants",
+    "contexts",
     "types",
     "expo-env.d.ts",
     ".expo/types/**/*.ts"

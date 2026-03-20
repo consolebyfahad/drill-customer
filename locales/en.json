@@ -3,6 +3,10 @@
   "tagline": "The Home Service App",
   "intro": " Application for easily finding a Home Serviceman.",
   "getStarted": "Get Started",
+  "welcomeScreen": {
+    "browse": "Browse",
+    "login": "Login"
+  },
   "continue": "Continue",
   "defaultGreeting": "Dear Member",
   "cancel": "Cancel",
@@ -106,10 +110,10 @@
     "browseHome": "Browse Home"
   },
   "accessLocation": {
-    "headerTitle": "Allow Location Access",
-    "title": "Access Location",
-    "subtitle": "Allow us to access your location to provide better services near you.",
-    "dataDisclosure": "We collect and use your location to show services near you and to complete bookings. By allowing access you agree to this use.",
+    "headerTitle": "Location",
+    "title": "Location",
+    "subtitle": "We use your location to show services near you and to complete bookings.",
+    "dataDisclosure": "We collect and use your location for these purposes. Tap Continue to see the permission request.",
     "privacyPolicy": "Privacy Policy",
     "allowAccess": "Allow Access",
     "loading": "Loading...",
@@ -442,7 +446,13 @@
     "errorOccurred": "An error occurred. Please try again."
   },
   "orders": {
-    "filterByStatus": "Filter by status"
+    "filterByStatus": "Filter by status",
+    "loginRequired": "Login to view your orders",
+    "loginButton": "Login"
+  },
+  "accountGuest": {
+    "loginRequired": "Login to manage your account",
+    "loginButton": "Login"
   },
   "notification": {
     "accountCreated": "Account Created",
