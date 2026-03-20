@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type Props = {
@@ -153,45 +154,11 @@ export default function SelectedImage({
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    marginBottom: 8,
-    color: Colors.secondary,
-  },
-  uploadContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 10,
-    opacity: 1,
-  },
-  iconWrapper: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 12,
-  },
-  image: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: "white",
-  },
-  text: {
-    marginLeft: 16,
-    color: Colors.secondary300,
-    flex: 1,
-  },
-  disabledText: {
-    color: Colors.secondary,
-    opacity: 0.5,
-  },
-  disabledInfoText: {
-    color: Colors.secondary300,
-    fontSize: 12,
-    marginTop: 8,
-    fontFamily: FONTS.regular,
-    textAlign: "center",
-  },
+  title: { fontSize: ms(17), fontFamily: FONTS.semiBold, marginBottom: vs(8), color: Colors.secondary },
+  uploadContainer: { flexDirection: "row", alignItems: "center", backgroundColor: Colors.primary300, paddingHorizontal: s(14), paddingVertical: vs(14), borderRadius: ms(10), opacity: 1 },
+  iconWrapper: { backgroundColor: "white", borderRadius: ms(12), padding: s(10) },
+  image: { width: s(46), height: s(46), borderRadius: ms(8), backgroundColor: "white" },
+  text: { marginLeft: s(14), color: Colors.secondary300, flex: 1, fontSize: ms(14) },
+  disabledText: { color: Colors.secondary, opacity: 0.5 },
+  disabledInfoText: { color: Colors.secondary300, fontSize: ms(12), marginTop: vs(8), fontFamily: FONTS.regular, textAlign: "center" },
 });

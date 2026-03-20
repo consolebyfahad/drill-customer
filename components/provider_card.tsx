@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { OrderType } from "~/types/dataTypes";
 import Button from "./button";
 import DashedSeparator from "./dashed_seprator";
@@ -132,34 +133,12 @@ export default function ProviderCard({ order }: ProviderCardProps) {
 }
 
 const styles = StyleSheet.create({
-  providerContainer: {
-    padding: 16,
-    backgroundColor: Colors.gray400,
-    borderRadius: 12,
-    marginTop: 8,
-  },
-  providerImage: { width: 48, height: 48, borderRadius: 24 },
-  providerInfo: { marginLeft: 16 },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  providerName: {
-    fontFamily: FONTS.bold,
-    color: Colors.secondary,
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  grayText: { color: Colors.secondary },
-  loadingContainer: {
-    minHeight: 100,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 10,
-    color: Colors.secondary,
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-  },
+  providerContainer: { padding: s(14), backgroundColor: Colors.gray400, borderRadius: ms(12), marginTop: vs(8) },
+  providerImage: { width: s(46), height: s(46), borderRadius: ms(23) },
+  providerInfo: { marginLeft: s(14) },
+  buttonRow: { flexDirection: "row", justifyContent: "space-between" },
+  providerName: { fontFamily: FONTS.bold, color: Colors.secondary, fontSize: ms(17), marginBottom: vs(4) },
+  grayText: { color: Colors.secondary, fontSize: ms(13) },
+  loadingContainer: { minHeight: vs(100), justifyContent: "center", alignItems: "center" },
+  loadingText: { marginTop: vs(10), color: Colors.secondary, fontSize: ms(13), fontFamily: FONTS.regular },
 });

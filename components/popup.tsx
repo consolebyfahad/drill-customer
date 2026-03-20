@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 import Button from "./button";
 
@@ -360,103 +361,17 @@ export default function Popup({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    width: "100%",
-    elevation: 1,
-    shadowColor: Colors.gray100,
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    zIndex: 99,
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    alignItems: "center",
-  },
-  content: {
-    alignItems: "center",
-    marginBottom: 16,
-    width: "100%",
-  },
-  dateTime: {
-    color: Colors.secondary300,
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  arrivedImageContainer: {
-    backgroundColor: Colors.primary300,
-    borderRadius: 16,
-    padding: 10,
-    marginBottom: 15,
-    width: "90%",
-    alignItems: "center",
-  },
-  arrivedImage: {
-    width: 200,
-    height: 160,
-  },
-  image: {
-    marginBottom: 12,
-  },
-  title: {
-    color: Colors.secondary,
-    fontSize: 22,
-    fontFamily: FONTS.bold,
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  description: {
-    color: Colors.secondary300,
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    textAlign: "center",
-    marginBottom: 16,
-    paddingHorizontal: 10,
-  },
-  input: {
-    width: "100%",
-    backgroundColor: Colors.primary300,
-    borderRadius: 10,
-    padding: 16,
-    fontSize: 16,
-    fontFamily: FONTS.regular,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  starsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 10,
-    gap: 8,
-  },
-  ratingText: {
-    fontSize: 16,
-    fontFamily: FONTS.bold,
-    color: Colors.black,
-    textAlign: "center",
-    marginTop: 5,
-  },
-  textarea: {
-    width: "100%",
-    backgroundColor: Colors.primary300,
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 16,
-    fontFamily: FONTS.regular,
-    marginTop: 10,
-    textAlignVertical: "top",
-    height: 100,
-  },
-  footerButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    gap: 6,
-  },
+  container: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: Colors.white, borderRadius: ms(20), width: "100%", elevation: 1, shadowColor: Colors.gray100, shadowOffset: { width: 0, height: -2 }, shadowOpacity: 0.1, shadowRadius: 4, zIndex: 99, paddingVertical: vs(18), paddingHorizontal: s(16), alignItems: "center" },
+  content: { alignItems: "center", marginBottom: vs(14), width: "100%" },
+  dateTime: { color: Colors.secondary300, fontSize: ms(12), marginBottom: vs(9) },
+  arrivedImageContainer: { backgroundColor: Colors.primary300, borderRadius: ms(16), padding: s(10), marginBottom: vs(13), width: "90%", alignItems: "center" },
+  arrivedImage: { width: s(180), height: vs(150) },
+  image: { marginBottom: vs(10) },
+  title: { color: Colors.secondary, fontSize: ms(21), fontFamily: FONTS.bold, textAlign: "center", marginBottom: vs(7) },
+  description: { color: Colors.secondary300, fontSize: ms(13), fontFamily: FONTS.regular, textAlign: "center", marginBottom: vs(14), paddingHorizontal: s(10) },
+  input: { width: "100%", backgroundColor: Colors.primary300, borderRadius: ms(10), paddingHorizontal: s(14), paddingVertical: vs(14), fontSize: ms(15), fontFamily: FONTS.regular, marginTop: vs(9), textAlign: "center" },
+  starsContainer: { flexDirection: "row", justifyContent: "center", alignItems: "center", marginVertical: vs(9), gap: s(7) },
+  ratingText: { fontSize: ms(15), fontFamily: FONTS.bold, color: Colors.black, textAlign: "center", marginTop: vs(5) },
+  textarea: { width: "100%", backgroundColor: Colors.primary300, borderRadius: ms(10), paddingHorizontal: s(10), paddingVertical: vs(10), fontSize: ms(15), fontFamily: FONTS.regular, marginTop: vs(9), textAlignVertical: "top", height: vs(90) },
+  footerButtons: { flexDirection: "row", justifyContent: "space-between", width: "100%", gap: s(6) },
 });

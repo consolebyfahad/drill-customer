@@ -23,7 +23,6 @@ export default function RootLayout() {
     if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
-  // Enable RTL so layout can match Arabic when user selects it (App Store 4.0 Design)
   useEffect(() => {
     if (!fontsLoaded) return;
     I18nManager.allowRTL(true);

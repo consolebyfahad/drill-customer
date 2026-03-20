@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 type Category = {
   id: string;
@@ -178,44 +179,11 @@ export default function SelectedLocation({
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  changeText: {
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    color: Colors.primary,
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 10,
-  },
-  iconWrapper: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 12,
-  },
-  address: {
-    marginLeft: 16,
-    color: Colors.secondary300,
-    flex: 1,
-  },
-  disabledText: {
-    color: Colors.secondary300,
-    fontSize: 12,
-    fontFamily: FONTS.regular,
-    marginTop: 8,
-    textAlign: "center",
-  },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: vs(14) },
+  title: { fontSize: ms(17), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  changeText: { fontSize: ms(13), fontFamily: FONTS.regular, color: Colors.primary },
+  locationContainer: { flexDirection: "row", alignItems: "center", backgroundColor: Colors.primary300, paddingHorizontal: s(14), paddingVertical: vs(14), borderRadius: ms(10) },
+  iconWrapper: { backgroundColor: "white", borderRadius: ms(12), padding: s(10) },
+  address: { marginLeft: s(14), color: Colors.secondary300, flex: 1, fontSize: ms(14) },
+  disabledText: { color: Colors.secondary300, fontSize: ms(12), fontFamily: FONTS.regular, marginTop: vs(8), textAlign: "center" },
 });

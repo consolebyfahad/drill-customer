@@ -19,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "~/contexts/AuthContext";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 import {
   getFCMToken,
@@ -193,7 +194,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
+    paddingHorizontal: s(16),
+    paddingVertical: vs(16),
     backgroundColor: Colors.white,
   },
   header: {
@@ -201,45 +203,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    marginBottom: 32,
+    marginBottom: vs(24),
   },
   headerText: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: FONTS.bold,
     textAlign: "center",
     color: Colors.secondary,
   },
   content: {
     alignItems: "center",
-    marginBottom: 80,
+    flex: 1,
+    justifyContent: "center",
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 16,
+    width: s(200),
+    height: s(200),
+    marginBottom: vs(16),
   },
   textContainer: {
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: s(24),
   },
   title: {
-    fontSize: 32,
+    fontSize: ms(28),
     fontFamily: FONTS.bold,
-    marginBottom: 8,
+    marginBottom: vs(8),
     color: Colors.secondary,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: ms(15),
     textAlign: "center",
     color: Colors.secondary,
-    marginBottom: 16,
+    marginBottom: vs(14),
     fontFamily: FONTS.medium,
   },
   disclosure: {
-    fontSize: 13,
+    fontSize: ms(12),
     textAlign: "center",
     color: Colors.secondary300,
-    paddingHorizontal: 16,
+    paddingHorizontal: s(16),
     fontFamily: FONTS.regular,
   },
   privacyLink: {
@@ -250,5 +253,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: "100%",
     alignItems: "center",
+    paddingTop: vs(16),
   },
 });

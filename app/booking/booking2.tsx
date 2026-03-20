@@ -23,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DashedSeparator from "~/components/dashed_seprator";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 interface Package {
@@ -260,103 +261,23 @@ export default function Booking2Screen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-  },
-  innerContainer: {
-    flex: 1,
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    marginBottom: 16,
-    color: Colors.secondary,
-  },
-  packageCard: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  selectedPackageCard: {
-    borderWidth: 2,
-    borderColor: Colors.primary,
-  },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  packageName: {
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  packageDetails: {
-    fontSize: 14,
-    color: Colors.secondary,
-  },
-  addCardText: {
-    fontSize: 14,
-    color: Colors.primary,
-  },
-  paymentCard: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
-  paymentImage: {
-    width: 40,
-    height: 40,
-    resizeMode: "contain",
-  },
-  paymentName: {
-    fontSize: 16,
-    color: "#333",
-  },
-  radioOuter: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#666",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  radioInner: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: "#007AFF",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 16,
-  },
-  featureItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  bulletPoint: {
-    fontSize: 16,
-    color: Colors.primary,
-    marginRight: 6,
-  },
-  featureText: {
-    fontSize: 14,
-    color: Colors.secondary,
-  },
+  container: { flex: 1, backgroundColor: Colors.white },
+  innerContainer: { flex: 1, paddingHorizontal: s(16), paddingTop: vs(8) },
+  sectionTitle: { fontSize: ms(17), fontFamily: FONTS.semiBold, marginBottom: vs(12), color: Colors.secondary },
+  packageCard: { backgroundColor: Colors.primary300, padding: s(14), borderRadius: ms(10), marginBottom: vs(10) },
+  selectedPackageCard: { borderWidth: 2, borderColor: Colors.primary },
+  rowBetween: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  packageName: { fontSize: ms(15), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  packageDetails: { fontSize: ms(13), color: Colors.secondary },
+  addCardText: { fontSize: ms(13), color: Colors.primary, fontFamily: FONTS.medium },
+  paymentCard: { backgroundColor: Colors.primary300, paddingHorizontal: s(14), paddingVertical: vs(12), borderRadius: ms(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: vs(10) },
+  row: { flexDirection: "row", alignItems: "center", gap: s(14) },
+  paymentImage: { width: s(38), height: s(38), resizeMode: "contain" },
+  paymentName: { fontSize: ms(15), color: "#333", fontFamily: FONTS.regular },
+  radioOuter: { width: s(22), height: s(22), borderRadius: ms(11), borderWidth: 2, borderColor: "#666", alignItems: "center", justifyContent: "center" },
+  radioInner: { width: s(12), height: s(12), borderRadius: ms(6), backgroundColor: "#007AFF" },
+  buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: vs(14) },
+  featureItem: { flexDirection: "row", alignItems: "center", marginBottom: vs(4) },
+  bulletPoint: { fontSize: ms(15), color: Colors.primary, marginRight: s(6) },
+  featureText: { fontSize: ms(13), color: Colors.secondary, fontFamily: FONTS.regular },
 });

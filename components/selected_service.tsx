@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 type Category = {
   image: any;
@@ -67,38 +68,11 @@ export default function SelectedService({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  imageContainer: {
-    padding: 8,
-    backgroundColor: Colors.primary200,
-    borderRadius: 12,
-  },
-  image: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-  },
-  textContainer: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  title: {
-    fontSize: 18,
-    color: Colors.secondary,
-    fontFamily: FONTS.semiBold,
-  },
-  date: {
-    fontSize: 12,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary300,
-  },
-  dateValue: {
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary,
-  },
+  container: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  imageContainer: { padding: s(8), backgroundColor: Colors.primary200, borderRadius: ms(12) },
+  image: { width: s(46), height: s(46), borderRadius: ms(8) },
+  textContainer: { flex: 1, marginLeft: s(14) },
+  title: { fontSize: ms(16), color: Colors.secondary, fontFamily: FONTS.semiBold },
+  date: { fontSize: ms(12), fontFamily: FONTS.regular, color: Colors.secondary300 },
+  dateValue: { fontSize: ms(13), fontFamily: FONTS.regular, color: Colors.secondary },
 });

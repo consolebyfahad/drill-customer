@@ -2,6 +2,7 @@ import { Colors } from "@/constants/Colors";
 import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 interface InputFieldProps {
   label?: string;
@@ -24,27 +25,18 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   const handleTextChange = (text: string) => {
     if (dateFormat) {
-      // Remove all non-digits
       const sanitizedText = text.replace(/[^0-9]/g, "");
-
-      // Format as YYYY-MM-DD
       let formattedText = sanitizedText;
-      if (sanitizedText.length >= 5) {
-        formattedText =
-          sanitizedText.slice(0, 4) + "-" + sanitizedText.slice(4);
-      }
-      if (sanitizedText.length >= 7) {
+      if (sanitizedText.length >= 5)
+        formattedText = sanitizedText.slice(0, 4) + "-" + sanitizedText.slice(4);
+      if (sanitizedText.length >= 7)
         formattedText =
           sanitizedText.slice(0, 4) +
           "-" +
           sanitizedText.slice(4, 6) +
           "-" +
           sanitizedText.slice(6, 8);
-      }
-
-      // Limit to 10 characters (YYYY-MM-DD)
-      formattedText = formattedText.slice(0, 10);
-      onChangeText(formattedText);
+      onChangeText(formattedText.slice(0, 10));
     } else {
       onChangeText(text);
     }
@@ -71,25 +63,26 @@ const InputField: React.FC<InputFieldProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: vs(16),
   },
   label: {
-    fontSize: 16,
+    fontSize: ms(15),
     fontFamily: FONTS.semiBold,
     color: Colors.secondary,
-    marginBottom: 8,
+    marginBottom: vs(8),
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.primary300,
-    padding: 14,
-    borderRadius: 12,
-    gap: 8,
+    paddingHorizontal: s(14),
+    paddingVertical: vs(13),
+    borderRadius: ms(12),
+    gap: s(8),
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: ms(15),
     fontFamily: FONTS.regular,
     color: Colors.secondary,
   },

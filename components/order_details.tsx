@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { OrderType } from "~/types/dataTypes";
 import DashedSeparator from "./dashed_seprator";
 
@@ -436,29 +437,11 @@ const OrderDetailsSection = ({ order }: OrderType) => {
 export default OrderDetailsSection;
 
 const styles = StyleSheet.create({
-  orderDetails: {
-    marginTop: 8,
-    padding: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-  },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 4,
-  },
-  boldText: { fontFamily: FONTS.semiBold, color: Colors.secondary300 },
-  blueText: { fontFamily: FONTS.semiBold, color: Colors.secondary },
-  grayText: {
-    color: Colors.secondary,
-  },
-  completedText: {
-    color: Colors.success || "#4CAF50",
-  },
-  problemImage: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-  },
+  orderDetails: { marginTop: vs(7), padding: s(14), backgroundColor: Colors.white, borderRadius: ms(12) },
+  rowBetween: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: vs(4) },
+  boldText: { fontFamily: FONTS.semiBold, color: Colors.secondary300, fontSize: ms(13) },
+  blueText: { fontFamily: FONTS.semiBold, color: Colors.secondary, fontSize: ms(13) },
+  grayText: { color: Colors.secondary, fontSize: ms(13) },
+  completedText: { color: Colors.success || "#4CAF50" },
+  problemImage: { width: s(60), height: s(60), borderRadius: ms(8) },
 });

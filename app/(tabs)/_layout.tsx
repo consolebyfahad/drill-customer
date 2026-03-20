@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 type CustomTabBarButtonProps = {
   children: React.ReactNode;
@@ -25,16 +26,15 @@ function CustomTabBarButton({ children }: CustomTabBarButtonProps) {
     <TouchableOpacity
       onPress={() => router.push("/add")}
       style={{
-        top: -20,
+        top: -vs(18),
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: Colors.primary,
-        width: 70,
-        height: 70,
-        borderRadius: 35,
+        width: s(66),
+        height: s(66),
+        borderRadius: s(33),
         borderWidth: 4,
         borderColor: "white",
-        // Adjust for safe area if needed
         marginBottom: insets.bottom > 0 ? -insets.bottom / 2 : 0,
       }}
     >
@@ -53,7 +53,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: true,
         tabBarStyle: {
-          height: 100 + insets.bottom,
+          height: vs(90) + insets.bottom,
           paddingBottom: insets.bottom,
           borderTopColor: "#eee",
           position: "absolute",
@@ -81,8 +81,8 @@ export default function TabLayout() {
             <Text
               style={{
                 color: Colors.secondary,
-                fontSize: 12,
-                marginBottom: 5,
+                fontSize: ms(11),
+                marginBottom: vs(4),
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
@@ -96,15 +96,15 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
-              <Packages />
+              <Packages width={s(24)} height={s(24)} />
             </View>
           ),
           tabBarLabel: ({ focused }) => (
             <Text
               style={{
                 color: Colors.secondary,
-                fontSize: 12,
-                marginBottom: 5,
+                fontSize: ms(11),
+                marginBottom: vs(4),
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
@@ -118,7 +118,7 @@ export default function TabLayout() {
         options={{
           tabBarButton: (props) => (
             <CustomTabBarButton {...props}>
-              <Plus height={28} width={28} />
+              <Plus height={s(26)} width={s(26)} />
             </CustomTabBarButton>
           ),
         }}
@@ -128,15 +128,15 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
-              {focused ? <OrdersFill /> : <Orders />}
+              {focused ? <OrdersFill width={s(24)} height={s(24)} /> : <Orders width={s(24)} height={s(24)} />}
             </View>
           ),
           tabBarLabel: ({ focused }) => (
             <Text
               style={{
                 color: Colors.secondary,
-                fontSize: 12,
-                marginBottom: 5,
+                fontSize: ms(11),
+                marginBottom: vs(4),
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
@@ -150,15 +150,15 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={iconContainerStyle(focused)}>
-              {focused ? <ProfileFill /> : <Profile />}
+              {focused ? <ProfileFill width={s(24)} height={s(24)} /> : <Profile width={s(24)} height={s(24)} />}
             </View>
           ),
           tabBarLabel: ({ focused }) => (
             <Text
               style={{
                 color: Colors.secondary,
-                fontSize: 12,
-                marginBottom: 5,
+                fontSize: ms(11),
+                marginBottom: vs(4),
                 fontFamily: focused ? FONTS.bold : FONTS.medium,
               }}
             >
@@ -172,10 +172,10 @@ export default function TabLayout() {
 }
 
 const iconContainerStyle = (focused: boolean) => ({
-  alignItems: "center",
+  alignItems: "center" as const,
   borderTopWidth: focused ? 3 : 0,
   borderTopColor: Colors.secondary,
   borderRadius: 2,
-  paddingTop: 6,
-  paddingBottom: 6,
+  paddingTop: vs(6),
+  paddingBottom: vs(6),
 });

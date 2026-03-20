@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 const About = () => {
   const { t } = useTranslation();
@@ -36,36 +37,10 @@ const About = () => {
 export default About;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-  },
-  heading: {
-    fontSize: 22,
-    fontFamily: FONTS.bold,
-    color: Colors.primary,
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 14,
-    fontFamily: FONTS.medium,
-    color: Colors.secondary,
-    lineHeight: 22,
-    marginBottom: 20,
-  },
-  section: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontFamily: FONTS.medium,
-    color: Colors.secondary,
-  },
-  value: {
-    fontSize: 16,
-    fontFamily: FONTS.bold,
-    color: Colors.primary,
-  },
+  container: { flex: 1, backgroundColor: Colors.white, paddingHorizontal: s(20), paddingTop: vs(16) },
+  heading: { fontSize: ms(21), fontFamily: FONTS.bold, color: Colors.primary, marginBottom: vs(10) },
+  description: { fontSize: ms(13), fontFamily: FONTS.medium, color: Colors.secondary, lineHeight: ms(22), marginBottom: vs(18) },
+  section: { marginBottom: vs(14) },
+  label: { fontSize: ms(13), fontFamily: FONTS.medium, color: Colors.secondary },
+  value: { fontSize: ms(15), fontFamily: FONTS.bold, color: Colors.primary },
 });

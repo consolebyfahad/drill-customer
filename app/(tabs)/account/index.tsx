@@ -30,6 +30,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "~/contexts/AuthContext";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type User = {
@@ -365,33 +366,34 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   scrollView: {
-    padding: 16,
+    paddingHorizontal: s(16),
+    paddingTop: vs(8),
     flex: 1,
   },
   scrollViewContent: {
-    paddingBottom: 100,
+    paddingBottom: vs(120),
   },
   guestScrollContent: {
-    paddingBottom: 100,
+    paddingBottom: vs(120),
     flexGrow: 1,
   },
   guestContainer: {
     flex: 1,
-    paddingTop: 80,
+    paddingTop: vs(80),
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: s(24),
   },
   guestText: {
-    fontSize: 16,
+    fontSize: ms(16),
     fontFamily: FONTS.medium,
     color: Colors.secondary,
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: vs(24),
   },
   profileContainer: {
     alignItems: "flex-start",
-    marginBottom: 24,
+    marginBottom: vs(20),
   },
   imageWrapper: {
     borderWidth: 2,
@@ -400,8 +402,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   image: {
-    width: 96,
-    height: 87,
+    width: s(90),
+    height: s(90),
     borderRadius: 999,
   },
   onlineIndicator: {
@@ -409,9 +411,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     backgroundColor: Colors.success,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: s(22),
+    height: s(22),
+    borderRadius: s(11),
     borderWidth: 2,
     borderColor: "white",
   },
@@ -421,13 +423,13 @@ const styles = StyleSheet.create({
     right: 0,
   },
   userName: {
-    fontSize: 24,
+    fontSize: ms(22),
     fontFamily: FONTS.extrabold,
     color: Colors.secondary,
-    marginTop: 8,
+    marginTop: vs(8),
   },
   userEmail: {
-    fontSize: 16,
+    fontSize: ms(14),
     fontFamily: FONTS.regular,
     color: Colors.secondary300,
   },
@@ -443,20 +445,20 @@ const styles = StyleSheet.create({
   rowLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    gap: s(14),
   },
   rowRight: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: s(8),
   },
   itemText: {
-    fontSize: 16,
+    fontSize: ms(15),
     fontFamily: FONTS.medium,
     color: Colors.secondary,
   },
   itemRightText: {
-    fontSize: 14,
+    fontSize: ms(13),
     fontFamily: FONTS.medium,
   },
 });

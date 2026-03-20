@@ -13,6 +13,7 @@ import ProviderCard from "~/components/provider_card";
 import ServiceDetailsCard from "~/components/service_details_card";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { OrderType } from "~/types/dataTypes";
 
 interface OrderDetailsProps {
@@ -69,65 +70,17 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
 }
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-  },
-  orderHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  orderDetailsContainer: {
-    backgroundColor: Colors.primary300,
-    marginTop: 24,
-    borderRadius: 25,
-    padding: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  orderDetails: {
-    marginTop: 8,
-    padding: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-  },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 4,
-  },
-  boldText: {
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary300,
-  },
-  blueText: {
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
+  contentContainer: { flex: 1 },
+  orderHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  orderDetailsContainer: { backgroundColor: Colors.primary300, marginTop: vs(20), borderRadius: ms(25), padding: s(14), marginBottom: vs(20) },
+  sectionTitle: { fontSize: ms(17), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  orderDetails: { marginTop: vs(8), padding: s(14), backgroundColor: Colors.white, borderRadius: ms(12) },
+  rowBetween: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: vs(4) },
+  boldText: { fontFamily: FONTS.semiBold, color: Colors.secondary300 },
+  blueText: { fontFamily: FONTS.semiBold, color: Colors.secondary },
   grayText: { color: Colors.secondary },
-  problemImage: { width: 64, height: 64, borderRadius: 8 },
-  noImage: {
-    backgroundColor: Colors.primary300,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  noProviderContainer: {
-    padding: 16,
-    backgroundColor: Colors.primary300,
-    borderRadius: 12,
-    marginBottom: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: 100,
-  },
-  noProviderText: {
-    color: Colors.secondary,
-    textAlign: "center",
-    fontFamily: FONTS.semiBold,
-  },
+  problemImage: { width: s(62), height: s(62), borderRadius: ms(8) },
+  noImage: { backgroundColor: Colors.primary300, justifyContent: "center", alignItems: "center" },
+  noProviderContainer: { padding: s(14), backgroundColor: Colors.primary300, borderRadius: ms(12), marginBottom: vs(20), alignItems: "center", justifyContent: "center", minHeight: vs(90) },
+  noProviderText: { color: Colors.secondary, textAlign: "center", fontFamily: FONTS.semiBold, fontSize: ms(14) },
 });

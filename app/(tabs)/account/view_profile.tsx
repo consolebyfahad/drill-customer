@@ -22,6 +22,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type Order = {
@@ -301,104 +302,23 @@ export default function ViewProfile() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  scrollContainer: {
-    padding: 16,
-    paddingBottom: 160,
-  },
-  profileContainer: {
-    alignItems: "flex-start",
-    marginBottom: 24,
-  },
-  imageWrapper: {
-    borderWidth: 2,
-    borderColor: "green",
-    borderRadius: 999,
-    position: "relative",
-  },
-  profileImage: {
-    height: 96,
-    width: 96,
-    borderRadius: 999,
-  },
-  onlineIndicator: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    backgroundColor: "green",
-    height: 24,
-    width: 24,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "white",
-  },
-  verifiedIcon: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-  },
-  userName: {
-    fontSize: 24,
-    fontFamily: FONTS.bold,
-    color: Colors.secondary,
-    marginTop: 12,
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  ratingText: {
-    fontFamily: FONTS.medium,
-    color: Colors.secondary,
-  },
-  reviewCount: {
-    color: Colors.gray300,
-    fontSize: 12,
-    fontFamily: FONTS.medium,
-  },
-  balance: {
-    color: Colors.secondary300,
-    fontSize: 18,
-    fontFamily: FONTS.medium,
-  },
-  userEmail: {
-    color: Colors.secondary300,
-    fontSize: 16,
-    marginTop: 4,
-    fontFamily: FONTS.medium,
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 8,
-    gap: 4,
-  },
-  locationText: {
-    color: Colors.secondary300,
-    fontSize: 16,
-    fontFamily: FONTS.medium,
-  },
-  orderToggle: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  orderTitle: {
-    fontFamily: FONTS.bold,
-  },
-  orderCount: {
-    fontSize: 14,
-    color: Colors.secondary300,
-    fontFamily: FONTS.medium,
-  },
-  noOrdersText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: Colors.secondary300,
-    fontFamily: FONTS.medium,
-  },
+  container: { flex: 1, backgroundColor: "white" },
+  scrollContainer: { paddingHorizontal: s(16), paddingTop: vs(8), paddingBottom: vs(120) },
+  profileContainer: { alignItems: "flex-start", marginBottom: vs(20) },
+  imageWrapper: { borderWidth: 2, borderColor: "green", borderRadius: 999, position: "relative" },
+  profileImage: { height: s(88), width: s(88), borderRadius: 999 },
+  onlineIndicator: { position: "absolute", bottom: 0, right: 0, backgroundColor: "green", height: s(22), width: s(22), borderRadius: 999, borderWidth: 1, borderColor: "white" },
+  verifiedIcon: { position: "absolute", top: 0, right: 0 },
+  userName: { fontSize: ms(22), fontFamily: FONTS.bold, color: Colors.secondary, marginTop: vs(10) },
+  ratingContainer: { flexDirection: "row", alignItems: "center", gap: s(6) },
+  ratingText: { fontFamily: FONTS.medium, color: Colors.secondary, fontSize: ms(14) },
+  reviewCount: { color: Colors.gray300, fontSize: ms(12), fontFamily: FONTS.medium },
+  balance: { color: Colors.secondary300, fontSize: ms(17), fontFamily: FONTS.medium },
+  userEmail: { color: Colors.secondary300, fontSize: ms(14), marginTop: vs(4), fontFamily: FONTS.medium },
+  locationContainer: { flexDirection: "row", alignItems: "center", marginTop: vs(7), gap: s(4) },
+  locationText: { color: Colors.secondary300, fontSize: ms(14), fontFamily: FONTS.medium },
+  orderToggle: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  orderTitle: { fontFamily: FONTS.bold, fontSize: ms(15) },
+  orderCount: { fontSize: ms(13), color: Colors.secondary300, fontFamily: FONTS.medium },
+  noOrdersText: { textAlign: "center", marginTop: vs(18), color: Colors.secondary300, fontFamily: FONTS.medium, fontSize: ms(14) },
 });

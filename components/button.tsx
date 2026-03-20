@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 type ButtonProps = {
   title?: string;
@@ -75,7 +76,7 @@ export default function Button({
           color={textColor || (variant === "primary" ? Colors.white : Colors.secondary)}
         />
       ) : (
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: s(4) }}>
           {Icon ? Icon : ""}
           <Text
             style={[
@@ -95,9 +96,9 @@ export default function Button({
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 44,
-    paddingVertical: 16,
-    borderRadius: 10,
+    minHeight: vs(44),
+    paddingVertical: vs(14),
+    borderRadius: ms(10),
     alignItems: "center",
     justifyContent: "center",
   },
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary300,
   },
   text: {
-    fontSize: 18,
+    fontSize: ms(17),
     fontFamily: FONTS.semiBold,
     textAlign: "center",
   },

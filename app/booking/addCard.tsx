@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { useToast } from "~/components/ToastProvider";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 export default function AddCard() {
   const { t } = useTranslation();
@@ -99,59 +100,16 @@ export default function AddCard() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  scrollContainer: {
-    padding: 16,
-  },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  backButton: {
-    backgroundColor: "#E5E7EB",
-    padding: 8,
-    borderRadius: 50,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontFamily: FONTS.semiBold,
-    marginLeft: 16,
-    color: "#374151",
-  },
-  cardImage: {
-    width: "100%",
-    marginBottom: 24,
-  },
-  label: {
-    fontSize: 18,
-    fontFamily: FONTS.bold,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: "#E5E7EB",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  inputContainer: {
-    width: "48%",
-  },
-  toggleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  footer: {
-    padding: 24,
-  },
+  container: { flex: 1, backgroundColor: "white" },
+  scrollContainer: { paddingHorizontal: s(16), paddingTop: vs(8) },
+  headerContainer: { flexDirection: "row", alignItems: "center", marginBottom: vs(20) },
+  backButton: { backgroundColor: "#E5E7EB", padding: s(8), borderRadius: 50 },
+  headerTitle: { fontSize: ms(22), fontFamily: FONTS.semiBold, marginLeft: s(14), color: "#374151" },
+  cardImage: { width: "100%", marginBottom: vs(20) },
+  label: { fontSize: ms(17), fontFamily: FONTS.bold, marginBottom: vs(7) },
+  input: { backgroundColor: "#E5E7EB", paddingHorizontal: s(14), paddingVertical: vs(14), borderRadius: ms(8), marginBottom: vs(14), fontSize: ms(14) },
+  rowBetween: { flexDirection: "row", justifyContent: "space-between", marginBottom: vs(14) },
+  inputContainer: { width: "48%" },
+  toggleContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: vs(14) },
+  footer: { paddingHorizontal: s(20), paddingVertical: vs(18) },
 });

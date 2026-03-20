@@ -3,6 +3,7 @@ import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 type ServiceCardProps = {
   item: {
@@ -17,33 +18,27 @@ type ServiceCardProps = {
 };
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ item }) => {
-  console.log("first,", item);
   return (
     <View style={styles.card}>
-      {/* Service Image */}
       <Image
         source={item.image}
         resizeMode="cover"
         style={styles.serviceImage}
       />
-
-      {/* Service Details */}
       <View style={styles.detailsContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
           <Text style={styles.price}>${item.price}</Text>
         </View>
         <View style={styles.ratingContainer}>
-          <Star />
+          <Star width={s(14)} height={s(14)} />
           <Text style={styles.rating}>{item.rating}</Text>
           <Text style={styles.reviews}>({item.reviews})</Text>
         </View>
-
-        {/* Provider Details */}
         <View style={styles.providerContainer}>
           <Image source={item.providerImage} style={styles.providerImage} />
           <View>
-            <Text style={styles.providerName}>{item.provider}</Text>
+            <Text style={styles.providerName} numberOfLines={1}>{item.provider}</Text>
             <Text style={styles.providerLabel}>Provider</Text>
           </View>
         </View>
@@ -54,21 +49,20 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ item }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 242,
-    height: 300,
+    width: s(230),
     backgroundColor: Colors.gray100,
-    borderRadius: 16,
-    marginRight: 16,
+    borderRadius: ms(16),
+    marginRight: s(14),
   },
   serviceImage: {
-    height: 150,
+    height: vs(140),
     width: "100%",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: ms(16),
+    borderTopRightRadius: ms(16),
   },
   detailsContainer: {
-    padding: 16,
-    gap: 8,
+    padding: s(12),
+    gap: vs(6),
     width: "100%",
   },
   header: {
@@ -77,52 +71,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 20,
+    fontSize: ms(16),
     fontFamily: FONTS.bold,
     color: Colors.secondary,
-    width: 112,
-    lineHeight: 22,
+    flex: 1,
+    marginRight: s(6),
+    lineHeight: ms(20),
   },
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    marginVertical: 4,
+    gap: s(4),
   },
   rating: {
     fontFamily: FONTS.semiBold,
     color: Colors.secondary,
+    fontSize: ms(13),
   },
   reviews: {
-    fontSize: 14,
+    fontSize: ms(12),
     fontFamily: FONTS.regular,
     color: Colors.secondary300,
   },
   price: {
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    paddingVertical: vs(5),
+    paddingHorizontal: s(12),
     backgroundColor: Colors.primary,
     color: "white",
-    fontSize: 16,
-    borderRadius: 24,
+    fontSize: ms(14),
+    borderRadius: ms(24),
     fontFamily: FONTS.semiBold,
   },
   providerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: s(8),
   },
   providerImage: {
-    height: 34,
-    width: 34,
+    height: s(30),
+    width: s(30),
   },
   providerName: {
-    fontSize: 16,
+    fontSize: ms(13),
     fontFamily: FONTS.semiBold,
     color: Colors.secondary,
   },
   providerLabel: {
-    fontSize: 14,
+    fontSize: ms(11),
     fontFamily: FONTS.regular,
     color: Colors.secondary300,
   },

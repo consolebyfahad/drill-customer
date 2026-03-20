@@ -1,7 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
+import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 type ScreensHeaderProps = {
   title: string;
@@ -11,14 +14,17 @@ export default function ScreensHeader({ title }: ScreensHeaderProps) {
   const navigation = useNavigation();
 
   return (
-    <View className="flex-row items-center mb-6">
-      <TouchableOpacity
-        className="bg-gray-200 p-2 rounded-full"
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="chevron-back" size={24} color="black" />
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="chevron-back" size={s(24)} color="black" />
       </TouchableOpacity>
-      <Text className="text-2xl font-bold ml-4 text-secondary">{title}</Text>
+      <Text style={styles.title}>{title}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flexDirection: "row", alignItems: "center", marginBottom: vs(20) },
+  backButton: { backgroundColor: Colors.gray, padding: s(8), borderRadius: 999 },
+  title: { fontSize: ms(22), fontFamily: FONTS.bold, marginLeft: s(14), color: Colors.secondary },
+});

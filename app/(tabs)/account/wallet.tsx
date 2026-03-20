@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 const { width } = Dimensions.get("window");
 
@@ -143,61 +144,17 @@ const Wallet = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  scrollContainer: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  chartSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 16,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  textSecondary: {
-    color: "#6B7280",
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-  },
-  totalExpense: {
-    color: "#6B7280",
-    fontSize: 20,
-    fontFamily: FONTS.medium,
-  },
-  textGray: {
-    color: "#9CA3AF",
-    fontSize: 14,
-    fontFamily: FONTS.semiBold,
-  },
-  balanceSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  availableBalance: {
-    color: "#6B7280",
-    fontSize: 24,
-    fontFamily: FONTS.semiBold,
-  },
-  transactionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 16,
-  },
-  transactionTitle: {
-    fontFamily: FONTS.bold,
-    fontSize: 18,
-    color: "#6B7280",
-  },
+  container: { flex: 1, backgroundColor: "white" },
+  scrollContainer: { paddingHorizontal: s(16), paddingTop: vs(8), paddingBottom: vs(80) },
+  chartSection: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: vs(14) },
+  rowCenter: { flexDirection: "row", alignItems: "center", gap: s(7) },
+  textSecondary: { color: "#6B7280", fontSize: ms(17), fontFamily: FONTS.semiBold },
+  totalExpense: { color: "#6B7280", fontSize: ms(19), fontFamily: FONTS.medium },
+  textGray: { color: "#9CA3AF", fontSize: ms(13), fontFamily: FONTS.semiBold },
+  balanceSection: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  availableBalance: { color: "#6B7280", fontSize: ms(22), fontFamily: FONTS.semiBold },
+  transactionHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: vs(14) },
+  transactionTitle: { fontFamily: FONTS.bold, fontSize: ms(17), color: "#6B7280" },
 });
 
 export default Wallet;

@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CategoryCard from "~/components/category_card";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
+import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type Category = {
@@ -112,11 +114,12 @@ export default function Add() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: s(16),
+    paddingTop: vs(8),
   },
   columnWrapper: {
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: vs(12),
   },
   centeredContainer: {
     flex: 1,
@@ -125,8 +128,9 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: Colors.danger,
-    fontSize: 16,
+    fontSize: ms(15),
     textAlign: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: s(24),
+    fontFamily: FONTS.regular,
   },
 });

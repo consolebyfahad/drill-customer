@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type Category = {
@@ -122,31 +123,32 @@ export default function Categories() {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: vs(20),
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: vs(10),
   },
   title: {
-    fontSize: 18,
+    fontSize: ms(17),
     fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   seeAllText: {
     color: Colors.primary,
     fontFamily: FONTS.medium,
+    fontSize: ms(14),
   },
   columnWrapper: {
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: vs(12),
   },
   errorText: {
     color: "red",
     textAlign: "center",
-    marginTop: 10,
+    marginTop: vs(10),
     fontFamily: FONTS.bold,
   },
 });

@@ -17,13 +17,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "~/contexts/AuthContext";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
-type CountryCode = {
-  key: number;
-  label: string;
-  value: string;
-};
+type CountryCode = { key: number; label: string; value: string };
 
 const countryCodes: CountryCode[] = [
   { key: 1, label: "Kingdom Saudi Arabia (+966)", value: "+966" },
@@ -41,7 +38,6 @@ export default function Login() {
 
   const handleContinue = async () => {
     const cleanedNumber = phoneNumber.replace(/\D/g, "");
-
     if (cleanedNumber.length < 9 || cleanedNumber.length > 10) {
       setError("Please enter a valid phone number.");
       return;
@@ -65,8 +61,7 @@ export default function Login() {
       } else {
         setError(response.message || "Login failed.");
       }
-    } catch (error) {
-      console.error("Login Error:", error);
+    } catch (e) {
       setError(t("login.invalidPhone"));
     }
   };
@@ -76,19 +71,14 @@ export default function Login() {
       <Text style={styles.title}>{t("welcome")}</Text>
       <Text style={styles.subtitle}>{t("login.subtitle")}</Text>
 
-      <View
-        style={[
-          styles.inputContainer,
-          error ? styles.inputContainerError : null,
-        ]}
-      >
+      <View style={[styles.inputContainer, error ? styles.inputContainerError : null]}>
         <TouchableOpacity
           onPress={() => modalRef.current.open()}
           style={styles.countrySelector}
         >
-          <Flag width={25} height={25} />
+          <Flag width={s(25)} height={s(25)} />
           <Text style={styles.countryText}>{countryCode.label}</Text>
-          <Ionicons name="chevron-down" size={20} />
+          <Ionicons name="chevron-down" size={s(20)} />
         </TouchableOpacity>
 
         <ModalSelector
@@ -113,14 +103,12 @@ export default function Login() {
           }}
         />
       </View>
+
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <Text style={styles.consentText}>
         {t("login.consentPrefix")}{" "}
-        <Text
-          style={styles.privacyLink}
-          onPress={() => router.push("/auth/privacy")}
-        >
+        <Text style={styles.privacyLink} onPress={() => router.push("/auth/privacy")}>
           {t("login.privacy")}
         </Text>
         {t("login.consentSuffix")}
@@ -134,37 +122,40 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 84,
-    paddingHorizontal: 12,
+    paddingTop: vs(60),
+    paddingHorizontal: s(16),
     backgroundColor: Colors.white,
   },
   title: {
-    fontSize: 36,
+    fontSize: ms(32),
     fontFamily: FONTS.bold,
-    marginBottom: 8,
+    marginBottom: vs(6),
     color: Colors.secondary,
   },
   subtitle: {
-    fontSize: 28,
+    fontSize: ms(22),
     color: Colors.secondary100,
-    marginBottom: 32,
+    marginBottom: vs(28),
     fontFamily: FONTS.regular,
   },
   inputContainer: {
     borderWidth: 1,
     borderColor: Colors.gray,
-    borderRadius: 12,
-    marginBottom: 24,
+    borderRadius: ms(12),
+    marginBottom: vs(20),
     overflow: "hidden",
   },
   countrySelector: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 16,
+    paddingHorizontal: s(16),
+    paddingVertical: vs(14),
   },
   countryText: {
-    fontSize: 16,
+    flex: 1,
+    marginLeft: s(10),
+    fontSize: ms(15),
     color: Colors.secondary,
     fontFamily: FONTS.regular,
   },
@@ -173,16 +164,17 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray,
   },
   input: {
-    padding: 16,
-    fontSize: 18,
+    paddingHorizontal: s(16),
+    paddingVertical: vs(14),
+    fontSize: ms(17),
   },
   consentText: {
     textAlign: "center",
-    fontSize: 14,
+    fontSize: ms(13),
     fontFamily: FONTS.regular,
     color: Colors.secondary100,
-    marginBottom: 24,
-    paddingHorizontal: 8,
+    marginBottom: vs(20),
+    paddingHorizontal: s(8),
   },
   privacyLink: {
     fontFamily: FONTS.semiBold,
@@ -194,10 +186,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    fontSize: 14,
-    marginTop: -20,
-    marginBottom: 16,
-    paddingLeft: 12,
+    fontSize: ms(13),
+    marginTop: vs(-14),
+    marginBottom: vs(12),
+    paddingLeft: s(12),
     fontFamily: FONTS.regular,
   },
 });

@@ -4,6 +4,7 @@ import { Colors } from "@/constants/Colors";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 interface StepperProps {
   step?: boolean;
 }
@@ -49,46 +50,15 @@ const Stepper: React.FC<StepperProps> = ({ step }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 24,
-  },
-  stepContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  step: {
-    alignItems: "center",
-  },
-  stepIconContainer: {
-    padding: 8,
-    borderRadius: 999,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.primary,
-  },
-  activeStep: {
-    backgroundColor: Colors.primary,
-  },
-  inactiveStep: {
-    backgroundColor: Colors.primary200,
-  },
-  innerIconContainer: {
-    borderRadius: 25,
-    borderColor: Colors.secondary300,
-    borderWidth: 1,
-  },
-  stepText: {
-    fontSize: 10,
-    marginTop: 4,
-    fontFamily: FONTS.regular,
-  },
-  separator: {
-    marginHorizontal: 14,
-    marginBottom: 8,
-  },
+  container: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: vs(20) },
+  stepContainer: { flexDirection: "row", alignItems: "center" },
+  step: { alignItems: "center" },
+  stepIconContainer: { padding: s(8), borderRadius: 999, alignItems: "center", justifyContent: "center", backgroundColor: Colors.primary },
+  activeStep: { backgroundColor: Colors.primary },
+  inactiveStep: { backgroundColor: Colors.primary200 },
+  innerIconContainer: { borderRadius: ms(25), borderColor: Colors.secondary300, borderWidth: 1 },
+  stepText: { fontSize: ms(10), marginTop: vs(4), fontFamily: FONTS.regular },
+  separator: { marginHorizontal: s(12), marginBottom: vs(8) },
 });
 
 export default Stepper;

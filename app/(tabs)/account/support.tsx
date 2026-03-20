@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 const SUPPORT_EMAIL = "support@drill.com";
 const SUPPORT_PHONE = "+966500000000"; // Replace with real support number
@@ -71,54 +72,13 @@ const Support = () => {
 export default Support;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    padding: 12,
-  },
-  heading: {
-    fontSize: 22,
-    fontFamily: FONTS.bold,
-    color: Colors.primary,
-    marginBottom: 8,
-  },
-  subheading: {
-    fontSize: 14,
-    fontFamily: FONTS.medium,
-    color: Colors.secondary,
-    marginBottom: 20,
-  },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.primary100,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  cardContent: {
-    marginLeft: 12,
-  },
-  cardTitle: {
-    fontFamily: FONTS.bold,
-    fontSize: 16,
-    color: Colors.primary,
-  },
-  cardText: {
-    fontFamily: FONTS.medium,
-    fontSize: 14,
-    color: Colors.secondary,
-  },
-  button: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  buttonText: {
-    color: Colors.white,
-    fontFamily: FONTS.bold,
-    fontSize: 16,
-  },
+  container: { flex: 1, backgroundColor: Colors.white, paddingHorizontal: s(12), paddingTop: vs(8) },
+  heading: { fontSize: ms(21), fontFamily: FONTS.bold, color: Colors.primary, marginBottom: vs(7) },
+  subheading: { fontSize: ms(13), fontFamily: FONTS.medium, color: Colors.secondary, marginBottom: vs(18) },
+  card: { flexDirection: "row", alignItems: "center", backgroundColor: Colors.primary100, borderRadius: ms(12), paddingHorizontal: s(14), paddingVertical: vs(14), marginBottom: vs(14) },
+  cardContent: { marginLeft: s(12) },
+  cardTitle: { fontFamily: FONTS.bold, fontSize: ms(15), color: Colors.primary },
+  cardText: { fontFamily: FONTS.medium, fontSize: ms(13), color: Colors.secondary },
+  button: { backgroundColor: Colors.primary, paddingVertical: vs(13), borderRadius: ms(12), alignItems: "center", marginTop: vs(18) },
+  buttonText: { color: Colors.white, fontFamily: FONTS.bold, fontSize: ms(15) },
 });

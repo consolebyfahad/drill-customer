@@ -23,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type BookingParams = {
@@ -317,97 +318,27 @@ export default function ConfirmBooking() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
-  innerContainer: { flex: 1, padding: 16 },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    marginBottom: 8,
-    color: Colors.secondary,
-  },
-  packageContainer: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  packageTitle: {
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  packageSubtitle: { color: "gray" },
-  packagePrice: {
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  paymentContainer: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  paymentText: { fontSize: 16, fontFamily: FONTS.regular },
-  separator: { height: 1, backgroundColor: "gray", marginVertical: 16 },
-  promoContainer: {
-    flexDirection: "row",
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    alignItems: "center",
-  },
-  promoInput: { flex: 1 },
-  applyButton: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-  },
-  applyButtonText: { color: "white" },
-  priceContainer: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
+  innerContainer: { flex: 1, paddingHorizontal: s(16), paddingTop: vs(8) },
+  sectionTitle: { fontSize: ms(17), fontFamily: FONTS.semiBold, marginBottom: vs(8), color: Colors.secondary },
+  packageContainer: { backgroundColor: Colors.primary300, padding: s(14), borderRadius: ms(12), marginBottom: vs(14), flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  packageTitle: { fontSize: ms(15), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  packageSubtitle: { color: "gray", fontSize: ms(13) },
+  packagePrice: { fontSize: ms(15), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  paymentContainer: { backgroundColor: Colors.primary300, padding: s(14), borderRadius: ms(12), marginBottom: vs(14), flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  paymentText: { fontSize: ms(15), fontFamily: FONTS.regular },
+  separator: { height: 1, backgroundColor: "gray", marginVertical: vs(14) },
+  promoContainer: { flexDirection: "row", backgroundColor: Colors.primary300, paddingHorizontal: s(14), paddingVertical: vs(12), borderRadius: ms(12), marginBottom: vs(14), alignItems: "center" },
+  promoInput: { flex: 1, fontSize: ms(14) },
+  applyButton: { backgroundColor: Colors.primary, paddingVertical: vs(7), paddingHorizontal: s(14), borderRadius: ms(8) },
+  applyButtonText: { color: "white", fontSize: ms(13) },
+  priceContainer: { backgroundColor: Colors.primary300, padding: s(14), borderRadius: ms(12), marginBottom: vs(14) },
   rowBetween: { flexDirection: "row", justifyContent: "space-between" },
-  grayText: { color: "gray" },
-  boldText: {
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  discountText: { fontFamily: FONTS.semiBold, color: "red" },
-  primaryText: {
-    fontFamily: FONTS.semiBold,
-    color: "#007AFF",
-  },
-  serviceInfoContainer: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  serviceInfoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  serviceInfoLabel: {
-    fontSize: 14,
-    fontFamily: FONTS.medium,
-    color: Colors.secondary,
-  },
-  serviceInfoValue: {
-    fontSize: 14,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
+  grayText: { color: "gray", fontSize: ms(13) },
+  boldText: { fontFamily: FONTS.semiBold, color: Colors.secondary, fontSize: ms(13) },
+  discountText: { fontFamily: FONTS.semiBold, color: "red", fontSize: ms(13) },
+  primaryText: { fontFamily: FONTS.semiBold, color: "#007AFF", fontSize: ms(13) },
+  serviceInfoContainer: { backgroundColor: Colors.primary300, padding: s(14), borderRadius: ms(12), marginBottom: vs(14) },
+  serviceInfoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: vs(7) },
+  serviceInfoLabel: { fontSize: ms(13), fontFamily: FONTS.medium, color: Colors.secondary },
+  serviceInfoValue: { fontSize: ms(13), fontFamily: FONTS.semiBold, color: Colors.secondary },
 });

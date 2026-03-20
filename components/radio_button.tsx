@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Colors } from "~/constants/Colors";
+import { ms, s } from "~/utils/responsive";
 
 interface RadioButtonProps {
   options: string[];
@@ -37,38 +38,12 @@ const RadioButton: React.FC<RadioButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-  },
-  optionContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  radioCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: Colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  selected: {
-    borderColor: Colors.secondary,
-  },
-  innerCircle: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: Colors.secondary,
-  },
-  label: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: Colors.secondary,
-  },
+  container: { flexDirection: "row", alignItems: "center", gap: s(18) },
+  optionContainer: { flexDirection: "row", alignItems: "center" },
+  radioCircle: { height: s(20), width: s(20), borderRadius: ms(10), borderWidth: 2, borderColor: Colors.primary, alignItems: "center", justifyContent: "center" },
+  selected: { borderColor: Colors.secondary },
+  innerCircle: { height: s(10), width: s(10), borderRadius: ms(5), backgroundColor: Colors.secondary },
+  label: { marginLeft: s(7), fontSize: ms(15), color: Colors.secondary },
 });
 
 export default RadioButton;

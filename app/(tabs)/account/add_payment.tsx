@@ -19,6 +19,7 @@ import Button from "~/components/button";
 import { useToast } from "~/components/ToastProvider";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 const { width } = Dimensions.get("window");
 
@@ -132,50 +133,18 @@ export default function AddPayment() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
-  scrollContainer: { padding: 24, paddingBottom: 50 },
-  infoText: {
-    color: Colors.secondary300,
-    textAlign: "center",
-    marginVertical: 16,
-  },
-  cardSlider: { marginTop: 16 },
-  card: {
-    height: 200,
-    width: "100%",
-    justifyContent: "space-around",
-    padding: 16,
-    marginRight: 8,
-  },
-  cardName: { color: "white", fontSize: 18, fontFamily: FONTS.semiBold },
-  cardNumber: { color: "white", fontSize: 16 },
-  cardBalance: { color: "white", fontSize: 20, fontFamily: FONTS.semiBold },
-  dotsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 8,
-  },
-  dot: {
-    height: 8,
-    backgroundColor: "blue",
-    borderRadius: 4,
-    marginHorizontal: 4,
-  },
-  sectionTitle: { fontSize: 18, fontFamily: FONTS.semiBold, marginTop: 24 },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.gray100,
-    padding: 16,
-    borderRadius: 8,
-    marginVertical: 8,
-  },
-  input: { flex: 1, marginHorizontal: 16, fontSize: 18 },
-  confirmButton: {
-    backgroundColor: "blue",
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 24,
-  },
-  confirmText: { color: "white", fontSize: 18, fontFamily: FONTS.semiBold },
+  scrollContainer: { paddingHorizontal: s(20), paddingTop: vs(8), paddingBottom: vs(40) },
+  infoText: { color: Colors.secondary300, textAlign: "center", marginVertical: vs(14), fontSize: ms(14) },
+  cardSlider: { marginTop: vs(14) },
+  card: { height: vs(180), justifyContent: "space-around", paddingHorizontal: s(16), paddingVertical: vs(16), marginRight: s(8) },
+  cardName: { color: "white", fontSize: ms(17), fontFamily: FONTS.semiBold },
+  cardNumber: { color: "white", fontSize: ms(15) },
+  cardBalance: { color: "white", fontSize: ms(18), fontFamily: FONTS.semiBold },
+  dotsContainer: { flexDirection: "row", justifyContent: "center", marginTop: vs(8) },
+  dot: { height: vs(8), backgroundColor: "blue", borderRadius: ms(4), marginHorizontal: s(4) },
+  sectionTitle: { fontSize: ms(17), fontFamily: FONTS.semiBold, marginTop: vs(20) },
+  inputContainer: { flexDirection: "row", alignItems: "center", backgroundColor: Colors.gray100, paddingHorizontal: s(14), paddingVertical: vs(14), borderRadius: ms(8), marginVertical: vs(7) },
+  input: { flex: 1, marginHorizontal: s(14), fontSize: ms(17) },
+  confirmButton: { backgroundColor: "blue", padding: s(14), borderRadius: ms(8), alignItems: "center", marginTop: vs(20) },
+  confirmText: { color: "white", fontSize: ms(17), fontFamily: FONTS.semiBold },
 });

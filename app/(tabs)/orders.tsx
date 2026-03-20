@@ -18,6 +18,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "~/contexts/AuthContext";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 // Order type definition
@@ -187,31 +188,32 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   innerContainer: {
-    padding: 16,
+    paddingHorizontal: s(16),
+    paddingTop: vs(12),
     flex: 1,
   },
   scrollContainer: {
-    paddingBottom: 120,
+    paddingBottom: vs(120),
   },
   dropdownContainer: {
-    marginVertical: 16,
+    marginVertical: vs(14),
     zIndex: 5000,
   },
   dropdown: {
     backgroundColor: Colors.primary300,
     borderWidth: 0,
-    borderRadius: 16,
-    minHeight: 50,
+    borderRadius: ms(16),
+    minHeight: vs(50),
   },
   dropdownText: {
-    fontSize: 16,
+    fontSize: ms(15),
     color: Colors.secondary,
     fontFamily: FONTS.medium,
   },
   dropdownList: {
     backgroundColor: "#fff",
     borderColor: Colors.gray200,
-    borderRadius: 12,
+    borderRadius: ms(12),
     borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -220,31 +222,31 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   dropdownItem: {
-    height: 50,
+    height: vs(50),
     justifyContent: "center",
   },
   loadingContainer: {
-    padding: 20,
+    padding: s(20),
     alignItems: "center",
   },
   noOrdersContainer: {
     flex: 1,
-    paddingTop: 80,
+    paddingTop: vs(80),
     alignItems: "center",
     justifyContent: "center",
   },
   guestContainer: {
     flex: 1,
-    paddingTop: 80,
+    paddingTop: vs(80),
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: s(24),
   },
   guestText: {
-    fontSize: 16,
+    fontSize: ms(16),
     fontFamily: FONTS.medium,
     color: Colors.secondary,
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: vs(24),
   },
 });

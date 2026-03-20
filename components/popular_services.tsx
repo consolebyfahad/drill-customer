@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 import ServiceCard from "./service_card";
 
@@ -128,40 +129,41 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: vs(14),
   },
   headerText: {
-    fontSize: 18,
+    fontSize: ms(17),
     fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   seeAllText: {
     color: Colors.primary,
+    fontSize: ms(14),
   },
   loadingContainer: {
-    padding: 20,
+    padding: s(20),
     alignItems: "center",
   },
   loadingText: {
     color: Colors.secondary,
-    fontSize: 16,
+    fontSize: ms(15),
   },
   errorContainer: {
-    padding: 20,
+    padding: s(20),
     alignItems: "center",
   },
   errorText: {
     color: "red",
-    fontSize: 16,
+    fontSize: ms(15),
     textAlign: "center",
   },
   emptyContainer: {
-    padding: 20,
+    padding: s(20),
     alignItems: "center",
   },
   emptyText: {
     color: Colors.secondary,
-    fontSize: 16,
+    fontSize: ms(15),
     textAlign: "center",
   },
 });

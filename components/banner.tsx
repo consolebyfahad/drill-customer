@@ -1,11 +1,8 @@
-import { Dimensions, Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import { s, vs } from "~/utils/responsive";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-
-// Common banner aspect ratio (approximately 16:9 or 2:1)
-const BANNER_ASPECT_RATIO = 2.1; // width / height ratio
-const BANNER_WIDTH_PERCENTAGE = 0.98; // 98% of screen width
-const BANNER_WIDTH = SCREEN_WIDTH * BANNER_WIDTH_PERCENTAGE;
+const BANNER_ASPECT_RATIO = 2.1;
+const BANNER_WIDTH = s(370);
 const BANNER_HEIGHT = BANNER_WIDTH / BANNER_ASPECT_RATIO;
 
 export default function Banner() {
@@ -22,13 +19,13 @@ export default function Banner() {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: vs(16),
     alignItems: "center",
     justifyContent: "center",
   },
   image: {
-    width: BANNER_WIDTH,
+    width: "100%",
     height: BANNER_HEIGHT,
-    borderRadius: 8, // Optional: add slight border radius for better appearance
+    borderRadius: s(8),
   },
 });

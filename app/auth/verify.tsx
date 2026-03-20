@@ -9,6 +9,7 @@ import { OtpInput } from "react-native-otp-entry";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 const RESEND_COOLDOWN_SEC = 60;
@@ -135,40 +136,41 @@ export default function Verify() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: s(20),
+    paddingVertical: vs(20),
     backgroundColor: Colors.white,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 38,
+    marginBottom: vs(32),
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: FONTS.bold,
     textAlign: "center",
     color: Colors.secondary,
   },
   title: {
-    fontSize: 36,
+    fontSize: ms(32),
     fontFamily: FONTS.bold,
-    marginBottom: 8,
+    marginBottom: vs(6),
     color: Colors.secondary,
   },
   subtitle: {
-    fontSize: 28,
+    fontSize: ms(22),
     color: Colors.secondary100,
-    marginBottom: 24,
+    marginBottom: vs(20),
     fontFamily: FONTS.medium,
   },
   otpContainer: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.gray100,
-    paddingVertical: 26,
-    borderRadius: 16,
-    marginBottom: 24,
+    paddingVertical: vs(24),
+    borderRadius: ms(16),
+    marginBottom: vs(20),
   },
   otpContainerError: {
     borderWidth: 1,
@@ -176,14 +178,14 @@ const styles = StyleSheet.create({
   },
   otpInputs: {
     flexDirection: "row",
-    gap: 12,
-    marginBottom: 18,
+    gap: s(12),
+    marginBottom: vs(16),
     justifyContent: "center",
   },
   otpInput: {
-    width: 42,
-    height: 42,
-    borderRadius: 24,
+    width: s(46),
+    height: s(46),
+    borderRadius: ms(24),
     borderWidth: 1,
     borderColor: Colors.gray200,
     backgroundColor: Colors.white,
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
   },
   otpInputText: {
-    fontSize: 20,
+    fontSize: ms(20),
     fontFamily: FONTS.regular,
     color: Colors.secondary,
   },
@@ -201,14 +203,14 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    fontSize: 14,
-    marginBottom: 16,
-    paddingHorizontal: 12,
+    fontSize: ms(13),
+    marginBottom: vs(14),
+    paddingHorizontal: s(12),
     textAlign: "center",
     fontFamily: FONTS.medium,
   },
   resendText: {
-    fontSize: 16,
+    fontSize: ms(15),
     color: Colors.secondary100,
     fontFamily: FONTS.medium,
   },

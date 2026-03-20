@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type HeaderProps = {
@@ -51,44 +52,27 @@ export default function Header({
   };
   const handleSupport = async () => {
     try {
-      // Get orderId from AsyncStorage
       const orderId = await AsyncStorage.getItem("order_id");
-
       if (!orderId) {
         Alert.alert(t("error") || "Error", t("header.noActiveOrder"));
         return;
       }
-
-      // Call API to update support_required
       const formData = new FormData();
       formData.append("type", "update_data");
       formData.append("table_name", "orders");
       formData.append("id", orderId);
       formData.append("support_required", "1");
-
       const response = await apiCall(formData);
-
       if (response && response.result) {
-        // Navigate to order screen with Chat tab active
-        router.push({
-          pathname: "/order/order_place",
-          params: { tab: "Chat" },
-        });
+        router.push({ pathname: "/order/order_place", params: { tab: "Chat" } });
       } else {
-        console.error("❌ Failed to update support request:", response);
-        Alert.alert(
-          t("error") || "Error",
-          t("header.failedToSubmitSupport")
-        );
+        Alert.alert(t("error") || "Error", t("header.failedToSubmitSupport"));
       }
     } catch (error) {
-      console.error("❌ Error in handleSupport:", error);
-      Alert.alert(
-        t("error") || "Error",
-        t("header.errorOccurred")
-      );
+      Alert.alert(t("error") || "Error", t("header.errorOccurred"));
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
@@ -99,7 +83,7 @@ export default function Header({
             accessibilityRole="button"
             accessibilityLabel={t("header.back") || "Go back"}
           >
-            <AntDesign name="left" size={24} color={Colors.secondary} />
+            <AntDesign name="left" size={s(22)} color={Colors.secondary} />
           </TouchableOpacity>
         )}
         {!homeScreen ? (
@@ -127,7 +111,7 @@ export default function Header({
             accessibilityRole="button"
             accessibilityLabel={t("header.chatSupport") || "Chat with support"}
           >
-            <ChatSupport />
+            <ChatSupport width={s(26)} height={s(26)} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -136,7 +120,7 @@ export default function Header({
             accessibilityRole="button"
             accessibilityLabel={t("notifications") || "Notifications"}
           >
-            <NotificationBell />
+            <NotificationBell width={s(24)} height={s(24)} />
           </TouchableOpacity>
         ))}
     </View>
@@ -148,31 +132,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: vs(16),
   },
   leftSection: {
     flexDirection: "row",
     alignItems: "center",
   },
   backButton: {
-    minWidth: 44,
-    minHeight: 44,
-    width: 44,
-    height: 44,
+    minWidth: s(44),
+    minHeight: vs(44),
+    width: s(44),
+    height: vs(44),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.gray100,
-    borderRadius: 22,
-    marginRight: 10,
+    borderRadius: ms(22),
+    marginRight: s(10),
   },
   iconButton: {
-    minWidth: 44,
-    minHeight: 44,
+    minWidth: s(44),
+    minHeight: vs(44),
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
-    fontSize: 22,
+    fontSize: ms(22),
     fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
@@ -181,28 +165,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   userImage: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: 10,
+    width: s(46),
+    height: s(46),
+    borderRadius: ms(23),
+    marginRight: s(10),
   },
   welcomeText: {
-    fontSize: 22,
+    fontSize: ms(20),
     fontFamily: FONTS.bold,
     color: Colors.secondary,
   },
   userName: {
-    fontSize: 16,
+    fontSize: ms(15),
     fontFamily: FONTS.medium,
     color: Colors.secondary100,
   },
   notificationButton: {
-    minWidth: 44,
-    minHeight: 44,
+    minWidth: s(44),
+    minHeight: vs(44),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.gray100,
-    padding: 10,
-    borderRadius: 22,
+    padding: s(10),
+    borderRadius: ms(22),
   },
 });

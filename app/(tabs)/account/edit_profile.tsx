@@ -30,6 +30,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "~/components/button";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { apiCall } from "~/utils/api";
 
 type User = {
@@ -338,44 +339,16 @@ export default function EditProfile() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 12, backgroundColor: "white" },
-  scrollContainer: { paddingBottom: 100 },
+  container: { flex: 1, paddingHorizontal: s(12), paddingTop: vs(8), backgroundColor: "white" },
+  scrollContainer: { paddingBottom: vs(100) },
   loadingScreen: { flex: 1, justifyContent: "center", alignItems: "center" },
   profileContainer: { alignItems: "center" },
-  imageWrapper: {
-    borderWidth: 2,
-    borderColor: Colors.success,
-    borderRadius: 999,
-    position: "relative",
-  },
-  profileImage: { height: 96, width: 96, borderRadius: 999 },
-  imageIconWrapper: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    backgroundColor: "white",
-    height: 24,
-    width: 24,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  userName: {
-    fontSize: 24,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-    marginTop: 12,
-  },
-  userEmail: { color: Colors.secondary300, fontFamily: FONTS.regular },
-  rowContainer: { flexDirection: "row", paddingBottom: 12, gap: 16 },
+  imageWrapper: { borderWidth: 2, borderColor: Colors.success, borderRadius: 999, position: "relative" },
+  profileImage: { height: s(88), width: s(88), borderRadius: 999 },
+  imageIconWrapper: { position: "absolute", bottom: 0, right: 0, backgroundColor: "white", height: s(24), width: s(24), borderRadius: 999, borderWidth: 1, borderColor: "white", alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  userName: { fontSize: ms(22), fontFamily: FONTS.semiBold, color: Colors.secondary, marginTop: vs(10) },
+  userEmail: { color: Colors.secondary300, fontFamily: FONTS.regular, fontSize: ms(13) },
+  rowContainer: { flexDirection: "row", paddingBottom: vs(12), gap: s(14) },
   flexItem: { flex: 1 },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginTop: 10,
-    fontFamily: FONTS.medium,
-  },
+  errorText: { color: "red", textAlign: "center", marginTop: vs(10), fontFamily: FONTS.medium, fontSize: ms(13) },
 });

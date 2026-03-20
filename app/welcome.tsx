@@ -5,19 +5,11 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 export default function Welcome() {
   const { t, ready } = useTranslation();
 
-  const handleBrowse = () => {
-    router.replace("/(tabs)");
-  };
-
-  const handleLogin = () => {
-    router.push("/auth/login");
-  };
-
-  // Show loading state while i18n is initializing
   if (!ready) {
     return (
       <SafeAreaView style={styles.container}>
@@ -30,7 +22,7 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={styles.topSection}>
         <Image
           source={require("../assets/images/onboarding.png")}
           style={styles.image}
@@ -43,10 +35,10 @@ export default function Welcome() {
         </View>
       </View>
       <View style={styles.footer}>
-        <Button title={t("welcomeScreen.browse")} onPress={handleBrowse} />
+        <Button title={t("welcomeScreen.browse")} onPress={() => router.replace("/(tabs)")} />
         <TouchableOpacity
           style={styles.loginButton}
-          onPress={handleLogin}
+          onPress={() => router.push("/auth/login")}
           accessibilityRole="button"
           accessibilityLabel={t("login.title")}
         >
@@ -68,7 +60,8 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: s(16),
+    paddingBottom: vs(16),
     justifyContent: "space-between",
     backgroundColor: Colors.white,
   },
@@ -78,60 +71,66 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loadingText: {
-    fontSize: 18,
+    fontSize: ms(18),
     color: Colors.secondary,
     fontFamily: FONTS.medium,
   },
+  topSection: {
+    flex: 1,
+    justifyContent: "center",
+  },
   image: {
     width: "100%",
-    marginBottom: 8,
+    height: vs(280),
+    marginBottom: vs(8),
   },
   textContainer: {
     alignItems: "center",
-    width: "80%",
-    marginHorizontal: "auto",
-    paddingHorizontal: 12,
+    paddingHorizontal: s(12),
   },
   title: {
-    fontSize: 35,
-    marginBottom: 8,
+    fontSize: ms(32),
+    marginBottom: vs(6),
     color: Colors.secondary,
     fontFamily: FONTS.bold,
+    textAlign: "center",
   },
   subtitle: {
-    fontSize: 22,
+    fontSize: ms(20),
     fontFamily: FONTS.bold,
-    marginBottom: 12,
+    marginBottom: vs(10),
     color: Colors.secondary,
+    textAlign: "center",
   },
   description: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: ms(16),
     color: Colors.secondary100,
-    paddingHorizontal: 20,
+    paddingHorizontal: s(20),
     fontFamily: FONTS.medium,
   },
   footer: {
     alignItems: "center",
+    paddingTop: vs(16),
   },
   privacyLinkWrap: {
-    marginTop: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    marginTop: vs(12),
+    paddingVertical: vs(8),
+    paddingHorizontal: s(16),
   },
   privacyLink: {
-    fontSize: 14,
+    fontSize: ms(13),
     fontFamily: FONTS.medium,
     color: Colors.primary,
     textDecorationLine: "underline",
   },
   loginButton: {
-    marginTop: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    marginTop: vs(10),
+    paddingVertical: vs(12),
+    paddingHorizontal: s(24),
   },
   loginButtonText: {
-    fontSize: 16,
+    fontSize: ms(15),
     fontFamily: FONTS.semiBold,
     color: Colors.primary,
   },

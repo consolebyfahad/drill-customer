@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "~/components/header";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { PRIVACY_POLICY_URL } from "~/config";
 
 export default function Privacy() {
@@ -69,59 +70,14 @@ export default function Privacy() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 12,
-    backgroundColor: Colors.white,
-  },
-  scrollView: {
-    flex: 1,
-    paddingHorizontal: 12,
-  },
-  contentContainer: {
-    paddingBottom: 24,
-  },
-  heading: {
-    fontSize: 20,
-    fontFamily: FONTS.bold,
-    color: Colors.secondary,
-    marginTop: 24,
-    marginBottom: 12,
-  },
-  subheading: {
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-    color: Colors.primary,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  text: {
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary100,
-    lineHeight: 22,
-    marginBottom: 8,
-  },
-  footer: {
-    marginTop: 32,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: Colors.gray,
-  },
-  footerText: {
-    fontSize: 12,
-    fontFamily: FONTS.medium,
-    color: Colors.secondary300,
-    textAlign: "center",
-  },
-  viewOnlineLink: {
-    marginTop: 12,
-  },
-  viewOnlineText: {
-    fontSize: 14,
-    fontFamily: FONTS.semiBold,
-    color: Colors.primary,
-    textAlign: "center",
-    textDecorationLine: "underline",
-  },
+  container: { flex: 1, paddingHorizontal: s(12), backgroundColor: Colors.white },
+  scrollView: { flex: 1, paddingHorizontal: s(12) },
+  contentContainer: { paddingBottom: vs(24) },
+  heading: { fontSize: ms(19), fontFamily: FONTS.bold, color: Colors.secondary, marginTop: vs(20), marginBottom: vs(10) },
+  subheading: { fontSize: ms(15), fontFamily: FONTS.semiBold, color: Colors.primary, marginTop: vs(14), marginBottom: vs(7) },
+  text: { fontSize: ms(13), fontFamily: FONTS.regular, color: Colors.secondary100, lineHeight: ms(22), marginBottom: vs(7) },
+  footer: { marginTop: vs(28), paddingTop: vs(14), borderTopWidth: 1, borderTopColor: Colors.gray },
+  footerText: { fontSize: ms(12), fontFamily: FONTS.medium, color: Colors.secondary300, textAlign: "center" },
+  viewOnlineLink: { marginTop: vs(10) },
+  viewOnlineText: { fontSize: ms(13), fontFamily: FONTS.semiBold, color: Colors.primary, textAlign: "center", textDecorationLine: "underline" },
 });

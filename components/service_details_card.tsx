@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { Colors } from "../constants/Colors";
 import DashedSeprator from "./dashed_seprator";
 
@@ -206,112 +207,32 @@ export default function ServiceDetailsCard({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 16,
+    padding: s(14),
+    borderRadius: ms(16),
+    marginTop: vs(14),
     shadowColor: Colors.gray100,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.01,
     shadowRadius: 6,
     elevation: 2,
   },
-  orderTopSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
-  image: {
-    height: 62,
-    width: 62,
-    borderRadius: 8,
-    backgroundColor: Colors.white,
-    padding: 12,
-  },
-  orderInfo: {
-    flex: 1,
-    gap: 8,
-  },
-  orderHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: FONTS.bold,
-    color: Colors.secondary,
-    flex: 1,
-    textTransform: "capitalize",
-  },
-  statusContainer: {
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  statusText: {
-    fontSize: 14,
-    fontFamily: FONTS.semiBold,
-    textTransform: "capitalize",
-  },
-  orderId: {
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary300,
-  },
+  orderTopSection: { flexDirection: "row", alignItems: "center", gap: s(14) },
+  image: { height: s(60), width: s(60), borderRadius: ms(8), backgroundColor: Colors.white, padding: s(10) },
+  orderInfo: { flex: 1, gap: vs(6) },
+  orderHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  title: { fontSize: ms(15), fontFamily: FONTS.bold, color: Colors.secondary, flex: 1, textTransform: "capitalize" },
+  statusContainer: { borderRadius: ms(8), paddingHorizontal: s(8), paddingVertical: vs(4) },
+  statusText: { fontSize: ms(13), fontFamily: FONTS.semiBold, textTransform: "capitalize" },
+  orderId: { fontSize: ms(13), fontFamily: FONTS.regular, color: Colors.secondary300 },
   orderIdValue: { fontFamily: FONTS.semiBold },
-  amount: {
-    fontSize: 14,
-    color: Colors.secondary,
-    fontFamily: FONTS.semiBold,
-  },
-  discount: {
-    color: Colors.success,
-  },
-  detailsContainer: {
-    backgroundColor: Colors.white,
-    padding: 12,
-    borderRadius: 16,
-    marginTop: 12,
-  },
-  detailsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 8,
-  },
-  label: {
-    color: Colors.secondary300,
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    flexShrink: 0,
-  },
-  value: {
-    color: Colors.secondary,
-    fontSize: 14,
-    fontFamily: FONTS.bold,
-    textTransform: "capitalize",
-  },
-  paymentStatus: {
-    color: Colors.success,
-    fontSize: 14,
-    fontFamily: FONTS.bold,
-    flexShrink: 1,
-    textAlign: "right",
-    marginLeft: 8,
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  starIcon: {
-    color: "#FFD700",
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-  },
-  tip: {
-    color: Colors.success,
-    fontSize: 14,
-    fontFamily: FONTS.semiBold,
-  },
+  amount: { fontSize: ms(13), color: Colors.secondary, fontFamily: FONTS.semiBold },
+  discount: { color: Colors.success },
+  detailsContainer: { backgroundColor: Colors.white, padding: s(12), borderRadius: ms(16), marginTop: vs(10) },
+  detailsRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: vs(7) },
+  label: { color: Colors.secondary300, fontSize: ms(13), fontFamily: FONTS.regular, flexShrink: 0 },
+  value: { color: Colors.secondary, fontSize: ms(13), fontFamily: FONTS.bold, textTransform: "capitalize" },
+  paymentStatus: { color: Colors.success, fontSize: ms(13), fontFamily: FONTS.bold, flexShrink: 1, textAlign: "right", marginLeft: s(8) },
+  ratingContainer: { flexDirection: "row", alignItems: "center", gap: s(4) },
+  starIcon: { color: "#FFD700", fontSize: ms(15), fontFamily: FONTS.semiBold },
+  tip: { color: Colors.success, fontSize: ms(13), fontFamily: FONTS.semiBold },
 });

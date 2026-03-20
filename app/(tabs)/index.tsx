@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PopularServices from "~/components/popular_services";
 import { useAuth } from "~/contexts/AuthContext";
 import { Colors } from "~/constants/Colors";
+import { s, vs } from "~/utils/responsive";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -62,14 +63,14 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 16,
     backgroundColor: Colors.white,
   },
   scrollView: {
     flex: 1,
-    padding: 12,
+    paddingHorizontal: s(14),
+    paddingTop: vs(8),
   },
   contentContainer: {
-    paddingBottom: 100,
+    paddingBottom: vs(120),
   },
 });

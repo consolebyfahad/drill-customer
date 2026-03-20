@@ -17,6 +17,7 @@ import Popup from "~/components/popup";
 import { useToast } from "~/components/ToastProvider";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 import { OrderType } from "~/types/dataTypes";
 import { apiCall } from "~/utils/api";
 import { calculateDistance } from "~/utils/distance";
@@ -665,69 +666,17 @@ const OrderPlace: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.white },
-  content: { flex: 1, padding: 16 },
-  tabContainer: {
-    flexDirection: "row",
-    backgroundColor: Colors.primary300,
-    borderRadius: 25,
-  },
-  activeTab: {
-    fontSize: 18,
-    fontFamily: FONTS.bold,
-    padding: 16,
-    backgroundColor: Colors.secondary,
-    borderRadius: 25,
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  activeTabText: {
-    color: Colors.white,
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-  },
-  inactiveTabText: {
-    color: Colors.secondary300,
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-  },
-  inactiveTab: {
-    fontSize: 16,
-    padding: 16,
-    borderRadius: 25,
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    gap: 4,
-  },
-  overlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  overlayBackground: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  popupContainer: {
-    backgroundColor: Colors.white,
-    width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    minHeight: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  content: { flex: 1, paddingHorizontal: s(16), paddingTop: vs(8) },
+  tabContainer: { flexDirection: "row", backgroundColor: Colors.primary300, borderRadius: ms(25) },
+  activeTab: { padding: s(14), backgroundColor: Colors.secondary, borderRadius: ms(25), width: "50%", justifyContent: "center", alignItems: "center" },
+  activeTabText: { color: Colors.white, fontSize: ms(15), fontFamily: FONTS.semiBold },
+  inactiveTabText: { color: Colors.secondary300, fontSize: ms(15), fontFamily: FONTS.semiBold },
+  inactiveTab: { padding: s(14), borderRadius: ms(25), width: "50%", justifyContent: "center", alignItems: "center" },
+  footerButtons: { flexDirection: "row", justifyContent: "space-between", paddingVertical: vs(8), paddingHorizontal: s(16), gap: s(4) },
+  overlay: { flex: 1, justifyContent: "flex-end" },
+  overlayBackground: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0, 0, 0, 0.5)" },
+  popupContainer: { backgroundColor: Colors.white, width: "100%", borderTopLeftRadius: ms(20), borderTopRightRadius: ms(20), minHeight: "50%", justifyContent: "center", alignItems: "center" },
+  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 
 export default OrderPlace;

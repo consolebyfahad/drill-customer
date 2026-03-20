@@ -18,6 +18,7 @@ import {
 import MapView, { Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 export default function LocationScreen() {
   const navigation = useNavigation();
@@ -384,103 +385,23 @@ export default function LocationScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    justifyContent: "space-between",
-  },
-  scrollContainer: { padding: 16 },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 24,
-  },
-  backButton: {
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.gray100,
-    padding: 10,
-    borderRadius: 22,
-  },
-  headerText: { fontSize: 24, fontFamily: FONTS.semiBold, color: Colors.secondary },
-  iconButton: {
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-  },
-  mapContainer: {
-    borderRadius: 16,
-    overflow: "hidden",
-    marginBottom: 16,
-    height: 450,
-  },
+  container: { flex: 1, backgroundColor: "white", justifyContent: "space-between" },
+  scrollContainer: { paddingHorizontal: s(16), paddingTop: vs(8) },
+  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: vs(18) },
+  backButton: { minWidth: s(44), minHeight: s(44), justifyContent: "center", alignItems: "center", backgroundColor: Colors.gray100, padding: s(10), borderRadius: ms(22) },
+  headerText: { fontSize: ms(22), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  iconButton: { minWidth: s(44), minHeight: s(44), justifyContent: "center", alignItems: "center", padding: s(10) },
+  mapContainer: { borderRadius: ms(16), overflow: "hidden", marginBottom: vs(14), height: vs(380) },
   map: { width: "100%", height: "100%" },
-  markerFixed: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginLeft: -16,
-    marginTop: -32,
-    zIndex: 10,
-  },
-  myLocationButton: {
-    position: "absolute",
-    bottom: 100,
-    right: 20,
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.white,
-    padding: 10,
-    borderRadius: 22,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-  },
-  addressContainer: {
-    backgroundColor: Colors.secondary200,
-    padding: 16,
-    borderRadius: 10,
-    marginTop: 16,
-  },
-  addressTitle: { fontSize: 18, fontFamily: FONTS.medium },
-  addressText: { color: Colors.secondary300, marginTop: 4 },
-  coordsText: {
-    color: Colors.secondary300,
-    marginTop: 4,
-    fontSize: 12,
-    fontStyle: "italic",
-  },
-  searchContainer: {
-    marginBottom: 16,
-  },
-  input: {
-    backgroundColor: Colors.white,
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.gray,
-    marginBottom: 8,
-    minHeight: 50,
-    textAlignVertical: "top",
-  },
-  searchButton: {
-    backgroundColor: Colors.primary,
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  searchButtonText: {
-    color: Colors.white,
-    fontFamily: FONTS.semiBold,
-  },
-  buttonContainer: { padding: 16, gap: 8 },
+  markerFixed: { position: "absolute", top: "50%", left: "50%", marginLeft: -s(16), marginTop: -s(32), zIndex: 10 },
+  myLocationButton: { position: "absolute", bottom: vs(100), right: s(20), minWidth: s(44), minHeight: s(44), justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, padding: s(10), borderRadius: ms(22), elevation: 3, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 1.41 },
+  addressContainer: { backgroundColor: Colors.secondary200, padding: s(14), borderRadius: ms(10), marginTop: vs(14) },
+  addressTitle: { fontSize: ms(17), fontFamily: FONTS.medium },
+  addressText: { color: Colors.secondary300, marginTop: vs(4), fontSize: ms(13) },
+  coordsText: { color: Colors.secondary300, marginTop: vs(4), fontSize: ms(11), fontStyle: "italic" },
+  searchContainer: { marginBottom: vs(14) },
+  input: { backgroundColor: Colors.white, padding: s(12), borderRadius: ms(8), borderWidth: 1, borderColor: Colors.gray, marginBottom: vs(7), minHeight: vs(50), textAlignVertical: "top", fontSize: ms(14) },
+  searchButton: { backgroundColor: Colors.primary, padding: s(12), borderRadius: ms(8), alignItems: "center" },
+  searchButtonText: { color: Colors.white, fontFamily: FONTS.semiBold, fontSize: ms(14) },
+  buttonContainer: { paddingHorizontal: s(16), paddingVertical: vs(10), gap: vs(8) },
 });

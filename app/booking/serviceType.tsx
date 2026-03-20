@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 export default function ServiceTypeScreen() {
   const { t } = useTranslation();
@@ -298,150 +299,34 @@ export default function ServiceTypeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white,
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontFamily: FONTS.bold,
-    color: Colors.secondary,
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary,
-    marginBottom: 32,
-    textAlign: "center",
-  },
-  section: {
-    marginBottom: 24,
-  },
-  optionContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  optionContent: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  optionTitle: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-    marginBottom: 4,
-  },
-  optionDescription: {
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary,
-  },
-  scheduleSection: {
-    backgroundColor: Colors.primary300,
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-    marginBottom: 16,
-  },
-  fieldContainer: {
-    marginBottom: 16,
-  },
-  fieldLabel: {
-    fontSize: 16,
-    fontFamily: FONTS.medium,
-    color: Colors.secondary,
-    marginBottom: 8,
-  },
-  dateTimeField: {
-    backgroundColor: Colors.white,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.secondary,
-  },
-  fieldText: {
-    fontSize: 16,
-    fontFamily: FONTS.regular,
-    color: Colors.secondary,
-  },
-  errorText: {
-    fontSize: 14,
-    fontFamily: FONTS.regular,
-    color: "red",
-    textAlign: "center",
-    marginTop: 8,
-  },
-  buttonContainer: {
-    padding: 16,
-  },
-  pickerOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1000,
-  },
-  pickerBackdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
+  container: { flex: 1, backgroundColor: Colors.white },
+  content: { flex: 1, paddingHorizontal: s(16), paddingTop: vs(8) },
+  title: { fontSize: ms(22), fontFamily: FONTS.bold, color: Colors.secondary, marginBottom: vs(6), textAlign: "center" },
+  subtitle: { fontSize: ms(15), fontFamily: FONTS.regular, color: Colors.secondary, marginBottom: vs(24), textAlign: "center" },
+  section: { marginBottom: vs(20) },
+  optionContainer: { flexDirection: "row", alignItems: "center", backgroundColor: Colors.primary300, paddingHorizontal: s(14), paddingVertical: vs(14), borderRadius: ms(12), marginBottom: vs(10) },
+  optionContent: { flex: 1, marginLeft: s(12) },
+  optionTitle: { fontSize: ms(16), fontFamily: FONTS.semiBold, color: Colors.secondary, marginBottom: vs(4) },
+  optionDescription: { fontSize: ms(13), fontFamily: FONTS.regular, color: Colors.secondary },
+  scheduleSection: { backgroundColor: Colors.primary300, padding: s(16), borderRadius: ms(12), marginBottom: vs(20) },
+  sectionTitle: { fontSize: ms(17), fontFamily: FONTS.semiBold, color: Colors.secondary, marginBottom: vs(14) },
+  fieldContainer: { marginBottom: vs(14) },
+  fieldLabel: { fontSize: ms(15), fontFamily: FONTS.medium, color: Colors.secondary, marginBottom: vs(7) },
+  dateTimeField: { backgroundColor: Colors.white, padding: s(14), borderRadius: ms(8), borderWidth: 1, borderColor: Colors.secondary },
+  fieldText: { fontSize: ms(14), fontFamily: FONTS.regular, color: Colors.secondary },
+  errorText: { fontSize: ms(13), fontFamily: FONTS.regular, color: "red", textAlign: "center", marginTop: vs(7) },
+  buttonContainer: { paddingHorizontal: s(16), paddingVertical: vs(12) },
+  pickerOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 },
+  pickerBackdrop: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" },
   pickerContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    position: "absolute", bottom: 0, left: 0, right: 0,
     backgroundColor: Colors.white,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    elevation: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    borderTopLeftRadius: ms(20), borderTopRightRadius: ms(20),
+    padding: s(18), elevation: 10,
+    shadowColor: "#000", shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.25, shadowRadius: 8,
   },
-  pickerHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primary300,
-  },
-  pickerTitle: {
-    fontSize: 18,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
-  closeButton: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-    color: Colors.white,
-  },
+  pickerHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: vs(14), paddingBottom: vs(10), borderBottomWidth: 1, borderBottomColor: Colors.primary300 },
+  pickerTitle: { fontSize: ms(17), fontFamily: FONTS.semiBold, color: Colors.secondary },
+  closeButton: { backgroundColor: Colors.primary, paddingHorizontal: s(14), paddingVertical: vs(7), borderRadius: ms(8) },
+  closeButtonText: { fontSize: ms(14), fontFamily: FONTS.semiBold, color: Colors.white },
 });

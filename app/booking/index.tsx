@@ -19,6 +19,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "~/constants/Colors";
 import { FONTS } from "~/constants/Fonts";
+import { ms, s, vs } from "~/utils/responsive";
 
 export default function BookingScreen() {
   const { t } = useTranslation();
@@ -243,43 +244,12 @@ export default function BookingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-    backgroundColor: Colors.white,
-  },
-  content: {
-    padding: 16,
-  },
-  buttonContainer: {
-    padding: 16,
-  },
-  scheduleInfoContainer: {
-    backgroundColor: Colors.primary300,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  scheduleInfoTitle: {
-    fontSize: 16,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-    marginBottom: 12,
-  },
-  scheduleInfoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  scheduleInfoLabel: {
-    fontSize: 14,
-    fontFamily: FONTS.medium,
-    color: Colors.gray,
-  },
-  scheduleInfoValue: {
-    fontSize: 14,
-    fontFamily: FONTS.semiBold,
-    color: Colors.secondary,
-  },
+  container: { flex: 1, justifyContent: "space-between", backgroundColor: Colors.white },
+  content: { paddingHorizontal: s(16), paddingTop: vs(8) },
+  buttonContainer: { paddingHorizontal: s(16), paddingVertical: vs(12) },
+  scheduleInfoContainer: { backgroundColor: Colors.primary300, padding: s(14), borderRadius: ms(12), marginBottom: vs(14) },
+  scheduleInfoTitle: { fontSize: ms(15), fontFamily: FONTS.semiBold, color: Colors.secondary, marginBottom: vs(10) },
+  scheduleInfoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: vs(7) },
+  scheduleInfoLabel: { fontSize: ms(13), fontFamily: FONTS.medium, color: Colors.gray },
+  scheduleInfoValue: { fontSize: ms(13), fontFamily: FONTS.semiBold, color: Colors.secondary },
 });
